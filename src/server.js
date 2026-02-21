@@ -47,8 +47,11 @@ async function init() {
   });
   server.auth.default("session");
 
-  db.init();
+    // initialize DB (use JSON stores as required by coursework)
+    db.init();
+
   server.route(webRoutes);
+
   await server.start();
   console.log("Server running on %s", server.info.uri);
 }
@@ -57,5 +60,7 @@ process.on("unhandledRejection", (err) => {
   console.log(err);
   process.exit(1);
 });
+
+
 
 init();

@@ -20,9 +20,25 @@
       "email": "bart@simpson.com",
       "password": "secret",
       "_id": "fd3d1c1f-7cf7-4683-9b4f-f6c5e4217087"
+    },
+    {
+      "firstName": "m",
+      "lastName": "m",
+      "email": "m@m.com",
+      "password": "1234",
+      "_id": "23207483-d69e-4387-b14d-2c87fed2c81b"
     }
   ],
-  "playlists": [],
+  "playlists": [
+    {
+      "userid": "23207483-d69e-4387-b14d-2c87fed2c81b",
+      "title": "Butler Gallery",
+      "description": "Butler Gallery is a contemporary art gallery and museum in Kilkenny, Ireland.",
+      "latitude": 52.6538599,
+      "longitude": -7.2491683,
+      "_id": "c059a665-190b-4a57-9298-e00d570f1d05"
+    }
+  ],
   "exhibitions": [
     {
       "title": "Updated Title",
