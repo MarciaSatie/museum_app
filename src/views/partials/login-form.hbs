@@ -1,0 +1,44 @@
+<section class="section">
+  <div class="columns">
+    <div class="column is-5-desktop is-8-tablet">
+      <h1 class="title">Log in to Museum App</h1>
+      {{#if errors}}
+        <div class="notification is-danger">
+          <ul>
+            {{#each errors}}
+              <li>{{this.message}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      {{/if}}
+      <form action="/authenticate" method="POST">
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control has-icons-left">
+            <input class="input" type="email" placeholder="Enter email" name="email" required>
+            <span class="icon is-left">
+              <i class="fas fa-envelope"></i>
+            </span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="control has-icons-left">
+            <input class="input" type="password" placeholder="Enter Password" name="password" required>
+            <span class="icon is-left">
+              <i class="fas fa-lock"></i>
+            </span>
+          </div>
+        </div>
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link">Log in</button>
+          </div>
+          <div class="control">
+            <a class="button is-light" href="/signup">Create account</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
