@@ -1,19 +1,35 @@
 {
   "users": [
     {
-      "firstName": "m",
-      "lastName": "1234",
-      "email": "m@m.com",
-      "password": "1234",
-      "_id": "e2874170-0def-4017-a368-0f3a172a6d4b"
-    }
-  ],
-  "playlists": [
+      "firstName": "Homer",
+      "lastName": "Simpson",
+      "email": "homer@simpson.com",
+      "password": "secret",
+      "_id": "d3c0948f-744c-49eb-85a5-fc2c2ebbdf72"
+    },
     {
-      "userid": "e2874170-0def-4017-a368-0f3a172a6d4b",
-      "title": "pl1",
-      "_id": "7f7e1d3a-c044-4456-a086-c7a135daf3fe"
+      "firstName": "Marge",
+      "lastName": "Simpson",
+      "email": "marge@simpson.com",
+      "password": "secret",
+      "_id": "8370b37d-49ff-45bb-8b07-7eebf90c3e73"
+    },
+    {
+      "firstName": "Bart",
+      "lastName": "Simpson",
+      "email": "bart@simpson.com",
+      "password": "secret",
+      "_id": "fd3d1c1f-7cf7-4683-9b4f-f6c5e4217087"
     }
   ],
-  "exhibitions": []
+  "playlists": [],
+  "exhibitions": [
+    {
+      "title": "Updated Title",
+      "artist": "Updated Artist",
+      "duration": 6,
+      "_id": "a494b008-0cfb-4b2a-98c7-f0ee00eb540c",
+      "museumid": "f382810d-bce8-486f-a185-e1053fed9996"
+    }
+  ]
 }

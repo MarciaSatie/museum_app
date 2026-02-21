@@ -20,4 +20,7 @@ export const ExhibitionSpec = {
 
 export const MuseumSpec = {
   title: Joi.string().required(),
+  description: Joi.string().allow("").optional(),
+  latitude: Joi.number().allow("").optional(),
+  longitude: Joi.number().allow("").optional(),
 };

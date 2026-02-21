@@ -33,15 +33,23 @@ export const exhibitionJsonStore = {
     await db.write();
   },
 
+  async deleteAll() {
+    db.data.exhibitions = [];
+    await db.write();
+  },
+
   async deleteAllExhibitions() {
     db.data.exhibitions = [];
     await db.write();
   },
 
-  async updateExhibition(exhibition, updatedExhibition) {
-    exhibition.title = updatedExhibition.title;
-    exhibition.artist = updatedExhibition.artist;
-    exhibition.duration = updatedExhibition.duration;
-    await db.write();
+  async updateExhibition(exhibition) {
+    await db.read();
+    const index = db.data.exhibitions.findIndex((e) => e._id === exhibition._id);
+    if (index !== -1) {
+      db.data.exhibitions[index] = exhibition;
+      await db.write();
+    }
+    return exhibition;
   },
 };

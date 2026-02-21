@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: museum-app
+    runtime: node
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: cookie_name
+        value: session
+      - key: cookie_password
+        value: password-should-be-at-least-32-characters-long-for-security

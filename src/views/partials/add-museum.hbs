@@ -2,7 +2,25 @@
   <form action="/dashboard/addmuseum" method="POST">
     <div class="field">
       <label class="label">Museum Title</label>
-      <input class="input" type="text" placeholder="Enter museum title" name="title">
+      <input class="input" type="text" placeholder="Enter museum title" name="title" required>
+    </div>
+    <div class="field">
+      <label class="label">Description</label>
+      <textarea class="textarea" placeholder="Enter museum description" name="description" rows="3"></textarea>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label">Latitude</label>
+          <input class="input" type="number" placeholder="e.g., 53.2743" name="latitude" step="any">
+        </div>
+      </div>
+      <div class="column">
+        <div class="field">
+          <label class="label">Longitude</label>
+          <input class="input" type="number" placeholder="e.g., -9.1193" name="longitude" step="any">
+        </div>
+      </div>
     </div>
     <button class="button is-link">Add Museum</button>
   </form>

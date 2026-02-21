@@ -3,13 +3,24 @@
     <h2 class="title">
       {{title}}
     </h2>
-    <a href="/museum/{{_id}}" class="button">
-      <span class="icon is-small">
-        <i class="fas fa-folder-open"></i>
-      </span>
-    </a>
-    <a href="/dashboard/deletemuseum/{{_id}}" class="button">
-      <i class="fas fa-trash"></i>
-    </a>
+    {{#if description}}
+      <p class="subtitle is-6">{{description}}</p>
+    {{/if}}
+    {{#if latitude}}
+      <p class="is-size-7">
+        <strong>Location:</strong> {{latitude}}, {{longitude}}
+      </p>
+    {{/if}}
+    <div class="buttons">
+      <a href="/museum/{{_id}}" class="button">
+        <span class="icon is-small">
+          <i class="fas fa-folder-open"></i>
+        </span>
+        <span>View</span>
+      </a>
+      <a href="/dashboard/deletemuseum/{{_id}}" class="button is-danger">
+        <i class="fas fa-trash"></i>
+      </a>
+    </div>
   </div>
 {{/each}}

@@ -1,0 +1,45 @@
+{{> menu active="profile"}}
+
+<section class="section">
+  <div class="container">
+    <h1 class="title">My Profile Settings</h1>
+    
+    {{#if errors}}
+      {{> error}}
+    {{/if}}
+
+    <div class="box">
+      <form method="POST" action="/profile">
+        <div class="field">
+          <label class="label">First Name</label>
+          <div class="control">
+            <input class="input" type="text" name="firstName" value="{{user.firstName}}" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Last Name</label>
+          <div class="control">
+            <input class="input" type="text" name="lastName" value="{{user.lastName}}" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control">
+            <input class="input" type="email" name="email" value="{{user.email}}" required>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link">Save Changes</button>
+          </div>
+          <div class="control">
+            <a href="/dashboard" class="button is-light">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

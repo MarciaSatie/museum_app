@@ -2,6 +2,9 @@
 
 A full-stack web application built with Hapi.js that allows users to create, manage, and explore museums and their exhibitions. This application features user authentication, persistent data storage, and a responsive web interface.
 
+## github project
+https://github.com/MarciaSatie/museum_app.git
+
 ## Overview
 
 Museum App is a Node.js web application that enables users to:
@@ -87,14 +90,16 @@ museum_app/
 - **Login**: Existing users can authenticate using credentials
 - **Sessions**: Secure cookie-based session management
 - **Logout**: Users can securely end their session
+- **User Profile**: Users can view and update their profile information (name, email)
 
 ### Museum Management
-- **Create Museum**: Add new museums with names and descriptions
+- **Create Museum**: Add new museums with names, descriptions, and geographic locations
 - **View Dashboard**: See all museums associated with your account
 - **Delete Museum**: Remove museums no longer needed
+- **Location Data**: Store latitude and longitude coordinates for each museum
 
 ### Exhibition Management
-- **Add Exhibition**: Add exhibitions to specific museums
+- **Add Exhibition**: Add exhibitions to specific museums with title, artist, and duration
 - **View Exhibitions**: See all exhibitions within a museum
 - **Delete Exhibition**: Remove exhibitions from museums
 
@@ -102,6 +107,7 @@ museum_app/
 - **Home/Index**: Welcome page with authentication options
 - **Dashboard**: Main user hub showing all personal museums
 - **Museum Details**: View and manage exhibitions for a specific museum
+- **User Profile**: Update personal information (name, email)
 - **About**: Information about the application
 - **Login/Signup**: Authentication pages
 
@@ -157,6 +163,8 @@ npm test
 - `GET /login` - Show login form
 - `POST /authenticate` - Authenticate user
 - `GET /logout` - Logout user
+- `GET /profile` - View and edit user profile
+- `POST /profile` - Update user profile
 
 ### Dashboard Routes
 - `GET /dashboard` - View all museums
@@ -193,10 +201,10 @@ The application uses Lowdb for JSON file-based persistent storage. Data is store
 **Museum**
 ```javascript
 {
-  id: string (uuid),
-  userid: string (user id),
-  name: string,
-  description: string
+  title: string,
+  description: string,
+  latitude: number (optional),
+  longitude: number (optional)
 }
 ```
 
@@ -205,6 +213,9 @@ The application uses Lowdb for JSON file-based persistent storage. Data is store
 {
   id: string (uuid),
   museumid: string (museum id),
+  title: string,
+  artist: string,
+  duration: number (months)useum id),
   title: string,
   description: string
 }
@@ -223,16 +234,21 @@ See `src/models/joi-schemas.js` for complete validation rules.
 
 ## Testing
 
-The project includes test fixtures and unit tests for the user model:
+The project includes comprehensive test suites for all model operations:
 
 ```bash
 npm test
 ```
 
+### Test Coverage
+- **Users Model**: Create, retrieve, update, and delete user operations
+- **Museums Model**: Create, retrieve, and delete museum operations with location data
+- **Exhibitions Model**: Create, retrieve, update, and delete exhibition operations
+
 Tests use:
 - **Mocha**: Test runner
 - **Chai**: Assertion library
-- **Fixtures**: Sample test data
+- **Fixtures**: Sample test data (users, museums, exhibitions)
 
 ## Code Quality
 
@@ -244,6 +260,33 @@ npm run lint
 
 ### Code Formatting
 Prettier is configured for automatic code formatting.
+
+## Deployment
+
+### Render.com Deployment
+
+The application includes a `render.yaml` configuration file for easy deployment to Render.com:
+
+1. **Push code to GitHub**
+   ```bash
+   git push origin main
+   ```
+
+2. **Connect to Render**
+   - Visit [render.com](https://render.com)
+   - Create a new Web Service
+   - Connect your GitHub repository
+   - Render will automatically detect the `render.yaml` configuration
+
+3. **Environment Variables**
+   Configure the following in Render dashboard:
+   - `PORT`: 3000
+   - `NODE_ENV`: production
+   - `cookie_name`: session
+   - `cookie_password`: set a secure password (min 32 characters)
+
+4. **Automatic Deployment**
+   Your app will automatically redeploy when you push to the main branch
 
 ## Version History
 

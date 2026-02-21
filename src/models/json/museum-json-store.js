@@ -19,7 +19,9 @@ export const museumJsonStore = {
   async getMuseumById(id) {
     await db.read();
     const museum = db.data.playlists.find((p) => p._id === id);
-    museum.exhibitions = await exhibitionJsonStore.getExhibitionsByMuseumId(museum._id);
+    if (museum) {
+      museum.exhibitions = await exhibitionJsonStore.getExhibitionsByMuseumId(museum._id);
+    }
     return museum;
   },
 

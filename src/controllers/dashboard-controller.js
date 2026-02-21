@@ -28,6 +28,9 @@ export const dashboardController = {
       const newMuseum = {
         userid: loggedInUser._id,
         title: request.payload.title,
+        description: request.payload.description || "",
+        latitude: request.payload.latitude ? Number(request.payload.latitude) : null,
+        longitude: request.payload.longitude ? Number(request.payload.longitude) : null,
       };
       await db.museumStore.addMuseum(newMuseum);
       return h.redirect("/dashboard");

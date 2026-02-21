@@ -1,6 +1,12 @@
 import { UserSpec, UserCredentialsSpec } from "../models/joi-schemas.js";
 import { db } from "../models/db.js";
 
+const UserSettingsSpec = {
+  firstName: UserSpec.firstName,
+  lastName: UserSpec.lastName,
+  email: UserSpec.email,
+};
+
 export const accountsController = {
   index: {
     auth: false,
@@ -58,6 +64,34 @@ export const accountsController = {
     handler: function (request, h) {
       request.cookieAuth.clear();
       return h.redirect("/");
+    },
+  },
+
+  showProfile: {
+    handler: async function (request, h) {
+      const user = request.auth.credentials;
+      return h.view("profile-view", {
+        title: "My Profile Settings",
+        user: user,
+      });
+    },
+  },
+
+  updateProfile: {
+    validate: {
+      payload: UserSettingsSpec,
+      options: { abortEarly: false },
+      failAction: function (request, h, error) {
+        return h.view("profile-view", { title: "Profile update error", errors: error.details }).takeover().code(400);
+      },
+    },
+    handler: async function (request, h) {
+      const user = request.auth.credentials;
+      user.firstName = request.payload.firstName;
+      user.lastName = request.payload.lastName;
+      user.email = request.payload.email;
+      await db.userStore.updateUser(user);
+      return h.redirect("/dashboard");
     },
   },
 
