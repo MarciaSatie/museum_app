@@ -5,6 +5,9 @@ A full-stack web application built with Hapi.js that allows users to create, man
 ## github project
 https://github.com/MarciaSatie/museum_app.git
 
+## Deployment
+### Render.com Deployment
+
 ## Overview
 
 Museum App is a Node.js web application that enables users to:
@@ -261,55 +264,12 @@ npm run lint
 ### Code Formatting
 Prettier is configured for automatic code formatting.
 
-## Deployment
 
-### Render.com Deployment
 
-The application includes a `render.yaml` configuration file for easy deployment to Render.com:
 
-1. **Push code to GitHub**
-   ```bash
-   git push origin main
-   ```
 
-2. **Connect to Render**
-   - Visit [render.com](https://render.com)
-   - Create a new Web Service
-   - Connect your GitHub repository
-   - Render will automatically detect the `render.yaml` configuration
 
-3. **Environment Variables**
-   Configure the following in Render dashboard:
-   - `PORT`: 3000
-   - `NODE_ENV`: production
-   - `cookie_name`: session
-   - `cookie_password`: set a secure password (min 32 characters)
 
-4. **Automatic Deployment**
-   Your app will automatically redeploy when you push to the main branch
-
-## Version History
-
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history and updates.
-
-## Environment Variables
-
-The application requires the following environment variables in `.env`:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | 3000 |
-| `cookie_name` | Session cookie name | app_museum-cookie |
-| `cookie_password` | Session cookie password | (required) |
-
-## Notes
-
-- The application uses relative imports with ES modules (`"type": "module"`)
-- Authentication is session-based with cookie storage
-- Data is currently persisted in JSON format, but can be switched to MongoDB
-- In-memory stores are available for testing purposes
-- All user input is validated with Joi schemas
-- The application follows an MVC architecture pattern
 
 ## Future Enhancements
 
