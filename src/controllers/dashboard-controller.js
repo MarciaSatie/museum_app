@@ -7,7 +7,7 @@ export const dashboardController = {
       const loggedInUser = request.auth.credentials;
       const museums = await db.museumStore.getUserMuseums(loggedInUser._id);
       const viewData = {
-        title: "Playtime Dashboard",
+        title: "MyAppMusems Dashboard",
         user: loggedInUser,
         museums: museums,
       };

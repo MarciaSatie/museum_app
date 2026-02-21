@@ -1,5 +1,5 @@
 {
-  "name": "playtime",
+  "name": "app_museum",
   "version": "0.4.0",
   "description": "A Playlist application for the HDip in Computing, WIT",
   "main": "src/server.js",
