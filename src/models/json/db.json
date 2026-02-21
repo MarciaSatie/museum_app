@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "firstName": "m",
+      "lastName": "1234",
+      "email": "m@m.com",
+      "password": "1234",
+      "_id": "e2874170-0def-4017-a368-0f3a172a6d4b"
+    }
+  ],
+  "playlists": [
+    {
+      "userid": "e2874170-0def-4017-a368-0f3a172a6d4b",
+      "title": "pl1",
+      "_id": "7f7e1d3a-c044-4456-a086-c7a135daf3fe"
+    }
+  ],
+  "exhibitions": []
+}
