@@ -6,7 +6,12 @@ export const dashboardController = {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
-      const museums = await db.museumStore.getUserMuseums(loggedInUser._id);
+      let museums = await db.museumStore.getUserMuseums(loggedInUser._id);
+      const { categoryId, location } = request.query;
+      if (categoryId) {
+        museums = museums.filter((museum) => museum.categoryId === categoryId);
+      }
+
       const categories = await db.categoryStore.getAllCategories();
       const viewData = {
         title: "MyAppMusems Dashboard",

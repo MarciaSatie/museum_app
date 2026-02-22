@@ -1,9 +1,43 @@
 {{> menu active="dashboard"}}
 
 <section class="section">
-  {{> list-museums}}
+  <details>
+    <summary class="button is-link is-light"><span class="icon"><i class="fas fa-plus"></i></span><span>Add New Museum</span></summary>
+    {{> add-museum}}
+  </details>
 </section>
 
-<section>
-  {{> add-museum}}
+<section class="section">
+  <div class="box">
+    <div>
+      <form action="/dashboard" method="GET">
+        <div class="field is-grouped is-grouped-multiline">
+          <div class="control">
+            <div class="select">
+              <select name="categoryId">
+                <option value="">All Categories</option>
+                {{#each categories}}
+                  <option value="{{this._id}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+
+          <div class="control">
+            <button class="button is-link">Search</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+    <br>
+    <h2 class="title is-4">
+      <span class="icon"><i class="fas fa-building"></i></span>
+      <span>My Museums</span>
+    </h2>
+    <div class="content">
+      {{> list-museums}}
+    </div>
+  </div>
 </section>
+
