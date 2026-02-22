@@ -8,8 +8,14 @@
 </section>
 
 <section class="section">
+
   <div class="box">
     <div>
+      <h2 class="title is-4">
+        <span class="icon"><i class="fas fa-building"></i></span>
+        <span>My Museums</span>
+       </h2>
+
       <form action="/dashboard" method="GET">
         <div class="field is-grouped is-grouped-multiline">
           <div class="control">
@@ -29,12 +35,10 @@
 
         </div>
       </form>
+
     </div>
+
     <br>
-    <h2 class="title is-4">
-      <span class="icon"><i class="fas fa-building"></i></span>
-      <span>My Museums</span>
-    </h2>
     <div class="content">
       {{> list-museums}}
     </div>
