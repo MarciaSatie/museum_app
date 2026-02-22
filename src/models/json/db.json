@@ -5,6 +5,7 @@
       "lastName": "Simpson",
       "email": "homer@simpson.com",
       "password": "secret",
+      "role": "admin",
       "_id": "d3c0948f-744c-49eb-85a5-fc2c2ebbdf72"
     },
     {
@@ -26,7 +27,8 @@
       "lastName": "m",
       "email": "m@m.com",
       "password": "1234",
-      "_id": "23207483-d69e-4387-b14d-2c87fed2c81b"
+      "_id": "23207483-d69e-4387-b14d-2c87fed2c81b",
+      "role": "admin"
     }
   ],
   "museums": [

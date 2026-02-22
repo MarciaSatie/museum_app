@@ -2,6 +2,7 @@ import { aboutController } from "./controllers/about-controller.js";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { dashboardController } from "./controllers/dashboard-controller.js";
 import { museumController } from "./controllers/museum-controller.js";
+import { adminController } from "./controllers/admin-controller.js";
 
 export const webRoutes = [
   { method: "GET", path: "/", config: accountsController.index },
@@ -12,6 +13,9 @@ export const webRoutes = [
   { method: "POST", path: "/authenticate", config: accountsController.login },
   { method: "GET", path: "/profile", config: accountsController.showProfile },
   { method: "POST", path: "/profile", config: accountsController.updateProfile },
+  { method: "GET", path: "/admin/users", config: adminController.listUsers },
+  { method: "GET", path: "/admin/deleteuser/{id}", config: adminController.deleteUser },
+  { method: "GET", path: "/admin/toggleadmin/{id}", config: adminController.toggleAdmin },
 
   { method: "GET", path: "/about", config: aboutController.index },
 

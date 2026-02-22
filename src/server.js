@@ -47,6 +47,15 @@ async function init() {
   });
   server.auth.default("session");
 
+  // Log errors to console for debugging
+  server.ext("onPreResponse", (request, h) => {
+    const response = request.response;
+    if (response && response.isBoom) {
+      console.error("Route error:", response);
+    }
+    return h.continue;
+  });
+
     // initialize DB (use JSON stores as required by coursework)
     db.init();
 
