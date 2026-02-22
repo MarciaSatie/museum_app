@@ -2,11 +2,13 @@ import { museumJsonStore } from "./json/museum-json-store.js";
 import { exhibitionJsonStore } from "./json/exhibition-json-store.js";
 import { connectMongo } from "./mongo/connect.js";
 import { userMongoStore } from "./mongo/user-mongo-store.js";
+import { categoryMongoStore } from "./mongo/category-mongo-store.js";
 
 export const db = {
   userStore: null,
   museumStore: null,
   exhibitionStore: null,
+  categoryStore: null,
 
   init(storeType) {
     switch (storeType) {
@@ -24,6 +26,7 @@ export const db = {
         this.userStore = userMongoStore;
         this.museumStore = museumJsonStore;
         this.exhibitionStore = exhibitionJsonStore;
+        this.categoryStore = categoryMongoStore;
     }
   },
 };

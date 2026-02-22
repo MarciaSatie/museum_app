@@ -1,7 +1,7 @@
 {
   "museums": [
     {
-      "userid": "23207483-d69e-4387-b14d-2c87fed2c81b",
+      "userid": "5f9a02e6-8160-4d5a-9341-819491439ea4",
       "title": "Butler Gallery",
       "description": "Butler Gallery is a contemporary art gallery and museum in Kilkenny, Ireland.",
       "latitude": 52.6538599,
@@ -9,12 +9,20 @@
       "_id": "c059a665-190b-4a57-9298-e00d570f1d05"
     },
     {
-      "userid": "699b13b0b7fc85fc7fa509fb",
+      "userid": "5f9a02e6-8160-4d5a-9341-819491439ea4",
       "title": "Medieval Mile Museum",
       "description": "Museum in a 13th-century church & graveyard featuring medieval sculpture & Renaissance-era tombs.",
       "latitude": 52.65172,
       "longitude": -7.252119,
       "_id": "71294dab-1622-417d-8b24-b38e579f8255"
+    },
+    {
+      "userid": "5f9a02e6-8160-4d5a-9341-819491439ea4",
+      "title": "Rothe House & Garden",
+      "description": "Centrally located on one of the bustling commercial streets of the medieval town of Kilkenny is this wonderfully preserved house of the wealthy John Rothe, Rose Archer and their 12 children. It is the only remaining example of a 16-17th century merchant's townhouse in Ireland. We decided to include Rothe House as it is an important element of Kilkenny’s medieval heritage and because we thoroughly enjoyed the self-guided tour of the complex. It was a fascinating glimpse at the life of a wealthy merchant's family. The tract of land on which it was built was originally owned by the Cistercian monks from Graiguenemanagh but was ceased after the dissolution of the monasteries. Remarkably, this tract of land has remained intact since the 13th century.",
+      "latitude": 52.6544,
+      "longitude": -7.2547,
+      "_id": "7d38e43e-cf3b-46d5-9d4f-cd1ffa5510a7"
     }
   ],
   "exhibitions": [

@@ -3,6 +3,7 @@ import { accountsController } from "./controllers/accounts-controller.js";
 import { dashboardController } from "./controllers/dashboard-controller.js";
 import { museumController } from "./controllers/museum-controller.js";
 import { adminController } from "./controllers/admin-controller.js";
+import { categoryController } from "./controllers/category-controller.js";
 
 export const webRoutes = [
   { method: "GET", path: "/", config: accountsController.index },
@@ -26,4 +27,9 @@ export const webRoutes = [
   { method: "GET", path: "/museum/{id}", config: museumController.index },
   { method: "POST", path: "/museum/{id}/addexhibition", config: museumController.addExhibition },
   { method: "GET", path: "/museum/{id}/deleteexhibition/{exhibitionid}", config: museumController.deleteExhibition },
+
+  { method: "GET", path: "/categories", config: categoryController.listCategories },
+  { method: "GET", path: "/categories/add", config: categoryController.addCategoryPage },
+  { method: "POST", path: "/categories/add", config: categoryController.addCategory },
+  { method: "GET", path: "/categories/delete/{id}", config: categoryController.deleteCategory },
 ];

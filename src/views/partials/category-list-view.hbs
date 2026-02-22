@@ -1,0 +1,43 @@
+{{> menu active="categories"}}
+
+<section class="section">
+  <div class="container">
+    <h1 class="title">{{title}}</h1>
+    <h2 class="subtitle">Manage all categories</h2>
+
+    <a href="/categories/add" class="button is-primary"> Add Category </a>
+    <hr>
+
+    {{#if categories}}
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each categories}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.location}}</td>
+              <td>{{this.description}}</td>
+              <td>
+                <a class="button is-danger is-small" href="/categories/delete/{{this._id}}">
+                  <span class="icon">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                  <span>Delete</span>
+                </a>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    {{else}}
+      <p class="has-text-centered has-text-grey">No categories found.</p>
+    {{/if}}
+  </div>
+</section>
