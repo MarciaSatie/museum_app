@@ -56,7 +56,7 @@ export const adminController = {
       if (user) {
         // Toggle admin role
         if (user.role === "admin") {
-          delete user.role; // Remove admin role
+          user.role = null; 
         } else {
           user.role = "admin"; // Make admin
         }
