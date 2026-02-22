@@ -1,6 +1,13 @@
+import mongoose from "mongoose";
 import { v4 } from "uuid";
 import { Category } from "./category.js";
 
+const normalizeCategoryId = (id) => {
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    return new mongoose.Types.ObjectId(id);
+  }
+  return id;
+};
 export const categoryMongoStore = {
   async getAllCategories() {
     const categories = await Category.find({});
@@ -24,7 +31,8 @@ export const categoryMongoStore = {
 
   async getCategoryById(id) {
     try {
-      const category = await Category.findById(id);
+      const categoryId = normalizeCategoryId(id);
+      const category = await Category.findOne({ _id: categoryId });
       if (!category) {
         return null;
       }
@@ -50,7 +58,8 @@ export const categoryMongoStore = {
 
   async updateCategory(category) {
     try {
-      const updated = await Category.findByIdAndUpdate(category._id, category, { new: true });
+      const categoryId = normalizeCategoryId(category._id);
+      const updated = await Category.findOneAndUpdate({ _id: categoryId }, category, { new: true });
       if (!updated) {
         return null;
       }
@@ -63,7 +72,8 @@ export const categoryMongoStore = {
 
   async deleteCategoryById(id) {
     try {
-      await Category.findByIdAndDelete(id);
+      const categoryId = normalizeCategoryId(id);
+      await Category.deleteOne({ _id: categoryId });
     } catch (error) {
       console.error("Error deleting category:", error);
     }

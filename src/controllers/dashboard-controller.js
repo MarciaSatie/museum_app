@@ -7,11 +7,13 @@ export const dashboardController = {
       const loggedInUser = request.auth.credentials;
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const museums = await db.museumStore.getUserMuseums(loggedInUser._id);
+      const categories = await db.categoryStore.getAllCategories();
       const viewData = {
         title: "MyAppMusems Dashboard",
         user: loggedInUser,
         isAdmin,
         museums: museums,
+        categories: categories,
       };
       return h.view("dashboard-view", viewData);
     },
@@ -31,6 +33,7 @@ export const dashboardController = {
         userid: loggedInUser._id,
         title: request.payload.title,
         description: request.payload.description || "",
+        categoryId: request.payload.categoryId || null,
         latitude: request.payload.latitude ? Number(request.payload.latitude) : null,
         longitude: request.payload.longitude ? Number(request.payload.longitude) : null,
       };

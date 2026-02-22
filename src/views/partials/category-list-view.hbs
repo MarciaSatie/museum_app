@@ -25,6 +25,12 @@
               <td>{{this.location}}</td>
               <td>{{this.description}}</td>
               <td>
+                <a class="button is-info is-small" href="/categories/edit/{{this._id}}">
+                  <span class="icon">
+                    <i class="fas fa-edit"></i>
+                  </span>
+                  <span>Edit</span>
+                </a>
                 <a class="button is-danger is-small" href="/categories/delete/{{this._id}}">
                   <span class="icon">
                     <i class="fas fa-trash"></i>

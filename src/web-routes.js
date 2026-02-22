@@ -32,4 +32,6 @@ export const webRoutes = [
   { method: "GET", path: "/categories/add", config: categoryController.addCategoryPage },
   { method: "POST", path: "/categories/add", config: categoryController.addCategory },
   { method: "GET", path: "/categories/delete/{id}", config: categoryController.deleteCategory },
+  { method: "GET", path: "/categories/edit/{id}", config: categoryController.editCategoryPage },
+  { method: "POST", path: "/categories/edit/{id}", config: categoryController.editCategory },
 ];

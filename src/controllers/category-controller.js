@@ -40,4 +40,30 @@ export const categoryController = {
       return h.redirect("/categories");
     },
   },
+
+  editCategoryPage: {
+    handler: async function (request, h) {
+      const categoryId = request.params.id;
+      const category = await db.categoryStore.getCategoryById(categoryId);
+      const viewData = {
+        title: "Edit Category",
+        category: category || {},
+      };
+      return h.view("partials/edit-category-view", viewData);
+    },
+  },
+
+  editCategory: {
+    handler: async function (request, h) {
+      const categoryId = request.params.id;
+      const updatedCategory = {
+        _id: categoryId,
+        name: request.payload.name,
+        location: request.payload.location,
+        description: request.payload.description,
+      };
+      await db.categoryStore.updateCategory(updatedCategory);
+      return h.redirect("/categories");
+    },
+  },
 };
