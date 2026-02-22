@@ -5,11 +5,14 @@ export const museumController = {
   index: {
     handler: async function (request, h) {
       const museum = await db.museumStore.getMuseumById(request.params.id);
+      const category = museum.categoryId ? await db.categoryStore.getCategoryById(museum.categoryId) : null;
       const loggedInUser = request.auth.credentials;
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
+      
       const viewData = {
         title: "Museum",
         museum: museum,
+        category: category,
         user: loggedInUser,
         isAdmin,
       };

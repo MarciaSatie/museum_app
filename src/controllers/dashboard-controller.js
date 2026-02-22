@@ -49,4 +49,34 @@ export const dashboardController = {
       return h.redirect("/dashboard");
     },
   },
+
+  editMuseumPage: {
+    handler: async function (request, h) {
+      const museum = await db.museumStore.getMuseumById(request.params.id);
+      const categories = await db.categoryStore.getAllCategories();
+      const viewData = {
+        title: "Edit Museum",
+        museum: museum,
+        categories: categories,
+      };
+      return h.view("edit-museum-view", viewData);
+    },
+  },
+
+  editMuseum: {
+    handler: async function (request, h) {
+      const museumId = request.params.id;
+      const museum = await db.museumStore.getMuseumById(museumId);
+
+      museum.title = request.payload.title;
+      museum.description = request.payload.description || "";
+      museum.categoryId = request.payload.categoryId || null;
+      museum.latitude = request.payload.latitude ? Number(request.payload.latitude) : null;
+      museum.longitude = request.payload.longitude ? Number(request.payload.longitude) : null;
+
+      await db.museumStore.updateMuseum(museum);
+      return h.redirect("/dashboard");
+    },
+  },
+
 };

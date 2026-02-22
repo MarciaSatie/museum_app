@@ -1,0 +1,53 @@
+{{> menu active="dashboard"}}
+
+<section class="section">
+  <div class="container">
+    <h1 class="title">Edit Museum</h1>
+
+    <form action="/dashboard/editmuseum/{{museum._id}}" method="POST">
+      <div class="field">
+        <label class="label">Museum Title</label>
+        <input class="input" type="text" name="title" value="{{museum.title}}" required>
+      </div>
+
+      <div class="field">
+        <label class="label">Description</label>
+        <textarea class="textarea" name="description" rows="3">{{museum.description}}</textarea>
+      </div>
+
+      <div class="field">
+        <label class="label">Category</label>
+        <div class="control">
+          <div class="select">
+            <select name="categoryId">
+              <option value="">-- Select a Category --</option>
+              {{#each categories}}
+                <option value="{{this._id}}">{{this.name}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label">Latitude</label>
+            <input class="input" type="number" name="latitude" value="{{museum.latitude}}" step="any">
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label">Longitude</label>
+            <input class="input" type="number" name="longitude" value="{{museum.longitude}}" step="any">
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <button class="button is-link">Update Museum</button>
+        <a href="/dashboard" class="button is-light">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>

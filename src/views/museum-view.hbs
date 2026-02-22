@@ -4,12 +4,20 @@
   <div class="title">
     {{museum.title}}
   </div>
+  
   {{#if museum.description}}
     <p class="subtitle is-5">{{museum.description}}</p>
   {{/if}}
+
   {{#if museum.latitude}}
     <p class="is-size-6">
       <strong>Location:</strong> Lat: {{museum.latitude}}, Lng: {{museum.longitude}}
+    </p>
+  {{/if}}
+
+  {{#if category}}
+    <p class="is-size-6">
+      <strong>Category:</strong> {{category.name}}
     </p>
   {{/if}}
   <hr>

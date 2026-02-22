@@ -41,4 +41,19 @@ export const museumJsonStore = {
     db.data.museums = [];
     await db.write();
   },
+
+  async updateMuseum(updatedMuseum) {
+    await db.read();
+    const index = db.data.museums.findIndex((m) => m._id === updatedMuseum._id);
+    if (index !== -1) {
+      db.data.museums[index] = updatedMuseum;
+      await db.write();
+    }
+    return updatedMuseum;
+  },
+
+
+
+
+
 };
