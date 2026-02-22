@@ -5,10 +5,12 @@ export const dashboardController = {
   index: {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
+      const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const museums = await db.museumStore.getUserMuseums(loggedInUser._id);
       const viewData = {
         title: "MyAppMusems Dashboard",
         user: loggedInUser,
+        isAdmin,
         museums: museums,
       };
       return h.view("dashboard-view", viewData);

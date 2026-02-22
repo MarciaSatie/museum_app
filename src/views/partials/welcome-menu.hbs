@@ -5,5 +5,9 @@
 </nav>
 
 <script>
-  document.getElementById("{{active}}").classList.add("is-primary");
+  const activeId = "{{active}}";
+  const activeEl = document.getElementById(activeId);
+  if (activeEl) {
+    activeEl.classList.add("is-primary");
+  }
 </script>

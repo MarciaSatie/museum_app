@@ -70,9 +70,11 @@ export const accountsController = {
   showProfile: {
     handler: async function (request, h) {
       const user = request.auth.credentials;
+      const isAdmin = user && user.role === "admin";
       return h.view("profile-view", {
         title: "My Profile Settings",
         user: user,
+        isAdmin,
       });
     },
   },
@@ -82,7 +84,12 @@ export const accountsController = {
       payload: UserSettingsSpec,
       options: { abortEarly: false },
       failAction: function (request, h, error) {
-        return h.view("profile-view", { title: "Profile update error", errors: error.details }).takeover().code(400);
+        const user = request.auth.credentials;
+        const isAdmin = user && user.role === "admin";
+        return h
+          .view("profile-view", { title: "Profile update error", user, isAdmin, errors: error.details })
+          .takeover()
+          .code(400);
       },
     },
     handler: async function (request, h) {

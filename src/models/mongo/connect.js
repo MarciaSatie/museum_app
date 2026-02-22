@@ -5,9 +5,7 @@ export function connectMongo() {
   dotenv.config();
   Mongoose.set("strictQuery", true);
 
-  // Accept either MONGO_URL or db in .env but guard against accidental
-  // values like "mongo" which are used as mode indicators elsewhere.
-  const mongoUrl = process.env.MONGO_URL || process.env.db;
+  const mongoUrl = process.env.db || process.env.MONGO_URL;
 
   if (!mongoUrl) {
     console.log("No Mongo connection string found in environment; skipping mongo connect.");
@@ -17,7 +15,7 @@ export function connectMongo() {
   // If someone set `db=mongo` to indicate using mongo mode, don't try to connect
   // with the literal string "mongo" (causes Mongoose parse error).
   if (mongoUrl === "mongo") {
-    console.log('Environment value for DB is "mongo" (mode flag). Set MONGO_URL (or db) to a proper Mongo URI to connect. Skipping connect.');
+    console.log("Environment value for DB is \"mongo\" (mode flag). Set MONGO_URL (or db) to a proper Mongo URI to connect. Skipping connect.");
     return;
   }
 
@@ -36,7 +34,7 @@ export function connectMongo() {
     console.log("database disconnected");
   });
 
-  db.once("open", function () {
-    console.log(`database connected to ${this.name} on ${this.host}`);
+  db.once("open", () => {
+    console.log(`database connected to ${db.name} on ${db.host}`);
   });
 }

@@ -1,28 +1,44 @@
-<nav class="navbar">
+<nav class="navbar is-light">
   <div class="navbar-brand">
     {{> museum-brand}}
+    <a role="button" class="navbar-burger is-hidden-desktop" data-target="navMenu" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
   </div>
-  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false"> <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span> <span aria-hidden="true"></span> </a>
   <div class="navbar-menu" id="navMenu">
     <div class="navbar-end">
-      <div class="navbar-item">
+      <!-- Desktop menu (hidden on mobile) -->
+      <div class="navbar-item is-hidden-mobile">
         <div class="buttons">
           <a id="dashboard" class="button" href="/dashboard"> Dashboard </a>
           <a id="profile" class="button" href="/profile"> Profile </a>
           <a id="about" class="button" href="/about"> About </a>
-          {{#if user.role}}
+          {{#if isAdmin}}
             <a id="admin" class="button" href="/admin/users"> Admin </a>
           {{/if}}
           <a id="logout" class="button" href="/logout"> Logout </a>
         </div>
       </div>
+      <!-- Mobile menu (hidden on desktop) -->
+      <a id="dashboard-mobile" class="navbar-item is-hidden-desktop" href="/dashboard"> Dashboard </a>
+      <a id="profile-mobile" class="navbar-item is-hidden-desktop" href="/profile"> Profile </a>
+      <a id="about-mobile" class="navbar-item is-hidden-desktop" href="/about"> About </a>
+      {{#if isAdmin}}
+        <a id="admin-mobile" class="navbar-item is-hidden-desktop" href="/admin/users"> Admin </a>
+      {{/if}}
+      <a id="logout-mobile" class="navbar-item is-hidden-desktop" href="/logout"> Logout </a>
     </div>
   </div>
 </nav>
 
 <script>
-  document.getElementById("{{active}}").classList.add("is-primary");
+  const activeId = "{{active}}";
+  const activeEl = document.getElementById(activeId);
+  if (activeEl) {
+    activeEl.classList.add("is-primary");
+  }
   document.addEventListener("DOMContentLoaded", () => {
     // Get all "navbar-burger" elements
     const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"), 0);

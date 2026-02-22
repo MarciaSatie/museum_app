@@ -1,4 +1,3 @@
-import { userJsonStore } from "./json/user-json-store.js";
 import { museumJsonStore } from "./json/museum-json-store.js";
 import { exhibitionJsonStore } from "./json/exhibition-json-store.js";
 import { connectMongo } from "./mongo/connect.js";
@@ -15,13 +14,14 @@ export const db = {
         // connect to Mongo and use the mongo-backed user store
         connectMongo();
         this.userStore = userMongoStore;
-        // keep JSON stores for museums/exhibitions for now (you can migrate those later)
+        // keep JSON stores for museums/exhibitions for now
         this.museumStore = museumJsonStore;
         this.exhibitionStore = exhibitionJsonStore;
         break;
       default:
-        // fallback to JSON stores
-        this.userStore = userJsonStore;
+        // Default: Users in MongoDB, Museums/Exhibitions in JSON
+        connectMongo();
+        this.userStore = userMongoStore;
         this.museumStore = museumJsonStore;
         this.exhibitionStore = exhibitionJsonStore;
     }

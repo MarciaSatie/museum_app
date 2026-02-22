@@ -8,6 +8,9 @@ https://github.com/MarciaSatie/museum_app.git
 ## Deployment
 ### [Render.com Deployment](https://museum-app-2-gt46.onrender.com)
 
+## Run MongoDB Loally
+& "C:\Program Files\MongoDB\Server\8.2\bin\mongod.exe" --dbpath "C:\SETU\Semester3\FullStack1\Assigment\museum_app\data\db"
+
 
 ## Overview
 

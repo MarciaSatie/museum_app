@@ -1,36 +1,4 @@
 {
-  "users": [
-    {
-      "firstName": "Homer",
-      "lastName": "Simpson",
-      "email": "homer@simpson.com",
-      "password": "secret",
-      "role": "admin",
-      "_id": "d3c0948f-744c-49eb-85a5-fc2c2ebbdf72"
-    },
-    {
-      "firstName": "Marge",
-      "lastName": "Simpson",
-      "email": "marge@simpson.com",
-      "password": "secret",
-      "_id": "8370b37d-49ff-45bb-8b07-7eebf90c3e73"
-    },
-    {
-      "firstName": "Bart",
-      "lastName": "Simpson",
-      "email": "bart@simpson.com",
-      "password": "secret",
-      "_id": "fd3d1c1f-7cf7-4683-9b4f-f6c5e4217087"
-    },
-    {
-      "firstName": "m",
-      "lastName": "m",
-      "email": "m@m.com",
-      "password": "1234",
-      "_id": "23207483-d69e-4387-b14d-2c87fed2c81b",
-      "role": "admin"
-    }
-  ],
   "museums": [
     {
       "userid": "23207483-d69e-4387-b14d-2c87fed2c81b",
@@ -39,6 +7,14 @@
       "latitude": 52.6538599,
       "longitude": -7.2491683,
       "_id": "c059a665-190b-4a57-9298-e00d570f1d05"
+    },
+    {
+      "userid": "699b13b0b7fc85fc7fa509fb",
+      "title": "Medieval Mile Museum",
+      "description": "Museum in a 13th-century church & graveyard featuring medieval sculpture & Renaissance-era tombs.",
+      "latitude": 52.65172,
+      "longitude": -7.252119,
+      "_id": "71294dab-1622-417d-8b24-b38e579f8255"
     }
   ],
   "exhibitions": [
@@ -48,6 +24,13 @@
       "duration": 6,
       "_id": "a494b008-0cfb-4b2a-98c7-f0ee00eb540c",
       "museumid": "f382810d-bce8-486f-a185-e1053fed9996"
+    },
+    {
+      "title": "Anciet Rome",
+      "artist": "Cesar Salad",
+      "duration": 365,
+      "_id": "c47dac3b-db15-4990-aa98-411e0f8bb087",
+      "museumid": "c059a665-190b-4a57-9298-e00d570f1d05"
     }
   ]
 }

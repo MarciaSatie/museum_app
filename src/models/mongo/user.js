@@ -1,12 +1,36 @@
-import Mongoose from "mongoose";
+import mongoose from "mongoose";
 
-const { Schema } = Mongoose;
+const userSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+    },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
+  },
+  { timestamps: true }
+);
 
-const userSchema = new Schema({
-  firstName: String,
-  lastName: String,
-  email: String,
-  password: String,
-});
-
-export const User = Mongoose.model("User", userSchema);
+export const User = mongoose.model("User", userSchema);

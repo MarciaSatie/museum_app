@@ -4,18 +4,21 @@ export const adminController = {
   listUsers: {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
-      
+
       // Check if user is admin
-      if (!loggedInUser || loggedInUser.role !== 'admin') {
+      if (!loggedInUser || loggedInUser.role !== "admin") {
         return h.view("error", { message: "Access denied. Admin only." }).code(403);
       }
-      
+
       // Get all users
       const users = await db.userStore.getAllUsers();
-      
+      const isAdmin = true;
+
       const viewData = {
         title: "Admin - User Management",
-        users: users,
+        users,
+        user: loggedInUser,
+        isAdmin,
       };
       return h.view("admin-users", viewData);
     },
@@ -24,15 +27,15 @@ export const adminController = {
   deleteUser: {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
-      
+
       // Check if user is admin
-      if (!loggedInUser || loggedInUser.role !== 'admin') {
+      if (!loggedInUser || loggedInUser.role !== "admin") {
         return h.view("error", { message: "Access denied. Admin only." }).code(403);
       }
-      
+
       // Delete the user
       await db.userStore.deleteUserById(request.params.id);
-      
+
       // Redirect back to admin page
       return h.redirect("/admin/users");
     },
@@ -41,27 +44,27 @@ export const adminController = {
   toggleAdmin: {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
-      
+
       // Check if user is admin
-      if (!loggedInUser || loggedInUser.role !== 'admin') {
+      if (!loggedInUser || loggedInUser.role !== "admin") {
         return h.view("error", { message: "Access denied. Admin only." }).code(403);
       }
-      
+
       // Get the user to toggle
       const user = await db.userStore.getUserById(request.params.id);
-      
+
       if (user) {
         // Toggle admin role
-        if (user.role === 'admin') {
+        if (user.role === "admin") {
           delete user.role; // Remove admin role
         } else {
-          user.role = 'admin'; // Make admin
+          user.role = "admin"; // Make admin
         }
-        
+
         // Update in database
         await db.userStore.updateUser(user);
       }
-      
+
       // Redirect back to admin page
       return h.redirect("/admin/users");
     },

@@ -5,9 +5,13 @@ export const museumController = {
   index: {
     handler: async function (request, h) {
       const museum = await db.museumStore.getMuseumById(request.params.id);
+      const loggedInUser = request.auth.credentials;
+      const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const viewData = {
         title: "Museum",
         museum: museum,
+        user: loggedInUser,
+        isAdmin,
       };
       return h.view("museum-view", viewData);
     },
@@ -19,7 +23,18 @@ export const museumController = {
       options: { abortEarly: false },
       failAction: async function (request, h, error) {
         const currentMuseum = await db.museumStore.getMuseumById(request.params.id);
-        return h.view("museum-view", { title: "Add exhibition error", museum:currentMuseum, errors: error.details }).takeover().code(400);
+        const loggedInUser = request.auth.credentials;
+        const isAdmin = loggedInUser && loggedInUser.role === "admin";
+        return h
+          .view("museum-view", {
+            title: "Add exhibition error",
+            museum: currentMuseum,
+            user: loggedInUser,
+            isAdmin,
+            errors: error.details,
+          })
+          .takeover()
+          .code(400);
       },
     },
     handler: async function (request, h) {
