@@ -10,6 +10,7 @@ import { webRoutes } from "./web-routes.js";
 import { db } from "./models/db.js";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { userJsonStore } from "./models/json/user-json-store.js";
+import { apiRoutes } from "./api-routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,7 +28,7 @@ async function migrateUsersToMongo() {
       return;
     }
 
-    // Get users from JSON
+    // Get users from JSON (not used anymore)
     const usersInJSON = await userJsonStore.getAllUsers();
 
     if (usersInJSON && usersInJSON.length > 0) {
@@ -92,16 +93,16 @@ async function init() {
     return h.continue;
   });
 
-    // initialize DB - Choose storage mode:
-    // db.init("memory");  // All data in RAM (fastest, lost on restart)
-    // db.init("mongo");   // Users + Categories in MongoDB, Museums/Exhibitions in JSON
-    db.init();            // Default: Users + Categories in MongoDB, Museums/Exhibitions in JSON
-    
-    // Migrate existing JSON users to MongoDB on first run
-    await migrateUsersToMongo();
+  // initialize DB - Choose storage mode:
+  // db.init("memory");  // All data in RAM (fastest, lost on restart)
+  // db.init("mongo");   // Users + Categories in MongoDB, Museums/Exhibitions in JSON
+  db.init();            // Default: Users + Categories in MongoDB, Museums/Exhibitions in JSON
+  
+  // Migrate existing JSON users to MongoDB on first run
+  await migrateUsersToMongo();
 
   server.route(webRoutes);
-
+  server.route(apiRoutes);
   await server.start();
   console.log("Server running on %s", server.info.uri);
 }
