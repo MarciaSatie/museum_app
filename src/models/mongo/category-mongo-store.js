@@ -1,70 +1,45 @@
-import mongoose from "mongoose";
-import { v4 } from "uuid";
+import Mongoose from "mongoose";
 import { Category } from "./category.js";
 
-const normalizeCategoryId = (id) => {
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    return new mongoose.Types.ObjectId(id);
+// Helper function to convert ObjectId to string
+const normalizeCategory = (category) => {
+  if (category && category._id) {
+    return { ...category, _id: String(category._id) };
   }
-  return id;
+  return category;
 };
+
 export const categoryMongoStore = {
   async getAllCategories() {
-    const categories = await Category.find({});
-    return categories.map((cat) => {
-      const obj = cat.toObject();
-      return { ...obj, _id: String(obj._id) };
-    });
-  },
-
-  async addCategory(category) {
-    const newCategory = new Category({
-      _id: category._id || v4(),
-      name: category.name,
-      location: category.location,
-      description: category.description || "",
-    });
-    await newCategory.save();
-    const obj = newCategory.toObject();
-    return { ...obj, _id: String(obj._id) };
+    const categories = await Category.find().lean();
+    return categories.map(normalizeCategory);
   },
 
   async getCategoryById(id) {
     try {
-      const categoryId = normalizeCategoryId(id);
-      const category = await Category.findOne({ _id: categoryId });
-      if (!category) {
-        return null;
-      }
-      const obj = category.toObject();
-      return { ...obj, _id: String(obj._id) };
+      const category = await Category.findOne({ _id: id }).lean();
+      return normalizeCategory(category);
     } catch (error) {
       return null;
     }
   },
 
+  async addCategory(category) {
+    const newCategory = new Category(category);
+    const categoryObj = await newCategory.save();
+    const c = await this.getCategoryById(categoryObj._id);
+    return c;
+  },
+
   async getCategoryByName(name) {
-    try {
-      const category = await Category.findOne({ name: name });
-      if (!category) {
-        return null;
-      }
-      const obj = category.toObject();
-      return { ...obj, _id: String(obj._id) };
-    } catch (error) {
-      return null;
-    }
+    const category = await Category.findOne({ name: name }).lean();
+    return normalizeCategory(category);
   },
 
   async updateCategory(category) {
     try {
-      const categoryId = normalizeCategoryId(category._id);
-      const updated = await Category.findOneAndUpdate({ _id: categoryId }, category, { new: true });
-      if (!updated) {
-        return null;
-      }
-      const obj = updated.toObject();
-      return { ...obj, _id: String(obj._id) };
+      const updated = await Category.findByIdAndUpdate(category._id, category, { new: true }).lean();
+      return normalizeCategory(updated);
     } catch (error) {
       return null;
     }
@@ -72,18 +47,13 @@ export const categoryMongoStore = {
 
   async deleteCategoryById(id) {
     try {
-      const categoryId = normalizeCategoryId(id);
-      await Category.deleteOne({ _id: categoryId });
+      await Category.deleteOne({ _id: id });
     } catch (error) {
-      console.error("Error deleting category:", error);
+      console.log("bad id");
     }
   },
 
   async deleteAll() {
-    try {
-      await Category.deleteMany({});
-    } catch (error) {
-      console.error("Error deleting all categories:", error);
-    }
+    await Category.deleteMany({});
   },
 };

@@ -4,6 +4,7 @@ import { db } from "../models/db.js";
 export const dashboardController = {
   index: {
     handler: async function (request, h) {
+      console.log("📊 Dashboard accessed by:", request.auth.credentials?.email || "unknown");
       const loggedInUser = request.auth.credentials;
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
       let museums = await db.museumStore.getUserMuseums(loggedInUser._id);

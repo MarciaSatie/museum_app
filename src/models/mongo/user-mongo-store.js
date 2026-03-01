@@ -1,64 +1,45 @@
-import { v4 } from "uuid";
+import Mongoose from "mongoose";
 import { User } from "./user.js";
+
+// Helper function to convert ObjectId to string
+const normalizeUser = (user) => {
+  if (user && user._id) {
+    return { ...user, _id: String(user._id) };
+  }
+  return user;
+};
 
 export const userMongoStore = {
   async getAllUsers() {
-    const users = await User.find({});
-    return users.map((user) => {
-      const obj = user.toObject();
-      return { ...obj, _id: String(obj._id) };
-    });
-  },
-
-  async addUser(user) {
-    const userId = user._id || v4();
-    const newUser = new User({
-      _id: userId, // Preserve original ID for compatibility
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      password: user.password,
-      role: user.role || "user",
-    });
-    await newUser.save();
-    const obj = newUser.toObject();
-    return { ...obj, _id: String(obj._id) };
+    const users = await User.find().lean();
+    return users.map(normalizeUser);
   },
 
   async getUserById(id) {
     try {
-      const user = await User.findById(id);
-      if (!user) {
-        return null;
-      }
-      const obj = user.toObject();
-      return { ...obj, _id: String(obj._id) };
+      const user = await User.findOne({ _id: id }).lean();
+      return normalizeUser(user);
     } catch (error) {
       return null;
     }
   },
 
+  async addUser(user) {
+    const newUser = new User(user);
+    const userObj = await newUser.save();
+    const u = await this.getUserById(userObj._id);
+    return u;
+  },
+
   async getUserByEmail(email) {
-    try {
-      const user = await User.findOne({ email: email.toLowerCase() });
-      if (!user) {
-        return null;
-      }
-      const obj = user.toObject();
-      return { ...obj, _id: String(obj._id) };
-    } catch (error) {
-      return null;
-    }
+    const user = await User.findOne({ email: email }).lean();
+    return normalizeUser(user);
   },
 
   async updateUser(user) {
     try {
-      const updated = await User.findByIdAndUpdate(user._id, user, { new: true });
-      if (!updated) {
-        return null;
-      }
-      const obj = updated.toObject();
-      return { ...obj, _id: String(obj._id) };
+      const updated = await User.findByIdAndUpdate(user._id, user, { new: true }).lean();
+      return normalizeUser(updated);
     } catch (error) {
       return null;
     }
@@ -66,17 +47,13 @@ export const userMongoStore = {
 
   async deleteUserById(id) {
     try {
-      await User.findByIdAndDelete(id);
+      await User.deleteOne({ _id: id });
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.log("bad id");
     }
   },
 
   async deleteAll() {
-    try {
-      await User.deleteMany({});
-    } catch (error) {
-      console.error("Error deleting all users:", error);
-    }
+    await User.deleteMany({});
   },
 };

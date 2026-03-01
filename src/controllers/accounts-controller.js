@@ -47,16 +47,27 @@ export const accountsController = {
       payload: UserCredentialsSpec,
       options: { abortEarly: false },
       failAction: function (request, h, error) {
+        console.log("❌ Login validation failed:", error.details);
         return h.view("login-view", { title: "Log in error", errors: error.details }).takeover().code(400);
       },
     },
     handler: async function (request, h) {
       const { email, password } = request.payload;
+      console.log("Login attempt:", email);
       const user = await db.userStore.getUserByEmail(email);
+      console.log("User found:", user ? "Yes" : "No");
+      if (user) {
+        console.log("User _id type:", typeof user._id);
+        console.log("User _id value:", user._id);
+        console.log("Password match:", user.password === password);
+      }
       if (!user || user.password !== password) {
+        console.log("Login failed - redirecting to /");
         return h.redirect("/");
       }
+      console.log("Login success - setting cookie with id:", user._id);
       request.cookieAuth.set({ id: user._id });
+      console.log("🔄 Redirecting to /dashboard");
       return h.redirect("/dashboard");
     },
   },
@@ -103,10 +114,14 @@ export const accountsController = {
   },
 
   async validate(request, session) {
+    console.log("🔐 Validating session:", session);
     const user = await db.userStore.getUserById(session.id);
+    console.log("🔐 User from session:", user ? `Found (${user.email})` : "Not found");
     if (!user) {
+      console.log("❌ Validation failed - no user found");
       return { isValid: false };
     }
+    console.log("✅ Validation success");
     return { isValid: true, credentials: user };
   },
 };

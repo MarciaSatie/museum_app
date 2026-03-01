@@ -92,8 +92,10 @@ async function init() {
     return h.continue;
   });
 
-    // initialize DB (use MongoDB for users, JSON for museums/exhibitions)
-    db.init();
+    // initialize DB - Choose storage mode:
+    // db.init("memory");  // All data in RAM (fastest, lost on restart)
+    // db.init("mongo");   // Users + Categories in MongoDB, Museums/Exhibitions in JSON
+    db.init();            // Default: Users + Categories in MongoDB, Museums/Exhibitions in JSON
     
     // Migrate existing JSON users to MongoDB on first run
     await migrateUsersToMongo();
