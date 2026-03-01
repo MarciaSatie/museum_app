@@ -1,4 +1,5 @@
 import Mongoose from "mongoose";
+import { v4 } from "uuid";
 import { Category } from "./category.js";
 
 // Helper function to convert ObjectId to string
@@ -25,10 +26,18 @@ export const categoryMongoStore = {
   },
 
   async addCategory(category) {
-    const newCategory = new Category(category);
-    const categoryObj = await newCategory.save();
-    const c = await this.getCategoryById(categoryObj._id);
-    return c;
+    console.log("💾 Adding category to MongoDB:", category.name);
+    try {
+      category._id =  v4(); // Generate UUID if not provided
+      const newCategory = new Category(category);
+      const categoryObj = await newCategory.save();
+      console.log("✅ Category saved to MongoDB with _id:", categoryObj._id);
+      const c = await this.getCategoryById(categoryObj._id);
+      return c;
+    } catch (error) {
+      console.error("❌ Error adding category:", error.message);
+      throw error;
+    }
   },
 
   async getCategoryByName(name) {

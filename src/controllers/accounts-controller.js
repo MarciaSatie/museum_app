@@ -31,8 +31,18 @@ export const accountsController = {
     },
     handler: async function (request, h) {
       const user = request.payload;
-      await db.userStore.addUser(user);
-      return h.redirect("/");
+      console.log("📝 Signup attempt:", user.email);
+      try {
+        const newUser = await db.userStore.addUser(user);
+        console.log("✅ User created:", newUser ? newUser.email : "null");
+        return h.redirect("/");
+      } catch (error) {
+        console.error("❌ Signup error:", error.message);
+        return h.view("signup-view", { 
+          title: "Sign up error", 
+          errors: [{ message: error.message }] 
+        }).takeover().code(400);
+      }
     },
   },
   showLogin: {
