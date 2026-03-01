@@ -122,3 +122,7 @@ dist
 
 # MongoDB local database files (for development)
 data/
+
+# Assignment tracker
+ASSIGNMENT_REQUIREMENTS.md
+
