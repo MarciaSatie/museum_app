@@ -37,6 +37,13 @@
       "_id": "7d38e43e-cf3b-46d5-9d4f-cd1ffa5510a7",
       "exhibitions": [],
       "categoryId": "299dc2c7-6ae4-49bb-91e8-a8d6ad7cfa8f"
+    },
+    {
+      "title": "Science Museum Updated",
+      "description": "Updated description",
+      "latitude": 52.66,
+      "longitude": -7.26,
+      "_id": "4ce9ee16-7501-40d5-ac80-ca23f11dda72"
     }
   ],
   "exhibitions": [
