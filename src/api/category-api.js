@@ -2,13 +2,13 @@ import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
 import Joi from "joi";
 
-export const museumApi = {
+export const categoryApi = {
   find: {
     auth: false,
     handler: async function(request, h) {
       try {
-        const museums = await db.museumStore.getAllMuseums();
-        return museums;
+        const categories = await db.categoryStore.getAllCategories();
+        return categories;
       } catch (err) {
         console.log("Error details:", err);
         return Boom.serverUnavailable("Database Error");
@@ -20,9 +20,9 @@ export const museumApi = {
     auth: false,
     handler: async function(request, h) {
       try {
-        const museum = await db.museumStore.getMuseumById(request.params.id);
-        if (!museum) return Boom.notFound("Museum not found");
-        return museum;
+        const category = await db.categoryStore.getCategoryById(request.params.id);
+        if (!category) return Boom.notFound("Category not found");
+        return category;
       } catch (err) {
         console.log("Error details:", err);
         return Boom.serverUnavailable("Database Error");
@@ -34,8 +34,8 @@ export const museumApi = {
     auth: false,
     handler: async function(request, h) {
       try {
-        const museum = await db.museumStore.addMuseum(request.payload);
-        return h.response(museum).code(201);
+        const category = await db.categoryStore.addCategory(request.payload);
+        return h.response(category).code(201);
       } catch (err) {
         console.log("Error details:", err);
         return Boom.serverUnavailable("Database Error");
@@ -43,10 +43,28 @@ export const museumApi = {
     },
     validate: {
       payload: Joi.object({
-        title: Joi.string().required(),
-        description: Joi.string().required(),
-        latitude: Joi.number().required(),
-        longitude: Joi.number().required(),
+        name: Joi.string().required(),
+        description: Joi.string().allow("").optional(),
+      }),
+    },
+  },
+
+  update: {
+    auth: false,
+    handler: async function(request, h) {
+      try {
+        const category = await db.categoryStore.updateCategory({ ...request.payload, _id: request.params.id });
+        if (!category) return Boom.notFound("Category not found");
+        return h.response(category).code(200);
+      } catch (err) {
+        console.log("Error details:", err);
+        return Boom.serverUnavailable("Database Error");
+      }
+    },
+    validate: {
+      payload: Joi.object({
+        name: Joi.string().required(),
+        description: Joi.string().allow("").optional(),
       }),
     },
   },
@@ -55,37 +73,12 @@ export const museumApi = {
     auth: false,
     handler: async function(request, h) {
       try {
-        const museum = await db.museumStore.deleteMuseumById(request.params.id);
-        return h.response(museum).code(201);
+        await db.categoryStore.deleteCategoryById(request.params.id);
+        return h.response().code(204);
       } catch (err) {
         console.log("Error details:", err);
         return Boom.serverUnavailable("Database Error");
       }
     },
   },
-
-  update: {
-    auth: false,
-    handler: async function(request, h) {
-      try {
-        const museum = await db.museumStore.updateMuseumById(request.params.id, request.payload);
-        if (!museum) return Boom.notFound("Museum not found");
-        return h.response(museum).code(200);
-      } catch (err) {
-        console.log("Error details:", err);
-        return Boom.serverUnavailable("Database Error");
-      }
-    },
-    validate: {
-      payload: Joi.object({
-        title: Joi.string().required(),
-        description: Joi.string().required(),
-        latitude: Joi.number().required(),
-        longitude: Joi.number().required(),
-      }),
-    },
-  },
-
-
-
 };

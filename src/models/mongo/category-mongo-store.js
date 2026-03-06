@@ -19,8 +19,10 @@ export const categoryMongoStore = {
   async getCategoryById(id) {
     try {
       const category = await Category.findOne({ _id: id }).lean();
+      if (!category) return null;
       return normalizeCategory(category);
     } catch (error) {
+      console.log("Error finding category:", error.message);
       return null;
     }
   },
@@ -48,8 +50,10 @@ export const categoryMongoStore = {
   async updateCategory(category) {
     try {
       const updated = await Category.findByIdAndUpdate(category._id, category, { new: true }).lean();
+      if (!updated) return null;
       return normalizeCategory(updated);
     } catch (error) {
+      console.log("Error updating category:", error.message);
       return null;
     }
   },
