@@ -35,7 +35,7 @@ export const exhibitionMemStore = {
     exhibitions = [];
   },
 
-  async updateExhibition(exhibition, updatedExhibition) {
+  async updatedExhibition(exhibition, updatedExhibition) {
     exhibition.title = updatedExhibition.title;
     exhibition.artist = updatedExhibition.artist;
     track.duration = updatedTrack.duration;
