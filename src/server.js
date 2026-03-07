@@ -67,6 +67,8 @@ async function init(options = {}) {
       version: "0.4.0",
       description: "API for managing museums, categories, and exhibitions",
     },
+    documentationPath: "/documentation",
+    auth: false,
     grouping: "tags",
     securityDefinitions: {
       jwt: {

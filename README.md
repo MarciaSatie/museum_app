@@ -12,7 +12,7 @@ A full-stack web application built with Hapi.js that allows users to create, man
 
 Access interactive API documentation with Swagger UI:
 - **Local**: http://localhost:3000/documentation
-- **Production**: https://museum-app-2-gt46.onrender.com/documentation
+- **Production**: https://museum-app-2-bo7c.onrender.com/documentation
 
 The Swagger documentation provides:
 - Complete API endpoint reference
