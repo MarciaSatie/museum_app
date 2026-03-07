@@ -20,7 +20,11 @@ suite("User Model tests", () => {
   // Test: creating a new user should return the same user object (JSON store)
   test("create a user", async () => {
     const newUser = await db.userStore.addUser(maggie);
-    assert.equal(newUser, maggie);
+    assert.equal(newUser.firstName, maggie.firstName);
+    assert.equal(newUser.lastName, maggie.lastName);
+    assert.equal(newUser.email, maggie.email);
+    assert.equal(newUser.password, maggie.password);
+    assert.exists(newUser._id);
   });
 
   // Test: deleteAll should remove all users from the store

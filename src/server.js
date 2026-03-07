@@ -1,6 +1,8 @@
 import Vision from "@hapi/vision";
 import Hapi from "@hapi/hapi";
 import Cookie from "@hapi/cookie";
+import Inert from "@hapi/inert";
+import HapiSwagger from "hapi-swagger";
 import dotenv from "dotenv";
 import path from "path";
 import Joi from "joi";
@@ -52,12 +54,38 @@ async function migrateUsersToMongo() {
   }
 }
 
-async function init() {
+async function init(options = {}) {
+  const port = options.port ?? process.env.PORT ?? 3000;
   const server = Hapi.server({
-    port: process.env.PORT || 3000,
+    port,
   });
 
-  await server.register(Vision);
+  // Swagger configuration
+  const swaggerOptions = {
+    info: {
+      title: "Museum API Documentation",
+      version: "0.4.0",
+      description: "API for managing museums, categories, and exhibitions",
+    },
+    grouping: "tags",
+    securityDefinitions: {
+      jwt: {
+        type: "apiKey",
+        name: "Authorization",
+        in: "header",
+      },
+    },
+  };
+
+  await server.register([
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions,
+    },
+  ]);
+
   await server.register(Cookie);
   server.validator(Joi);
 
@@ -105,6 +133,7 @@ async function init() {
   server.route(apiRoutes);
   await server.start();
   console.log("Server running on %s", server.info.uri);
+  return server;
 }
 
 process.on("unhandledRejection", (err) => {
@@ -112,6 +141,10 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
+export { init };
 
-
-init();
+// Only start if this file is run directly (not imported)
+// In ES modules, we check if this is the main module
+if (process.argv[1] && process.argv[1].endsWith('server.js')) {
+  init();
+}

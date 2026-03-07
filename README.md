@@ -1,40 +1,64 @@
 # Museum App
 
-A full-stack web application built with Hapi.js that allows users to create, manage, and explore museums and their exhibitions. This application features user authentication, persistent data storage, and a responsive web interface.
+A full-stack web application built with Hapi.js that allows users to create, manage, and explore museums, categories, and exhibitions. This application features user authentication, persistent MongoDB storage, a responsive web interface, and a comprehensive REST API with Swagger documentation.
 
-## github project
-https://github.com/MarciaSatie/museum_app.git
+## 🔗 Links
 
-## Deployment
-### [Render.com Deployment](https://museum-app-2-gt46.onrender.com)
+- **GitHub Repository**: https://github.com/MarciaSatie/museum_app.git
+- **Live Deployment**: https://museum-app-2-bo7c.onrender.com
+- **API Documentation (Swagger)**: http://localhost:3000/documentation *(when running locally)*
 
-## Run MongoDB Loally
+## 📚 API Documentation
+
+Access interactive API documentation with Swagger UI:
+- **Local**: http://localhost:3000/documentation
+- **Production**: https://museum-app-2-gt46.onrender.com/documentation
+
+The Swagger documentation provides:
+- Complete API endpoint reference
+- Request/response schemas
+- Interactive "Try it out" functionality
+- Joi validation details
+
+## Run MongoDB Locally
+```bash
 & "C:\Program Files\MongoDB\Server\8.2\bin\mongod.exe" --dbpath "C:\SETU\Semester3\FullStack1\Assigment\museum_app\data\db"
+```
 
 
 ## Overview
 
 Museum App is a Node.js web application that enables users to:
 - Register and authenticate with secure session-based authentication
-- Create and manage multiple museums
-- Add exhibitions to museums
-- View and delete museums and exhibitions
-- Access information about the application
+- Create and manage multiple museums with geographic locations
+- Organize museums into categories
+- Add and manage exhibitions within museums
+- Access a comprehensive REST API for all resources
+- View interactive API documentation via Swagger
+- Admin user management and analytics
 
 ## Technology Stack
 
 ### Backend
 - **Framework**: Hapi.js 21.4.3
-- **Server**: Node.js with ES modules
-- **Authentication**: Hapi Cookie authentication strategy
+- **Runtime**: Node.js with ES modules
+- **Authentication**: Cookie-based (web) + JWT-ready (API)
 - **Templating**: Handlebars (hbs)
 - **Validation**: Joi schema validation
-- **Data Storage**: JSON-based persistence with Lowdb
+- **API Documentation**: Swagger/OpenAPI (hapi-swagger)
 
-### Database Options
-- **Current**: JSON file-based storage (Lowdb)
-- **Available**: MongoDB (Mongoose support included)
-- **Alternative**: In-memory stores available for testing
+### Database
+- **Primary**: MongoDB with Mongoose ODM
+- **Users & Categories**: MongoDB (persistent, scalable)
+- **Museums & Exhibitions**: JSON file-based (Lowdb) with MongoDB migration path
+- **Development**: In-memory stores available for testing (MEM)
+
+### REST API
+- **Museums**: Full CRUD (GET, POST, PUT, DELETE)
+- **Categories**: Full CRUD (GET, POST, PUT, DELETE)
+- **Exhibitions**: Full CRUD (GET, POST, PUT, DELETE)
+- **Documentation**: Swagger UI at `/documentation`
+- **Total Endpoints**: 16 REST API endpoints
 
 ### Development Tools
 - **Linting**: ESLint with Airbnb config
@@ -47,12 +71,19 @@ Museum App is a Node.js web application that enables users to:
 ```
 museum_app/
 ├── src/
-│   ├── server.js                 # Hapi server initialization
-│   ├── web-routes.js             # Route configuration
-│   ├── controllers/              # Request handlers
+│   ├── server.js                 # Hapi server with Swagger config
+│   ├── web-routes.js             # Web route configuration
+│   ├── api-routes.js             # REST API route configuration
+│   ├── api/                      # REST API handlers
+│   │   ├── museum-api.js         # Museum API endpoints
+│   │   ├── category-api.js       # Category API endpoints
+│   │   └── exhibition-api.js     # Exhibition API endpoints
+│   ├── controllers/              # Web request handlers
 │   │   ├── accounts-controller.js
 │   │   ├── dashboard-controller.js
 │   │   ├── museum-controller.js
+│   │   ├── category-controller.js
+│   │   ├── admin-controller.js
 │   │   └── about-controller.js
 │   ├── models/
 │   │   ├── db.js                 # Database initialization
@@ -60,8 +91,13 @@ museum_app/
 │   │   ├── json/                 # JSON data stores
 │   │   │   ├── user-json-store.js
 │   │   │   ├── museum-json-store.js
-│   │   │   ├── exhibition-json-store.js
-│   │   │   └── store-utils.js
+│   │   │   └── exhibition-json-store.js
+│   │   ├── mongo/                # MongoDB stores
+│   │   │   ├── connect.js        # MongoDB connection
+│   │   │   ├── user-mongo-store.js
+│   │   │   ├── user.js           # User schema
+│   │   │   ├── category-mongo-store.js
+│   │   │   └── category.js       # Category schema
 │   │   └── mem/                  # In-memory stores (testing)
 │   │       ├── user-mem-store.js
 │   │       ├── museum-mem-store.js
@@ -70,24 +106,23 @@ museum_app/
 │       ├── layouts/
 │       │   └── layout.hbs        # Main layout template
 │       ├── partials/             # Reusable template components
-│       │   ├── menu.hbs
-│       │   ├── museum-brand.hbs
-│       │   ├── error.hbs
-│       │   ├── add-museum.hbs
-│       │   ├── list-museums.hbs
-│       │   ├── add-exhibitions.hbs
-│       │   └── list-exhibitions.hbs
 │       ├── login-view.hbs
 │       ├── signup-view.hbs
 │       ├── about-view.hbs
 │       ├── dashboard-view.hbs
-│       └── museum-view.hbs
+│       ├── museum-view.hbs
+│       ├── category-list-view.hbs
+│       └── admin-users.hbs
 ├── test/                         # Test files
 │   ├── fixtures.js
-│   └── users-model-test.js
+│   ├── users-model-test.js
+│   ├── museum-model-test.js
+│   └── exhibition-model-test.js
+├── data/db/                      # MongoDB local database
 ├── package.json
 ├── README.md
-└── CHANGELOG.md
+├── CHANGELOG.md
+└── ASSIGNMENT_REQUIREMENTS.md
 ```
 
 ## Features
@@ -98,25 +133,47 @@ museum_app/
 - **Sessions**: Secure cookie-based session management
 - **Logout**: Users can securely end their session
 - **User Profile**: Users can view and update their profile information (name, email)
+- **Admin Role**: Admin users can manage other users
 
 ### Museum Management
 - **Create Museum**: Add new museums with names, descriptions, and geographic locations
 - **View Dashboard**: See all museums associated with your account
+- **Update Museum**: Edit museum information
 - **Delete Museum**: Remove museums no longer needed
 - **Location Data**: Store latitude and longitude coordinates for each museum
+- **Categorization**: Assign museums to categories for organization
+
+### Category Management
+- **Create Category**: Add new categories to organize museums
+- **View Categories**: See all available categories
+- **Update Category**: Edit category information
+- **Delete Category**: Remove unused categories
+- **Category Assignment**: Link museums to categories
 
 ### Exhibition Management
 - **Add Exhibition**: Add exhibitions to specific museums with title, artist, and duration
 - **View Exhibitions**: See all exhibitions within a museum
+- **Update Exhibition**: Edit exhibition details
 - **Delete Exhibition**: Remove exhibitions from museums
+
+### REST API
+- **Museum API**: 5 endpoints (GET all, GET one, POST, PUT, DELETE)
+- **Category API**: 5 endpoints (GET all, GET one, POST, PUT, DELETE)
+- **Exhibition API**: 6 endpoints (GET all, GET one, GET by museum, POST, PUT, DELETE)
+- **Swagger Documentation**: Interactive API documentation at `/documentation`
+- **Joi Validation**: All endpoints have request validation
+- **Error Handling**: Comprehensive error responses
 
 ### Pages
 - **Home/Index**: Welcome page with authentication options
 - **Dashboard**: Main user hub showing all personal museums
 - **Museum Details**: View and manage exhibitions for a specific museum
+- **Categories**: Manage and view museum categories
 - **User Profile**: Update personal information (name, email)
+- **Admin Panel**: User management interface (admin only)
 - **About**: Information about the application
 - **Login/Signup**: Authentication pages
+- **API Documentation**: Swagger UI for API exploration
 
 ## Installation
 
@@ -146,7 +203,7 @@ museum_app/
 
 ### Start the development server
 ```bash
-npm start
+npm run dev
 ```
 
 The application will be available at `http://localhost:3000`
@@ -163,7 +220,9 @@ npm test
 
 ## API Routes
 
-### Authentication Routes
+### Web Routes (Authentication Required)
+
+#### Authentication Routes
 - `GET /` - Home page / redirect to dashboard if authenticated
 - `GET /signup` - Show signup form
 - `POST /register` - Register new user
@@ -173,58 +232,123 @@ npm test
 - `GET /profile` - View and edit user profile
 - `POST /profile` - Update user profile
 
-### Dashboard Routes
+#### Dashboard Routes
 - `GET /dashboard` - View all museums
 - `POST /dashboard/addmuseum` - Add new museum
 - `GET /dashboard/deletemuseum/{id}` - Delete a museum
 
-### Museum Routes
+#### Museum Routes
 - `GET /museum/{id}` - View museum details and exhibitions
 - `POST /museum/{id}/addexhibition` - Add exhibition to museum
 - `GET /museum/{id}/deleteexhibition/{exhibitionid}` - Delete exhibition
 
-### General Routes
+#### Category Routes
+- `GET /categories` - View all categories
+- `POST /categories/add` - Add new category
+- `GET /categories/delete/{id}` - Delete category
+
+#### Admin Routes (Admin Only)
+- `GET /admin/users` - View all users
+- `GET /admin/deleteuser/{id}` - Delete user
+- `GET /admin/toggleadmin/{id}` - Toggle admin role
+
+#### General Routes
 - `GET /about` - About page
+
+---
+
+### REST API Routes (No Authentication)
+
+Access interactive documentation at: **http://localhost:3000/documentation**
+
+#### Museum Endpoints
+- `GET /api/museums` - Get all museums
+- `GET /api/museums/{id}` - Get single museum by ID
+- `POST /api/museums` - Create new museum
+  - Body: `{ title, description, latitude, longitude }`
+- `PUT /api/museums/{id}` - Update museum
+  - Body: `{ title, description, latitude, longitude }`
+- `DELETE /api/museums/{id}` - Delete museum
+
+#### Category Endpoints
+- `GET /api/categories` - Get all categories
+- `GET /api/categories/{id}` - Get single category by ID
+- `POST /api/categories` - Create new category
+  - Body: `{ name, description? }`
+- `PUT /api/categories/{id}` - Update category
+  - Body: `{ name, description? }`
+- `DELETE /api/categories/{id}` - Delete category
+
+#### Exhibition Endpoints
+- `GET /api/exhibitions` - Get all exhibitions
+- `GET /api/exhibitions/{id}` - Get single exhibition by ID
+- `GET /api/museums/{museumId}/exhibitions` - Get exhibitions for a museum
+- `POST /api/museums/{museumId}/exhibitions` - Create exhibition for museum
+  - Body: `{ title, artist, duration }`
+- `PUT /api/exhibitions/{id}` - Update exhibition
+  - Body: `{ title, artist, duration }`
+- `DELETE /api/exhibitions/{id}` - Delete exhibition
 
 ## Data Storage
 
-### Current Implementation (JSON)
-The application uses Lowdb for JSON file-based persistent storage. Data is stored in:
-- `db.json` - Contains all users, museums, and exhibitions
+### Current Implementation
+The application uses a hybrid storage approach:
+- **Users & Categories**: MongoDB (persistent, scalable, cloud-ready)
+- **Museums & Exhibitions**: JSON file-based (Lowdb) with MongoDB migration path
+- **Development/Testing**: In-memory stores available
+
+### MongoDB Connection
+- Local: `mongodb://127.0.0.1:27017/museum`
+- Cloud: MongoDB Atlas (configured via environment variables)
 
 ### Data Models
 
-**User**
+**User** (MongoDB)
 ```javascript
 {
-  id: string (uuid),
-  email: string,
-  password: string,
+  _id: ObjectId,
+  email: string (unique),
+  password: string (hashed),
   firstName: string,
-  lastName: string
+  lastName: string,
+  role: string ("admin" or null)
 }
 ```
 
-**Museum**
+**Category** (MongoDB)
 ```javascript
 {
+  _id: string (UUID),
+  name: string,
+  description: string (optional),
+  location: string (optional),
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Museum** (JSON/Lowdb)
+```javascript
+{
+  _id: string (UUID),
+  userid: string,
   title: string,
   description: string,
-  latitude: number (optional),
-  longitude: number (optional)
+  latitude: number,
+  longitude: number,
+  categoryId: string (optional),
+  exhibitions: array
 }
 ```
 
-**Exhibition**
+**Exhibition** (JSON/Lowdb)
 ```javascript
 {
-  id: string (uuid),
-  museumid: string (museum id),
+  _id: string (UUID),
+  museumid: string,
   title: string,
   artist: string,
-  duration: number (months)useum id),
-  title: string,
-  description: string
+  duration: number (days)
 }
 ```
 
@@ -275,11 +399,28 @@ Prettier is configured for automatic code formatting.
 
 
 
-## Future Enhancements
+## Current Status (Level 3)
 
-- MongoDB integration for scalable data storage
-- Advanced search and filtering capabilities
-- User roles and permissions
-- Metrics and analytics
-- API-based architecture
+✅ **Completed Features**
+- Full REST API with 16 endpoints (Museums, Categories, Exhibitions)
+- Swagger/OpenAPI documentation at `/documentation`
+- MongoDB integration for Users and Categories
+- Category management system
+- Admin user management interface
+- Comprehensive Joi validation for all API endpoints
+- Error handling with Boom
+- Model testing with Mocha/Chai
+- Cloud deployment on Render.com
+
+## Future Enhancements (Level 4+)
+
+- JWT authentication for API endpoints
+- Image upload and storage for museums
+- Advanced analytics dashboard
+- User behavior tracking
+- Full MongoDB migration (museums + exhibitions)
+- API endpoint testing suite
 - Docker containerization
+- Real-time updates with WebSockets
+- Museum sharing and reviews
+- Geolocation features with maps integration

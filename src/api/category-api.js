@@ -45,6 +45,7 @@ export const categoryApi = {
       payload: Joi.object({
         name: Joi.string().required(),
         description: Joi.string().allow("").optional(),
+        location: Joi.string().required(),
       }),
     },
   },
@@ -65,6 +66,7 @@ export const categoryApi = {
       payload: Joi.object({
         name: Joi.string().required(),
         description: Joi.string().allow("").optional(),
+        location: Joi.string().required(),
       }),
     },
   },

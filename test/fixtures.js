@@ -1,3 +1,5 @@
+export const serviceUrl = "http://localhost:3000";
+
 export const maggie = {
   firstName: "Maggie",
   lastName: "Simpson",
@@ -62,5 +64,23 @@ export const testExhibitions = [
     title: "Space Exploration",
     artist: "NASA",
     duration: 12,
+  },
+];
+
+export const testCategories = [
+  {
+    name: "Art",
+    description: "Fine arts and paintings",
+    location: "Gallery Wing",
+  },
+  {
+    name: "History",
+    description: "Historical artifacts and exhibits",
+    location: "Heritage Hall",
+  },
+  {
+    name: "Science",
+    description: "Scientific discoveries and experiments",
+    location: "Discovery Center",
   },
 ];
