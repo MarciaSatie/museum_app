@@ -8,9 +8,12 @@ suite("Category API tests", () => {
   let server;
 
   // Runs ONCE before ALL tests in the suite
-  suiteSetup(async () => {
+  suiteSetup(async function() {
+    this.timeout(10000); // Increase timeout for server init + auth
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
+    // Authenticate before running tests
+    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
   });
 
   // Runs ONCE after ALL tests in the suite

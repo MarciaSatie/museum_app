@@ -1,14 +1,12 @@
 import { createToken } from "./jwt-utils.js";
 import Boom from "@hapi/boom"; //imports standardized HTTP error helpers.
 import { db } from "../models/db.js";
+import { JwtAuth, UserCredentialsSpec } from "../models/joi-schemas.js";
 
 export const userApi = {
 
   authenticate: {
-    auth: {
-      strategy: "jwt",
-    },
-
+    auth: false,
     handler: async function (request, h) {
       try {
         const user = await db.userStore.getUserByEmail(request.payload.email);
@@ -24,5 +22,10 @@ export const userApi = {
         return Boom.serverUnavailable("Database Error");
       }
     },
+    tags: ["api", "users"],
+    description: "Authenticate user and return JWT token",
+    notes: "If user has valid email/password, create and return a JWT token",
+    validate: { payload: UserCredentialsSpec, failAction: "error" },
+    response: { schema: JwtAuth, failAction: "error" }
   },
 }

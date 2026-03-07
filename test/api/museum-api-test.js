@@ -6,9 +6,12 @@ import { testMuseums } from "../fixtures.js";
 suite("Museum API tests", () => {
   let server;
 
-  suiteSetup(async () => {
+  suiteSetup(async function() {
+    this.timeout(10000); // Increase timeout for server init + auth
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
+    // Authenticate before running tests
+    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
   });
 
   suiteTeardown(async () => {

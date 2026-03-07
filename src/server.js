@@ -80,6 +80,7 @@ async function init(options = {}) {
         in: "header",
       },
     },
+    security: [{ jwt: [] }],
   };
 
   await server.register([
@@ -94,6 +95,8 @@ async function init(options = {}) {
   await server.register(Cookie);
   server.validator(Joi);
 
+  Handlebars.registerHelper("eq", (a, b) => a === b);
+
   server.views({
     engines: {
       hbs: Handlebars,
@@ -105,7 +108,7 @@ async function init(options = {}) {
     layout: true,
     isCached: false,
   });
-
+  
   server.auth.strategy("session", "cookie", {
     cookie: {
       name: process.env.cookie_name,

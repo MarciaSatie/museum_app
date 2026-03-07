@@ -7,10 +7,12 @@ export const UserSpec = {
   password: Joi.string().required(),
 };
 
-export const UserCredentialsSpec = {
-  email: Joi.string().email().required(),
-  password: Joi.string().required(),
-};
+export const UserCredentialsSpec = Joi.object()
+  .keys({
+    email: Joi.string().email().example("homer@simpson.com").required(),
+    password: Joi.string().example("secret").required(),
+  })
+  .label("UserCredentials");
 
 export const ExhibitionSpec = {
   title: Joi.string().required(),
@@ -24,3 +26,10 @@ export const MuseumSpec = {
   latitude: Joi.number().allow("").optional(),
   longitude: Joi.number().allow("").optional(),
 };
+
+export const JwtAuth = Joi.object()
+  .keys({
+    success: Joi.boolean().example(true).required(),
+    token: Joi.string().example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...").required(),
+  })
+  .label("JwtAuth");

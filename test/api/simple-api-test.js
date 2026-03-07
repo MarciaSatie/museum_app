@@ -1,14 +1,19 @@
 import { assert } from "chai";
 import axios from "axios";
 import { init } from "../../src/server.js";
+import { museumService } from "./museum-service.js";
 
 // Groups related tests together
 suite("Simple connectivity test", () => {
   let server;
 
     // Runs ONCE before ALL tests in the suite
-  suiteSetup(async () => {
+  suiteSetup(async function() {
+    this.timeout(10000); // Increase timeout for server init + auth
     server = await init({ port: 0 });
+    museumService.museumUrl = server.info.uri;
+    // Authenticate before running tests
+    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
   });
 
   // Runs ONCE after ALL tests in the suite
@@ -17,7 +22,7 @@ suite("Simple connectivity test", () => {
   });
 
   test("can connect to server", async () => {
-    const response = await axios.get(`${server.info.uri}/api/museums`);
+    const response = await axios.get(`${server.info.uri}/api/museums`, museumService.getAuthHeaders());
     assert.equal(response.status, 200);
   });
 });

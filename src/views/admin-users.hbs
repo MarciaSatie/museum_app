@@ -32,7 +32,7 @@
               
               <div class="buttons">
                 
-                {{#if this.role}}
+                {{#if (eq this.role "admin")}}
                   <a class="button is-warning is-small" href="/admin/toggleadmin/{{this._id}}">
                     <span class="icon">
                       <i class="fas fa-user-minus"></i>
