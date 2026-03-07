@@ -4,7 +4,10 @@ import Joi from "joi";
 
 export const museumApi = {
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const museums = await db.museumStore.getAllMuseums();
@@ -17,7 +20,10 @@ export const museumApi = {
   },
 
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const museum = await db.museumStore.getMuseumById(request.params.id);
@@ -31,7 +37,10 @@ export const museumApi = {
   },
 
   create: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const museum = await db.museumStore.addMuseum(request.payload);
@@ -52,7 +61,10 @@ export const museumApi = {
   },
 
   delete: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const museum = await db.museumStore.deleteMuseumById(request.params.id);
@@ -65,7 +77,10 @@ export const museumApi = {
   },
 
   update: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const museum = await db.museumStore.updateMuseumById(request.params.id, request.payload);

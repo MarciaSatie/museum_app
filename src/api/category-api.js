@@ -4,7 +4,10 @@ import Joi from "joi";
 
 export const categoryApi = {
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const categories = await db.categoryStore.getAllCategories();
@@ -17,7 +20,10 @@ export const categoryApi = {
   },
 
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const category = await db.categoryStore.getCategoryById(request.params.id);
@@ -31,7 +37,10 @@ export const categoryApi = {
   },
 
   create: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const category = await db.categoryStore.addCategory(request.payload);
@@ -51,7 +60,10 @@ export const categoryApi = {
   },
 
   update: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const category = await db.categoryStore.updateCategory({ ...request.payload, _id: request.params.id });
@@ -72,7 +84,10 @@ export const categoryApi = {
   },
 
   delete: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         await db.categoryStore.deleteCategoryById(request.params.id);

@@ -4,7 +4,10 @@ import Joi from "joi";
 
 export const exhibitionApi = {
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const exhibitions = await db.exhibitionStore.getAllExhibitions();
@@ -17,7 +20,10 @@ export const exhibitionApi = {
   },
 
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const exhibition = await db.exhibitionStore.getExhibitionById(request.params.id);
@@ -31,7 +37,10 @@ export const exhibitionApi = {
   },
 
   findByMuseum: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const exhibitions = await db.exhibitionStore.getExhibitionsByMuseumId(request.params.museumId);
@@ -44,7 +53,10 @@ export const exhibitionApi = {
   },
 
   create: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const exhibition = await db.exhibitionStore.addExhibition(request.params.museumId, request.payload);
@@ -64,7 +76,10 @@ export const exhibitionApi = {
   },
 
   update: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         const exhibition = await db.exhibitionStore.updateExhibition({ ...request.payload, _id: request.params.id });
@@ -85,7 +100,10 @@ export const exhibitionApi = {
   },
 
   delete: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
+
     handler: async function(request, h) {
       try {
         await db.exhibitionStore.deleteExhibition(request.params.id);

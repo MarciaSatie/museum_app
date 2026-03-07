@@ -13,6 +13,8 @@ import { db } from "./models/db.js";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { userJsonStore } from "./models/json/user-json-store.js";
 import { apiRoutes } from "./api-routes.js";
+import jwt from "hapi-auth-jwt2";
+import { validate } from "./api/jwt-utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,6 +62,7 @@ async function init(options = {}) {
     port,
   });
 
+  await server.register(jwt);
   // Swagger configuration
   const swaggerOptions = {
     info: {
@@ -113,6 +116,13 @@ async function init(options = {}) {
     validate: accountsController.validate,
   });
   server.auth.default("session");
+
+  server.auth.strategy("jwt", "jwt", {
+    key: process.env.cookie_password,
+    validate: validate,
+    verifyOptions: { algorithms: ["HS256"] }
+  });
+
 
   // Log errors to console for debugging
   server.ext("onPreResponse", (request, h) => {

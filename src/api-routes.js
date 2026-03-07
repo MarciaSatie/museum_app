@@ -1,6 +1,7 @@
 import { museumApi } from "./api/museum-api.js";
 import { categoryApi } from "./api/category-api.js";
 import { exhibitionApi } from "./api/exhibition-api.js";
+import { userApi } from "./api/user-api.js";
 
 export const apiRoutes = [
   // Museum endpoints
@@ -24,4 +25,7 @@ export const apiRoutes = [
   { method: "POST", path: "/api/museums/{museumId}/exhibitions", config: { ...exhibitionApi.create, tags: ["api", "exhibitions"], description: "Create new exhibition" } },
   { method: "PUT", path: "/api/exhibitions/{id}", config: { ...exhibitionApi.update, tags: ["api", "exhibitions"], description: "Update exhibition" } },
   { method: "DELETE", path: "/api/exhibitions/{id}", config: { ...exhibitionApi.delete, tags: ["api", "exhibitions"], description: "Delete exhibition" } },
+
+  // Exposes login endpoint for API clients to get JWT.
+  { method: "POST", path: "/api/authenticate", config: { ...userApi.authenticate, tags: ["api", "users"], description: "Authenticate user and return JWT token" } },
 ];
