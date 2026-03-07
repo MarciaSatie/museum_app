@@ -6,7 +6,9 @@ export const dashboardController = {
     handler: async function (request, h) {
       console.log("📊 Dashboard accessed by:", request.auth.credentials?.email || "unknown");
       const loggedInUser = request.auth.credentials;
+      console.log("👤 User role:", loggedInUser?.role);
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
+      console.log("🔐 isAdmin:", isAdmin);
       let museums = await db.museumStore.getUserMuseums(loggedInUser._id);
       const { categoryId, location } = request.query;
       if (categoryId) {
@@ -58,10 +60,14 @@ export const dashboardController = {
 
   editMuseumPage: {
     handler: async function (request, h) {
+      const loggedInUser = request.auth.credentials;
+      const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const museum = await db.museumStore.getMuseumById(request.params.id);
       const categories = await db.categoryStore.getAllCategories();
       const viewData = {
         title: "Edit Museum",
+        user: loggedInUser,
+        isAdmin,
         museum: museum,
         categories: categories,
       };

@@ -127,6 +127,10 @@ export const accountsController = {
     console.log("🔐 Validating session:", session);
     const user = await db.userStore.getUserById(session.id);
     console.log("🔐 User from session:", user ? `Found (${user.email})` : "Not found");
+    if (user) {
+      console.log("👤 User role in session:", user.role);
+      console.log("👤 Full user object:", JSON.stringify(user, null, 2));
+    }
     if (!user) {
       console.log("❌ Validation failed - no user found");
       return { isValid: false };

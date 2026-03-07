@@ -3,9 +3,13 @@ import { db } from "../models/db.js";
 export const categoryController = {
   listCategories: {
     handler: async function (request, h) {
+      const loggedInUser = request.auth.credentials;
+      const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const categories = await db.categoryStore.getAllCategories();
       const viewData = {
         title: "Categories",
+        user: loggedInUser,
+        isAdmin,
         categories: categories,
       };
       return h.view("partials/category-list-view", viewData);
@@ -14,8 +18,12 @@ export const categoryController = {
 
   addCategoryPage: {
     handler: async function (request, h) {
+      const loggedInUser = request.auth.credentials;
+      const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const viewData = {
         title: "Add Category",
+        user: loggedInUser,
+        isAdmin,
       };
       return h.view("partials/add-category-view", viewData);
     },
@@ -43,10 +51,14 @@ export const categoryController = {
 
   editCategoryPage: {
     handler: async function (request, h) {
+      const loggedInUser = request.auth.credentials;
+      const isAdmin = loggedInUser && loggedInUser.role === "admin";
       const categoryId = request.params.id;
       const category = await db.categoryStore.getCategoryById(categoryId);
       const viewData = {
         title: "Edit Category",
+        user: loggedInUser,
+        isAdmin,
         category: category || {},
       };
       return h.view("partials/edit-category-view", viewData);

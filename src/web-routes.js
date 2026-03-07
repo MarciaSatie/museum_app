@@ -14,7 +14,9 @@ export const webRoutes = [
   { method: "POST", path: "/authenticate", config: accountsController.login },
   { method: "GET", path: "/profile", config: accountsController.showProfile },
   { method: "POST", path: "/profile", config: accountsController.updateProfile },
+  { method: "GET", path: "/admin", config: { handler: (request, h) => h.redirect("/admin/users") } },
   { method: "GET", path: "/admin/users", config: adminController.listUsers },
+  { method: "GET", path: "/admin/users/", config: adminController.listUsers },
   { method: "GET", path: "/admin/deleteuser/{id}", config: adminController.deleteUser },
   { method: "GET", path: "/admin/toggleadmin/{id}", config: adminController.toggleAdmin },
 

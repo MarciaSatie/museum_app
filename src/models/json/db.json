@@ -1,26 +1,35 @@
 {
-  "museums": [],
+  "museums": [
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "Springfield Museum of Art",
+      "description": "A hometown museum curated by Homer Simpson.",
+      "latitude": 39.7817,
+      "longitude": -89.6501,
+      "_id": "31b96621-df97-4ced-b0d7-8316b4735767"
+    }
+  ],
   "exhibitions": [
     {
       "title": "Modern Masters",
       "artist": "Various Artists",
       "duration": 6,
-      "_id": "ebfcec86-f53f-4ec9-a4df-2bf1d9836720",
-      "museumid": "e16a9870-eff7-4edb-922a-7e72c3e78f25"
+      "_id": "2791997d-3ec2-4844-be98-b18d1dd2b8a9",
+      "museumid": "31b96621-df97-4ced-b0d7-8316b4735767"
     },
     {
       "title": "Renaissance Revival",
       "artist": "Leonardo da Vinci",
       "duration": 8,
-      "_id": "43141fc0-4b38-404c-95cc-fbf4bdca8c33",
-      "museumid": "e16a9870-eff7-4edb-922a-7e72c3e78f25"
+      "_id": "bfdcd23e-fe26-480d-ae9b-c6c697762586",
+      "museumid": "31b96621-df97-4ced-b0d7-8316b4735767"
     },
     {
       "title": "Space Exploration",
       "artist": "NASA",
       "duration": 12,
-      "_id": "9d1150b4-96c5-4016-9db4-453c46801562",
-      "museumid": "e16a9870-eff7-4edb-922a-7e72c3e78f25"
+      "_id": "9f6f2b2d-9351-46bb-bf47-63b058a308aa",
+      "museumid": "31b96621-df97-4ced-b0d7-8316b4735767"
     }
   ]
 }
