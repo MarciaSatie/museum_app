@@ -80,17 +80,3 @@ suite("User Model tests", () => {
   });
 });
 
-
-// // NOTE: The block below is an alternate setup snippet used to run the
-// // same tests against the mongo store. To use it, replace the above
-// // setup() call with db.init("mongo") and ensure MongoDB is running.
-// // The file originally included this example to show how to switch stores.
-// setup(async () => {
-//   const mode = process.env.DB === 'mongo' ? 'mongo' : undefined;
-//   db.init(mode);
-//   await db.userStore.deleteAll();
-//   for (let i = 0; i < testUsers.length; i += 1) {
-//     // eslint-disable-next-line no-await-in-loop
-//     testUsers[i] = await db.userStore.addUser(testUsers[i]);
-//   }
-// });

@@ -18,7 +18,6 @@ suite("Museum API tests", () => {
   setup(async () => {
     const museums = await museumService.getAllMuseums();
     for (const museum of museums) {
-      // eslint-disable-next-line no-await-in-loop
       await museumService.deleteMuseum(museum._id);
     }
   });

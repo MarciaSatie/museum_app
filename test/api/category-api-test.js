@@ -3,18 +3,22 @@ import { init } from "../../src/server.js";
 import { museumService } from "./museum-service.js";
 import { testCategories } from "../fixtures.js";
 
+// Groups related tests together
 suite("Category API tests", () => {
   let server;
 
+  // Runs ONCE before ALL tests in the suite
   suiteSetup(async () => {
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
   });
 
+  // Runs ONCE after ALL tests in the suite
   suiteTeardown(async () => {
     await server.stop();
   });
 
+  // Runs BEFORE EACH individual test
   setup(async () => {
     const categories = await museumService.getAllCategories();
     for (const category of categories) {

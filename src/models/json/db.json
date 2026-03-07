@@ -2,11 +2,25 @@
   "museums": [],
   "exhibitions": [
     {
-      "title": "Updated Title",
-      "artist": "Updated Artist",
+      "title": "Modern Masters",
+      "artist": "Various Artists",
       "duration": 6,
-      "_id": "aab8007f-3d9a-49fd-886e-7648a7897352",
-      "museumid": "ea66cf76-8d71-44fb-9555-192b775eec1f"
+      "_id": "ebfcec86-f53f-4ec9-a4df-2bf1d9836720",
+      "museumid": "e16a9870-eff7-4edb-922a-7e72c3e78f25"
+    },
+    {
+      "title": "Renaissance Revival",
+      "artist": "Leonardo da Vinci",
+      "duration": 8,
+      "_id": "43141fc0-4b38-404c-95cc-fbf4bdca8c33",
+      "museumid": "e16a9870-eff7-4edb-922a-7e72c3e78f25"
+    },
+    {
+      "title": "Space Exploration",
+      "artist": "NASA",
+      "duration": 12,
+      "_id": "9d1150b4-96c5-4016-9db4-453c46801562",
+      "museumid": "e16a9870-eff7-4edb-922a-7e72c3e78f25"
     }
   ]
 }
