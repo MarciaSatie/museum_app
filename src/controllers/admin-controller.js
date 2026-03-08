@@ -5,7 +5,8 @@ export const adminController = {
     handler: async function (request, h) {
       try {
         const loggedInUser = request.auth.credentials;
-
+        const museums = await db.museumStore.getAllMuseums();
+        
         // Check if user is admin
         if (!loggedInUser || loggedInUser.role !== "admin") {
           return h.response({
@@ -14,14 +15,20 @@ export const adminController = {
             message: "Access denied. Admin only.",
           }).code(403);
         }
-
+        
         // Get all users
         const users = await db.userStore.getAllUsers();
+        const userViews = users.map((u) => ({ email: u.email, views: museums.filter((m) => m.userid === u._id).reduce((sum, m) => sum + (m.museumVisitCount ?? 0), 0) })).sort((a, b) => b.views - a.views).slice(0, 5);
+        const userMuseums = users.map((u) => ({ email: u.email, count: museums.filter((m) => m.userid === u._id).length }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5); // computes total museums per user, sorts descending, keeps top 5.
         const viewData = {
           title: "Admin - User Management",
           users,
           user: loggedInUser,
           isAdmin: true,
+          userViews,
+          userMuseums,
         };
         return h.view("admin-users", viewData);
       } catch (error) {
