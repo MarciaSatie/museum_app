@@ -28,6 +28,7 @@ export const dashboardController = {
         museums: museums,
         categories: categories,
         topVisitedMuseums,
+        totalMuseums: museums.length,
       };
       return h.view("dashboard-view", viewData);
     },
