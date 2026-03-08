@@ -2,11 +2,111 @@
   "museums": [
     {
       "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
-      "title": "Springfield Museum of Art",
-      "description": "A hometown museum curated by Homer Simpson.",
-      "latitude": 39.7817,
-      "longitude": -89.6501,
-      "_id": "31b96621-df97-4ced-b0d7-8316b4735767"
+      "title": "Modern Art Gallery",
+      "description": "Contemporary art from the 21st century",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 52.489471,
+      "longitude": -1.898575,
+      "_id": "6e7d05ad-4d98-491e-8f1c-d62e6339aec8"
+    },
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "World War Museum",
+      "description": "WW1 and WW2 artifacts and stories",
+      "categoryId": "920a87d6-42ff-4576-901e-d9fceb9c516a",
+      "latitude": 52.491234,
+      "longitude": -1.895432,
+      "_id": "46a4d2e7-33b8-48b3-b62a-eb869bad08b6"
+    },
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "Natural History Museum",
+      "description": "Dinosaurs, fossils, and natural wonders",
+      "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
+      "latitude": 52.487654,
+      "longitude": -1.901234,
+      "_id": "a36da44a-d69a-4864-8e7b-93541957ffc2"
+    },
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "Aviation Museum",
+      "description": "History of flight and aircraft",
+      "categoryId": "920a87d6-42ff-4576-901e-d9fceb9c516a",
+      "latitude": 52.494321,
+      "longitude": -1.889876,
+      "_id": "991e4e94-69fc-4fd7-b512-db8aad818429"
+    },
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "Space Exploration Center",
+      "description": "Journey through space history",
+      "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
+      "latitude": 52.485678,
+      "longitude": -1.903456,
+      "_id": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786"
+    },
+    {
+      "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
+      "title": "Classical Art Museum",
+      "description": "Renaissance and classical masterpieces",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 52.488123,
+      "longitude": -1.897654,
+      "_id": "9f16518e-e49a-40c5-a5fb-7f282fba93d4"
+    },
+    {
+      "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
+      "title": "Ancient Civilizations",
+      "description": "Egypt, Greece, and Rome artifacts",
+      "categoryId": "920a87d6-42ff-4576-901e-d9fceb9c516a",
+      "latitude": 52.492345,
+      "longitude": -1.894321,
+      "_id": "724256aa-5d3c-4bf0-b238-a554e8e4970a"
+    },
+    {
+      "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
+      "title": "Marine Biology Center",
+      "description": "Ocean life and conservation",
+      "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
+      "latitude": 52.486789,
+      "longitude": -1.902345,
+      "_id": "50590e85-263c-4993-8e77-8988a3414565"
+    },
+    {
+      "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
+      "title": "Impressionist Gallery",
+      "description": "Monet, Renoir, and French impressionists",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 52.490123,
+      "longitude": -1.896789,
+      "_id": "3d364000-7358-4bbc-870c-adce3c60d1a9"
+    },
+    {
+      "userid": "1bddc035-02fc-4d22-a987-89a7573ba5b2",
+      "title": "Environmental Science Center",
+      "description": "Climate change and sustainability",
+      "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
+      "latitude": 52.48789,
+      "longitude": -1.900123,
+      "_id": "50dc8bab-1f3b-49bd-b7ab-236055aaceed"
+    },
+    {
+      "userid": "1bddc035-02fc-4d22-a987-89a7573ba5b2",
+      "title": "Jazz Museum",
+      "description": "History of jazz music and legends",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 52.493456,
+      "longitude": -1.891234,
+      "_id": "6d16af1c-5121-4b79-bb17-ebb02d376fe4"
+    },
+    {
+      "userid": "1bddc035-02fc-4d22-a987-89a7573ba5b2",
+      "title": "Women's History Museum",
+      "description": "Celebrating women's achievements",
+      "categoryId": "920a87d6-42ff-4576-901e-d9fceb9c516a",
+      "latitude": 52.489012,
+      "longitude": -1.899876,
+      "_id": "747d4d8e-5ef0-47ee-bc4f-a81686db922a"
     }
   ],
   "exhibitions": [
@@ -14,22 +114,150 @@
       "title": "Modern Masters",
       "artist": "Various Artists",
       "duration": 6,
-      "_id": "2791997d-3ec2-4844-be98-b18d1dd2b8a9",
-      "museumid": "31b96621-df97-4ced-b0d7-8316b4735767"
+      "_id": "ce90c567-c228-43e6-9906-616f21dcb4c0",
+      "museumid": "039000c1-8f38-4be5-a69d-3a2136156c6b"
     },
     {
       "title": "Renaissance Revival",
       "artist": "Leonardo da Vinci",
       "duration": 8,
-      "_id": "bfdcd23e-fe26-480d-ae9b-c6c697762586",
-      "museumid": "31b96621-df97-4ced-b0d7-8316b4735767"
+      "_id": "244de12a-9c1d-48d9-8deb-e67f91b2dac2",
+      "museumid": "039000c1-8f38-4be5-a69d-3a2136156c6b"
     },
     {
       "title": "Space Exploration",
       "artist": "NASA",
       "duration": 12,
-      "_id": "9f6f2b2d-9351-46bb-bf47-63b058a308aa",
-      "museumid": "31b96621-df97-4ced-b0d7-8316b4735767"
+      "_id": "dead4be1-8da1-497d-bef9-add35502ab52",
+      "museumid": "039000c1-8f38-4be5-a69d-3a2136156c6b"
+    },
+    {
+      "title": "Abstract Expressions",
+      "description": "Modern abstract paintings",
+      "startDate": "2026-04-01",
+      "endDate": "2026-06-30",
+      "_id": "cd26b1cd-e932-4433-ad9e-21a9ccb5eb51",
+      "museumid": "6e7d05ad-4d98-491e-8f1c-d62e6339aec8"
+    },
+    {
+      "title": "Digital Art Revolution",
+      "description": "NFTs and digital creativity",
+      "startDate": "2026-07-01",
+      "endDate": "2026-09-30",
+      "_id": "7faf8d1b-8f57-4513-9684-1d61857f69b8",
+      "museumid": "6e7d05ad-4d98-491e-8f1c-d62e6339aec8"
+    },
+    {
+      "title": "D-Day Stories",
+      "description": "Personal accounts from Normandy",
+      "startDate": "2026-05-01",
+      "endDate": "2026-08-31",
+      "_id": "9660751e-310b-4322-8b07-b443c780300a",
+      "museumid": "46a4d2e7-33b8-48b3-b62a-eb869bad08b6"
+    },
+    {
+      "title": "Home Front Life",
+      "description": "Civilian life during wartime",
+      "startDate": "2026-09-01",
+      "endDate": "2026-12-31",
+      "_id": "a82d8cc9-3080-4657-8624-7328c646e066",
+      "museumid": "46a4d2e7-33b8-48b3-b62a-eb869bad08b6"
+    },
+    {
+      "title": "Age of Dinosaurs",
+      "description": "Jurassic period fossils",
+      "startDate": "2026-03-01",
+      "endDate": "2026-12-31",
+      "_id": "6443fff9-d072-4d5b-9a95-86fcc39aa890",
+      "museumid": "a36da44a-d69a-4864-8e7b-93541957ffc2"
+    },
+    {
+      "title": "Wright Brothers Legacy",
+      "description": "First powered flight",
+      "startDate": "2026-06-01",
+      "endDate": "2026-10-31",
+      "_id": "9ce0eec0-594a-4d46-9855-41eef6828fa2",
+      "museumid": "991e4e94-69fc-4fd7-b512-db8aad818429"
+    },
+    {
+      "title": "Moon Landing 60 Years",
+      "description": "Apollo 11 anniversary",
+      "startDate": "2026-07-20",
+      "endDate": "2026-12-31",
+      "_id": "343d0196-0926-476a-9bf2-ea5992d58947",
+      "museumid": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786"
+    },
+    {
+      "title": "Renaissance Masters",
+      "description": "Da Vinci and Michelangelo",
+      "startDate": "2026-04-15",
+      "endDate": "2026-08-15",
+      "_id": "a77b19fd-d992-4ac0-9fe9-f57baa176f87",
+      "museumid": "9f16518e-e49a-40c5-a5fb-7f282fba93d4"
+    },
+    {
+      "title": "Baroque Beauty",
+      "description": "17th century European art",
+      "startDate": "2026-09-01",
+      "endDate": "2027-01-31",
+      "_id": "b10e650b-d09e-44d7-b7a8-52c91994f84d",
+      "museumid": "9f16518e-e49a-40c5-a5fb-7f282fba93d4"
+    },
+    {
+      "title": "Pharaohs of Egypt",
+      "description": "Tutankhamun and ancient rulers",
+      "startDate": "2026-05-01",
+      "endDate": "2026-10-31",
+      "_id": "f1e55179-0813-45a4-87e9-f781b5b647eb",
+      "museumid": "724256aa-5d3c-4bf0-b238-a554e8e4970a"
+    },
+    {
+      "title": "Coral Reefs in Crisis",
+      "description": "Ocean conservation efforts",
+      "startDate": "2026-06-08",
+      "endDate": "2026-12-31",
+      "_id": "2cc9e635-c3e8-443c-8c5f-8ebd831a3c40",
+      "museumid": "50590e85-263c-4993-8e77-8988a3414565"
+    },
+    {
+      "title": "Monet's Water Lilies",
+      "description": "Impressionist garden series",
+      "startDate": "2026-03-01",
+      "endDate": "2026-07-31",
+      "_id": "21b24098-764f-4a62-83bb-104905bb17b8",
+      "museumid": "3d364000-7358-4bbc-870c-adce3c60d1a9"
+    },
+    {
+      "title": "Climate Solutions",
+      "description": "Renewable energy innovations",
+      "startDate": "2026-04-22",
+      "endDate": "2026-11-30",
+      "_id": "48132552-15b5-4e24-a95e-b920d7458420",
+      "museumid": "50dc8bab-1f3b-49bd-b7ab-236055aaceed"
+    },
+    {
+      "title": "Plastic Ocean",
+      "description": "Marine pollution awareness",
+      "startDate": "2026-06-05",
+      "endDate": "2026-12-31",
+      "_id": "78ab7fa7-290d-427c-92ec-6b73aeab7714",
+      "museumid": "50dc8bab-1f3b-49bd-b7ab-236055aaceed"
+    },
+    {
+      "title": "Miles Davis Tribute",
+      "description": "The prince of jazz",
+      "startDate": "2026-05-26",
+      "endDate": "2026-09-26",
+      "_id": "c4802c93-1c3a-4ea0-8998-45336f699492",
+      "museumid": "6d16af1c-5121-4b79-bb17-ebb02d376fe4"
+    },
+    {
+      "title": "Suffragette Movement",
+      "description": "Women's voting rights history",
+      "startDate": "2026-03-08",
+      "endDate": "2026-08-26",
+      "_id": "cc5e0711-1695-446c-90ca-b8bdb719ae66",
+      "museumid": "747d4d8e-5ef0-47ee-bc4f-a81686db922a"
     }
   ]
 }
