@@ -1,19 +1,31 @@
 import { ExhibitionSpec } from "../models/joi-schemas.js";
 import { db } from "../models/db.js";
 
+// Museum Functions
 export const museumController = {
   index: {
     handler: async function (request, h) {
       const museum = await db.museumStore.getMuseumById(request.params.id);
+      museum.museumVisitCount = (museum.museumVisitCount ?? 0) + 1;
+      await db.museumStore.updateMuseum(museum);
       const category = museum.categoryId ? await db.categoryStore.getCategoryById(museum.categoryId) : null;
       const loggedInUser = request.auth.credentials;
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
+    
+
+      // // Analitics 
+      // let museumVisitCount = null;
+      // try{
+      //   await trackVisit("museums", museum._id);
+      //   museumVisitCount = await getVisitCount("museums", museum._id);
+      // }catch(err){console.log("Track Visit ERROR: "+err)}
       
       const viewData = {
         title: "Museum",
         museum: museum,
         category: category,
         user: loggedInUser,
+        museumVisitCount: museum.museumVisitCount ?? 0,
         isAdmin,
       };
       return h.view("museum-view", viewData);

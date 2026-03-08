@@ -1,0 +1,29 @@
+{{!-- loads Chart.js library needed to draw the graph. --}}
+  <canvas id="topVisitedChart" style="max-height: 260px;"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const topVisitedMuseums = {{{json topVisitedMuseums}}};
+    const labels = topVisitedMuseums.map((m) => m.title);
+    const data = topVisitedMuseums.map((m) => m.museumVisitCount ?? 0);
+
+    const ctx = document.getElementById("topVisitedChart");
+    if (ctx) {
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Visits",
+            data,
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: "Top 5 Most Visited Museums" },
+          },
+        },
+      });
+    }
+  </script>

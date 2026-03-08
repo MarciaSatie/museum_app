@@ -96,6 +96,7 @@ async function init(options = {}) {
   server.validator(Joi);
 
   Handlebars.registerHelper("eq", (a, b) => a === b);
+  Handlebars.registerHelper("json", (context) => JSON.stringify(context)); // register a JSON helper for Handlebars
 
   server.views({
     engines: {

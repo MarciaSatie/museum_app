@@ -11,9 +11,14 @@ export const dashboardController = {
       console.log("🔐 isAdmin:", isAdmin);
       let museums = await db.museumStore.getUserMuseums(loggedInUser._id);
       const { categoryId, location } = request.query;
+      
       if (categoryId) {
         museums = museums.filter((museum) => museum.categoryId === categoryId);
       }
+      
+      const topVisitedMuseums = [...museums]
+        .sort((a, b) => (b.museumVisitCount ?? 0) - (a.museumVisitCount ?? 0))
+        .slice(0, 5); // list top 5 museums with msot views.
 
       const categories = await db.categoryStore.getAllCategories();
       const viewData = {
@@ -22,6 +27,7 @@ export const dashboardController = {
         isAdmin,
         museums: museums,
         categories: categories,
+        topVisitedMuseums,
       };
       return h.view("dashboard-view", viewData);
     },
