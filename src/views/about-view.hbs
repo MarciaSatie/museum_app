@@ -8,6 +8,7 @@
   <a href="/about/click" class="button is-success">Click Me!</a>
 {{/if}}
 
+{{!-- REFERENCE: https://stackoverflow.com/questions/51120944/html-form-upload-file --}}
 <form action="/about/uploadimage" method="POST" enctype="multipart/form-data">
   <input class="input" type="file" name="image" accept="image/*">
   <button class="button is-primary" type="submit">Upload to Gallery</button>
