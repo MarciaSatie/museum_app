@@ -1,0 +1,42 @@
+<section class="section">
+    <div class="box has-background-light" style="border: 2px solid #3273dc; border-radius: 8px; max-width: 800px;">
+
+        <div class="field">
+            <label class="label" for="avatar">Upload Picture to Firebase Storage</label>
+            <p class="subtitle is-6 has-text-grey">Supported formats: PNG, JPEG</p>
+            <br class="control">
+            <form id="image-upload-form" action="/admin/uploadImage" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: row; gap: 12px; align-items: center; width: 100%;">
+                <div class="file is-info is-fullwidth" style="flex: 1;">
+                    <label class="file-label" style="width: 100%;">
+                        <input class="file-input" type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">Choose a file…</span>
+                        </span>
+                        <span class="file-name" id="file-name-display">No file selected</span>
+                    </label>
+                </div>
+                <button type="submit" id="image_upload" class="button is-info is-small" style="border-radius: 6px; min-width: 100px; height: 40px;">Upload Image</button>
+            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Move script to end for proper DOM loading -->
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('avatar');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            fileNameDisplay.textContent = fileInput.files.length > 0
+                ? fileInput.files[0].name
+                : 'No file selected';
+        });
+    }
+});
+</script>

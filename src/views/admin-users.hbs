@@ -1,7 +1,8 @@
 {{> menu active="admin"}}
 
+
 <section class="section">
-  <div class="container">
+  <div class="container box has-background-light" style="border: 2px solid #3273dc; border-radius: 8px;">
     <h1 class="title">{{title}}</h1>
     <h2 class="subtitle">Manage all users</h2>
     
@@ -65,66 +66,68 @@
       </tbody>
     </table>
   </div>
-</section>
 
-<section>
-  <canvas id="userMuseumsChart" style="max-height: 260px;"></canvas>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const userMuseums = {{{json userMuseums}}};
-    const museumsLabels = userMuseums.map(u => u.email);
-    const museumsData = userMuseums.map(u => u.count);
+  <section class="section">
+    <canvas id="userMuseumsChart" style="max-height: 260px;"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const userMuseums = {{{json userMuseums}}};
+      const museumsLabels = userMuseums.map(u => u.email);
+      const museumsData = userMuseums.map(u => u.count);
 
-    const museumsCtx = document.getElementById("userMuseumsChart");
-    if (museumsCtx) {
-      new Chart(museumsCtx, {
-        type: "bar",
-        data: {
-          labels: museumsLabels,
-          datasets: [{
-            label: "Total Museums per User",
-            data: museumsData,
-          }],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: "Top 5 Users by Museum Count" },
+      const museumsCtx = document.getElementById("userMuseumsChart");
+      if (museumsCtx) {
+        new Chart(museumsCtx, {
+          type: "bar",
+          data: {
+            labels: museumsLabels,
+            datasets: [{
+              label: "Total Museums per User",
+              data: museumsData,
+            }],
           },
-        },
-      });
-    }
-  </script>
-</section>
-</br>
-
-<section>
-  <canvas id="userViewsChart" style="max-height: 260px;"></canvas>
-  <script>
-    const userViews = {{{json userViews}}};
-    const viewsLabels = userViews.map(u => u.email);
-    const viewsData = userViews.map(u => u.views);
-
-    const viewsCtx = document.getElementById("userViewsChart");
-    if (viewsCtx) {
-      new Chart(viewsCtx, {
-        type: "bar",
-        data: {
-          labels: viewsLabels,
-          datasets: [{
-            label: "Total Museum Views",
-            data: viewsData,
-          }],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: "Top 5 Users by Museum Views" },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              title: { display: true, text: "Top 5 Users by Museum Count" },
+            },
           },
-        },
-      });
-    }
-  </script>
+        });
+      }
+    </script>
+  </section>
+  </br>
+
+  <section>
+    <canvas id="userViewsChart" style="max-height: 260px;"></canvas>
+    <script>
+      const userViews = {{{json userViews}}};
+      const viewsLabels = userViews.map(u => u.email);
+      const viewsData = userViews.map(u => u.views);
+
+      const viewsCtx = document.getElementById("userViewsChart");
+      if (viewsCtx) {
+        new Chart(viewsCtx, {
+          type: "bar",
+          data: {
+            labels: viewsLabels,
+            datasets: [{
+              label: "Total Museum Views",
+              data: viewsData,
+            }],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              title: { display: true, text: "Top 5 Users by Museum Views" },
+            },
+          },
+        });
+      }
+    </script>
+  </section>
+
 </section>
+

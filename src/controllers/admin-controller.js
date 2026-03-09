@@ -42,6 +42,8 @@ export const adminController = {
     },
   },
 
+
+
   deleteUser: {
     handler: async function (request, h) {
       try {

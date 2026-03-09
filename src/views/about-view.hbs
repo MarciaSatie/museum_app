@@ -3,3 +3,46 @@
 <section class="section">
   <h1> Hello from MyAppMusems </h1>
 </section>
+
+{{#if showButton}}
+  <a href="/about/click" class="button is-success">Click Me!</a>
+{{/if}}
+
+<form action="/about/uploadimage" method="POST" enctype="multipart/form-data">
+  <input class="input" type="file" name="image" accept="image/*">
+  <button class="button is-primary" type="submit">Upload to Gallery</button>
+</form>
+
+{{#if error}}
+  <div class="notification is-danger">
+    {{error}}
+  </div>
+{{/if}}
+
+<hr> <section class="section">
+  <h2 class="title is-4">Museum Gallery</h2>
+  
+  <div class="columns is-multiline">
+    {{#each images}}
+      <div class="column is-one-third">
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img src="{{url}}" alt="{{name}}">
+            </figure>
+          </div>
+          <div class="card-content">
+            <p class="is-size-7 has-text-centered"><strong>{{name}}</strong></p>
+            <p class="is-size-7 has-text-centered text-muted">{{size}}</p>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+
+  {{#unless images}}
+    <div class="notification is-info is-light">
+      The gallery is currently empty. Upload your first museum artifact above!
+    </div>
+  {{/unless}}
+</section>

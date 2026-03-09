@@ -1,38 +1,34 @@
 import admin from "firebase-admin";
 import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import path from "path";
+import dotenv from "dotenv";
+dotenv.config();
 
-// Read your service account JSON file and prepare file paths.
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// This makes the code work in both environments - locally (JSON file) and on Render (env vars) without changes.
 let serviceAccount;
-if (process.env.FIREBASE_PROJECT_ID) {
-  // Production: Use environment variables from Render
-  serviceAccount = {
-    project_id: process.env.FIREBASE_PROJECT_ID,
-    private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    client_email: process.env.FIREBASE_CLIENT_EMAIL,
-  };
-} else {
-  // Local: Use JSON file
-  try{
-  serviceAccount = JSON.parse(
-      readFileSync(path.join(__dirname, "../../../fullstack01-4860e-firebase-adminsdk-fbsvc-cde202aafa.json"))
-  );
-  }catch(err){
-    console.log("Firebase Json ERROR:"+ err)
+
+// 1. Check if the local JSON file exists first
+try {
+  const jsonPath = "./service-account.json"; 
+  serviceAccount = JSON.parse(readFileSync(jsonPath, "utf8"));
+  console.log("🔑 Using local Service Account JSON");
+} catch (err) {
+  // 2. If no JSON file, look for Production Environment Variables (for Render/AWS)
+  console.log("☁️ No local JSON found, switching to Environment Variables...");
+  if (process.env.FIREBASE_PRIVATE_KEY) {
+    serviceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    };
+  } else {
+    console.error("❌ ERROR: No Firebase credentials found (JSON or ENV)!");
   }
 }
 
-// Initialize the Firebase Admin SDK with credentials and get database reference.
+// 3. Initialize Firebase
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: `https://${serviceAccount.project_id}-default-rtdb.firebaseio.com`,
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
-console.log("🔥🔥🔥 Initializing Firebase! 🔥🔥🔥🔥🔥🔥🔥🔥🔥")
-  
-export const db = admin.database();
+export const db = admin.firestore();
+export const bucket = admin.storage().bucket();
