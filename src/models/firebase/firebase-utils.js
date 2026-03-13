@@ -1,7 +1,7 @@
 import { initializeApp, applicationDefault, getApp, getApps } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
 import { db } from "./firebase-init.js";
-import { bucket } from "./firebase-init.js";
+
 
 let app;
 if (!getApps().length) {
@@ -14,24 +14,24 @@ if (!getApps().length) {
 }
 
 
-export const uploadImageToFirebase = async (filePath, filename) => {
-  const uploadOptions = {
-    destination: `museum_app/${filename}`,
-    public: true,
-    metadata: { cacheControl: "public, max-age=31536000" },
-  };
-  const [file] = await bucket.upload(filePath, uploadOptions);
-  const img_url = file.publicUrl();
+// export const uploadImageToFirebase = async (filePath, filename) => {
+//   const uploadOptions = {
+//     destination: `museum_app/${filename}`,
+//     public: true,
+//     metadata: { cacheControl: "public, max-age=31536000" },
+//   };
+//   const [file] = await bucket.upload(filePath, uploadOptions);
+//   const img_url = file.publicUrl();
 
-  const docRef = await addDataToFirestore(filename, img_url);
-  return docRef;
-};
+//   const docRef = await addDataToFirestore(filename, img_url);
+//   return docRef;
+// };
 
-async function addDataToFirestore(imgName, img_url) {
+export async function addDataToFirestore(imageInfo) {
   try {
     const docRef = await db.collection('image-db').add({
-      image: imgName,
-      url: img_url,
+      image: imageInfo.name,
+      url: imageInfo.img_url,
     });
     console.log('Document written with ID: ', docRef.id);
     return docRef;
@@ -42,23 +42,23 @@ async function addDataToFirestore(imgName, img_url) {
   
 
 
-export const getAllGalleryImages = async () => {
-  const [files] = await bucket.getFiles({ prefix: 'museum_app/' });
-  const images = await Promise.all(files.map(async (file) => {
-    const [url] = await file.getSignedUrl({
-      action: 'read',
-      expires: '03-09-2499', 
-    });
+// export const getAllGalleryImages = async () => {
+//   const [files] = await bucket.getFiles({ prefix: 'museum_app/' });
+//   const images = await Promise.all(files.map(async (file) => {
+//     const [url] = await file.getSignedUrl({
+//       action: 'read',
+//       expires: '03-09-2499', 
+//     });
 
-    return {
-      name: file.name.split('/').pop(),
-      url: url,
-      size: (file.metadata.size / 1024).toFixed(2) + " KB"
-    };
-  }));
+//     return {
+//       name: file.name.split('/').pop(),
+//       url: url,
+//       size: (file.metadata.size / 1024).toFixed(2) + " KB"
+//     };
+//   }));
 
-  return images;
-};
+//   return images;
+// };
 
 
 export const deleteOldestIfLimitReached = async (limit = 6) => {

@@ -24,7 +24,7 @@ export const webRoutes = [
   { method: "GET", path: "/about", config: aboutController.index },
   { method: "GET", path: "/about/click", config: aboutController.clickMe },
   { method: "POST", path: "/about/uploadimage", config:aboutController.uploadImage},
-  { method: "GET", path: "/about/deleteimage", config:aboutController.deleteImage},
+  { method: "GET", path: "/about/deleteimage/{id*}", config: aboutController.deleteImage },
 
   { method: "GET", path: "/dashboard", config: dashboardController.index },
   { method: "POST", path: "/dashboard/addmuseum", config: dashboardController.addMuseum },

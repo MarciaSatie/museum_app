@@ -1,5 +1,5 @@
 
-import { uploadImageToFirebase,getAllGalleryImages, deleteOldestIfLimitReached} from "../models/firebase/firebase-utils.js";
+import { addDataToFirestore} from "../models/firebase/firebase-utils.js";
 import { imageStore } from "../models/cloudinary.js";
 
 export const aboutController = {
@@ -25,6 +25,7 @@ export const aboutController = {
   deleteImage: {
     handler: async function (request, h) {
       const imageId = request.params.id;
+      console.log(`Delete Image ID: ${imageId}`);
       try {
         await imageStore.deleteImage(imageId);
         return h.redirect("/about");
