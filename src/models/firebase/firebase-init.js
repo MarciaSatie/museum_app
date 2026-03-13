@@ -27,7 +27,6 @@ try {
 // 3. Initialize Firebase
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
 export const db = admin.firestore();
