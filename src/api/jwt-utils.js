@@ -1,3 +1,12 @@
+/* JWT (JSON Web Token) is a compact, URL-safe token format 
+ It was used at:
+- In src/api/jwt-utils.js: for creating, decoding, and validating JWT tokens.
+- In src/server.js: to set up JWT authentication with hapi-auth-jwt2.
+- In src/api/user-api.js: to authenticate users and return a JWT token.
+- In src/models/joi-schemas.js: to define the schema for JWT responses.
+*/
+
+
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { db } from "../models/db.js";

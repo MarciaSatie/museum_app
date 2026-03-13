@@ -23,15 +23,8 @@ export const webRoutes = [
     // Payload is the "cargo" or the actual data being carried by a request. In this canse the image
   { method: "GET", path: "/about", config: aboutController.index },
   { method: "GET", path: "/about/click", config: aboutController.clickMe },
-  { method: "POST", path: "/about/uploadimage", config: {
-     ...aboutController.uploadImage,
-      payload: {
-        output: "file",
-        parse: true,
-        multipart: true,
-      },
-    },
-  },
+  { method: "POST", path: "/about/uploadimage", config:aboutController.uploadImage},
+  { method: "GET", path: "/about/deleteimage", config:aboutController.deleteImage},
 
   { method: "GET", path: "/dashboard", config: dashboardController.index },
   { method: "POST", path: "/dashboard/addmuseum", config: dashboardController.addMuseum },

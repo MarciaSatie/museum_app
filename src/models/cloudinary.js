@@ -1,12 +1,31 @@
-import { v2 as cloudinary } from "cloudinary";
+import * as cloudinary from "cloudinary";
+import { writeFileSync } from "fs";
+import dotenv from "dotenv";
 
-cloudinary.config({
+dotenv.config();
+
+const credentials = {
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+  api_secret: process.env.CLOUDINARY_API_SECRET
+};
+cloudinary.config(credentials);
 
-export const uploadImage = async (filePath) => {
-  const result = await cloudinary.uploader.upload(filePath, { folder: "museum_app" });
-  return result.secure_url;
+export const imageStore = {
+
+  getAllImages: async function() {
+    const result = await cloudinary.v2.api.resources();
+    return result.resources;
+  },
+
+  uploadImageCloudinary: async function(imagePath) {
+    try{
+      const response = await cloudinary.v2.uploader.upload(imagePath);
+      return response.url;
+    }catch(err){console.log(`UPLOAD ERROR: ${err}`)}
+  },
+
+  deleteImage: async function(img) {
+    await cloudinary.v2.uploader.destroy(img, {});
+  }
 };

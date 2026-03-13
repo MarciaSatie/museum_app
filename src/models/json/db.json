@@ -63,8 +63,18 @@
       "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
       "latitude": 52.487654,
       "longitude": -1.901234,
-      "museumVisitCount": 0,
-      "_id": "a36da44a-d69a-4864-8e7b-93541957ffc2"
+      "museumVisitCount": 1,
+      "_id": "a36da44a-d69a-4864-8e7b-93541957ffc2",
+      "exhibitions": [
+        {
+          "title": "Age of Dinosaurs",
+          "description": "Jurassic period fossils",
+          "startDate": "2026-03-01",
+          "endDate": "2026-12-31",
+          "_id": "6443fff9-d072-4d5b-9a95-86fcc39aa890",
+          "museumid": "a36da44a-d69a-4864-8e7b-93541957ffc2"
+        }
+      ]
     },
     {
       "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
