@@ -45,12 +45,15 @@ export const aboutController = {
   uploadImage: {
     handler: async function (request, h) {
       const imageFile = request.payload.image;
-  
+      let imageInfo = {};
       if (!imageFile) {
         return h.view("about-view", { error: "No file uploaded." });
       }
       console.log("File is safe to upload!");
-      await imageStore.uploadImageCloudinary(imageFile.path);
+      imageInfo.path = await imageStore.uploadImageCloudinary(imageFile.path);
+      imageInfo.name = imageFile.filename;
+      console.log("Saving to Firestore:", imageInfo);
+      await addDataToFirestore(imageInfo);
       return h.redirect("/about");
     },
     payload: {

@@ -3,6 +3,7 @@ import { getStorage } from "firebase-admin/storage";
 import { db } from "./firebase-init.js";
 
 
+
 let app;
 if (!getApps().length) {
   app = initializeApp({
@@ -21,9 +22,9 @@ if (!getApps().length) {
 //     metadata: { cacheControl: "public, max-age=31536000" },
 //   };
 //   const [file] = await bucket.upload(filePath, uploadOptions);
-//   const img_url = file.publicUrl();
+//   const path = file.publicUrl();
 
-//   const docRef = await addDataToFirestore(filename, img_url);
+//   const docRef = await addDataToFirestore(filename, path);
 //   return docRef;
 // };
 
@@ -31,12 +32,12 @@ export async function addDataToFirestore(imageInfo) {
   try {
     const docRef = await db.collection('image-db').add({
       image: imageInfo.name,
-      url: imageInfo.img_url,
+      url: imageInfo.path,
     });
-    console.log('Document written with ID: ', docRef.id);
+    console.log(`Document written with ID:  ${docRef.id}`);
     return docRef;
   } catch (error) {
-    console.error('Error adding document: ', error);
+    console.error(`Error adding document:  ${error}`);
   }
 }
   

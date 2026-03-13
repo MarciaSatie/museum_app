@@ -26,8 +26,10 @@ try {
 
 // 3. Initialize Firebase
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccount)
 });
 
+// Yellow console message with emoji
+console.log("\x1b[33m✨ FIREBASE WAS INITIALIZED ✨\x1b[0m");
+
 export const db = admin.firestore();
-export const bucket = admin.storage().bucket();
