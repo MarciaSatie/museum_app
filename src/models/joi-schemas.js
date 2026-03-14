@@ -20,12 +20,14 @@ export const ExhibitionSpec = {
   duration: Joi.number().allow("").optional(),
 };
 
-export const MuseumSpec = {
+export const MuseumSpec = Joi.object({
   title: Joi.string().required(),
-  description: Joi.string().allow("").optional(),
-  latitude: Joi.number().allow("").optional(),
-  longitude: Joi.number().allow("").optional(),
-};
+  description: Joi.string().allow(""),
+  categoryId: Joi.string().required(), // ← add this line
+  latitude: Joi.number().allow(null),
+  longitude: Joi.number().allow(null),
+  // ...other fields
+});
 
 export const JwtAuth = Joi.object()
   .keys({

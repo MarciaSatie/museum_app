@@ -1,4 +1,4 @@
-import { aboutController } from "./controllers/about-controller.js";
+import { imageGalleryController } from "./controllers/imageGallery-controller.js";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { dashboardController } from "./controllers/dashboard-controller.js";
 import { museumController } from "./controllers/museum-controller.js";
@@ -21,10 +21,10 @@ export const webRoutes = [
   { method: "GET", path: "/admin/toggleadmin/{id}", config: adminController.toggleAdmin },
 
     // Payload is the "cargo" or the actual data being carried by a request. In this canse the image
-  { method: "GET", path: "/about", config: aboutController.index },
-  { method: "GET", path: "/about/click", config: aboutController.clickMe },
-  { method: "POST", path: "/about/uploadimage", config:aboutController.uploadImage},
-  { method: "GET", path: "/about/deleteimage/{id*}", config: aboutController.deleteImage },
+  { method: "GET", path: "/imageGallery", config: imageGalleryController.index },
+  { method: "GET", path: "/imageGallery/click", config: imageGalleryController.clickMe },
+  { method: "POST", path: "/imageGallery/uploadimage", config:imageGalleryController.uploadImage},
+  { method: "GET", path: "/imageGallery/deleteimage/{id*}", config: imageGalleryController.deleteImage },
 
   { method: "GET", path: "/dashboard", config: dashboardController.index },
   { method: "POST", path: "/dashboard/addmuseum", config: dashboardController.addMuseum },
@@ -48,4 +48,5 @@ export const webRoutes = [
   // firebase Storage
 
 ];
+
 

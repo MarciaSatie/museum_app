@@ -165,6 +165,33 @@
       "longitude": -1.899876,
       "museumVisitCount": 0,
       "_id": "747d4d8e-5ef0-47ee-bc4f-a81686db922a"
+    },
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "Butler Museum",
+      "description": "A contemporary art gallery and museum in Kilkenny, Ireland. It presents a collection of works by Irish and international artists from the 18th century",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 52.6538,
+      "longitude": 72492,
+      "_id": "d9bc8252-ff18-475b-b1a1-4bd07cb7e50a"
+    },
+    {
+      "userid": "47462d66-5bd7-4c51-a208-087e292d563c",
+      "title": "Butler Gallery",
+      "description": "Butler Gallery is a contemporary art gallery and museum in Kilkenny, Ireland. It presents a collection of works by Irish and international artists from the 18th century ",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 52.6538,
+      "longitude": 72492,
+      "_id": "9c32bb8a-5131-4da7-b328-873763ecfad9"
+    },
+    {
+      "userid": "d557e25c-82e3-455f-a918-2187cbea8247",
+      "title": "test",
+      "description": "test",
+      "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
+      "latitude": 1,
+      "longitude": 1,
+      "_id": "00a544b6-0ca4-4bea-be4d-417d4c0c8505"
     }
   ],
   "exhibitions": [

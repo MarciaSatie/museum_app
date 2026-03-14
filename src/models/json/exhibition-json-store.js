@@ -33,6 +33,12 @@ export const exhibitionJsonStore = {
     await db.write();
   },
 
+  async deleteExhibitionsByMuseumId(museumId) {
+    await db.read();
+    db.data.exhibitions = db.data.exhibitions.filter(ex => ex.museumId !== museumId);
+    await db.write();
+  },
+
   async deleteAll() {
     db.data.exhibitions = [];
     await db.write();

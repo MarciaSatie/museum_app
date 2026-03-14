@@ -1,5 +1,7 @@
 import { v4 } from "uuid";
 import { db } from "./store-utils.js";
+import { museumJsonStore} from "./museum-json-store.js";
+import { exhibitionJsonStore } from "./exhibition-json-store.js";
 
 export const userJsonStore = {
   async getAllUsers() {
@@ -32,6 +34,14 @@ export const userJsonStore = {
   async deleteUserById(id) {
     await db.read();
     const index = db.data.users.findIndex((user) => user._id === id);
+  
+    // Get all museums for this user
+    const museums = await museumJsonStore.getUserMuseums(id);
+  
+    // Delete all museums and their exhibitions
+    await museumJsonStore.deleteMuseumById(museum._id);
+      
+    // Delete the user
     if (index !== -1) db.data.users.splice(index, 1);
     await db.write();
   },

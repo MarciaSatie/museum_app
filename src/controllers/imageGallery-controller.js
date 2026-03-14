@@ -3,7 +3,7 @@ import { addDataToFirestore,getAllImagesFirebase,deleteImageFromFirestore} from 
 import { imageStore } from "../models/cloudinary.js";
 import { db } from "../models/db.js";
 
-export const aboutController = {
+export const imageGalleryController = {
   index: {
     handler: async function (request, h) {
       const user = request.auth.credentials;
@@ -13,11 +13,11 @@ export const aboutController = {
       const museums = await db.museumStore.getAllMuseums();
 
       const viewData = {
-        title: "About MyAppMusems",
+        title: "imageGallery MyAppMusems",
         user,
         isAdmin,
       };
-      return h.view("about-view", {
+      return h.view("imageGallery-view", {
         title: "Museum Gallery",
         images: images, // pass the array of images to Handlebars
         museums: museums,
@@ -34,9 +34,9 @@ export const aboutController = {
       try {
         await deleteImageFromFirestore(imageId);
         await imageStore.deleteImage(imageId);
-        return h.redirect("/about");
+        return h.redirect("/imageGallery");
       } catch (error) {
-        return h.view("about-view", { error: "Failed to delete image." });
+        return h.view("imageGallery-view", { error: "Failed to delete image." });
       }
     },
   },
@@ -44,12 +44,13 @@ export const aboutController = {
   clickMe: {
     handler: function (request, h) {
       console.log("ClickMe!!");
-      return h.redirect("/about");
+      return h.redirect("/imageGallery");
     },
   },
   
   uploadImage: {
     handler: async function (request, h) {
+      const user = request.auth.credentials;
       const imageFile = request.payload.image;
       const museumId = request.payload.museumId;
       const museums = await db.museumStore.getAllMuseums();
@@ -57,16 +58,17 @@ export const aboutController = {
 
       let imageInfo = {};
       if (!imageFile) {
-        return h.view("about-view", { error: "No file uploaded." });
+        return h.view("imageGallery-view", { error: "No file uploaded." });
       }
       console.log("File is safe to upload!");
       imageInfo.museum= museumId;
       imageInfo.museumTitle = museumObj.title;
       imageInfo.path = await imageStore.uploadImageCloudinary(imageFile.path);
       imageInfo.name = imageFile.filename;
+      imageInfo.userId = user._id;
       console.log("Saving to Firestore:", imageInfo);
       await addDataToFirestore(imageInfo);
-      return h.redirect("/about");
+      return h.redirect("/imageGallery");
     },
     payload: {
       multipart: true,
@@ -78,4 +80,5 @@ export const aboutController = {
   },
 
 };
+
 

@@ -84,7 +84,7 @@ museum_app/
 │   │   ├── museum-controller.js
 │   │   ├── category-controller.js
 │   │   ├── admin-controller.js
-│   │   └── about-controller.js
+│   │   └── imageGallery-controller.js
 │   ├── models/
 │   │   ├── db.js                 # Database initialization
 │   │   ├── joi-schemas.js        # Validation schemas
@@ -108,7 +108,7 @@ museum_app/
 │       ├── partials/             # Reusable template components
 │       ├── login-view.hbs
 │       ├── signup-view.hbs
-│       ├── about-view.hbs
+│       ├── imageGallery-view.hbs
 │       ├── dashboard-view.hbs
 │       ├── museum-view.hbs
 │       ├── category-list-view.hbs
@@ -171,7 +171,7 @@ museum_app/
 - **Categories**: Manage and view museum categories
 - **User Profile**: Update personal information (name, email)
 - **Admin Panel**: User management interface (admin only)
-- **About**: Information about the application
+- **imageGallery**: Information imageGallery the application
 - **Login/Signup**: Authentication pages
 - **API Documentation**: Swagger UI for API exploration
 
@@ -253,7 +253,7 @@ npm test
 - `GET /admin/toggleadmin/{id}` - Toggle admin role
 
 #### General Routes
-- `GET /about` - About page
+- `GET /imageGallery` - imageGallery page
 
 ---
 
@@ -424,3 +424,4 @@ Prettier is configured for automatic code formatting.
 - Real-time updates with WebSockets
 - Museum sharing and reviews
 - Geolocation features with maps integration
+

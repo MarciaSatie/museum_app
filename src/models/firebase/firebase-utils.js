@@ -35,6 +35,7 @@ export async function addDataToFirestore(imageInfo) {
       musuem:imageInfo.museum,
       museumTitle: imageInfo.museumTitle,
       url: imageInfo.path,
+      userId: imageInfo.userId,
       date: date
     });
     console.log(`Document written with ID:  ${docRef.id}`);

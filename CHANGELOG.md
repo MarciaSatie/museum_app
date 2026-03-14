@@ -16,7 +16,7 @@
 
 ## version 0.2.0
 
-- about controller + view added
+- imageGallery controller + view added
 - introduce track model
 - playlist controller + view & partials added
 - support adding trackApi to playlists
@@ -40,3 +40,4 @@
 - simple in-memory playlist and user models
 - account controller + views & partials
 - playlist controller + views & partials
+
