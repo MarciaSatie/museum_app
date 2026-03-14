@@ -1,0 +1,16 @@
+branch-defaults:
+  feature/aws:
+    environment: null
+    group_suffix: null
+global:
+  application_name: museum_app
+  branch: feature/aws
+  default_platform: Node.js 24 running on 64bit Amazon Linux 2023
+  default_region: us-west-2
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: museum_app
+  sc: git
+  workspace_type: Application
