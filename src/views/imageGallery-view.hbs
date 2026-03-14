@@ -24,15 +24,31 @@
         <select name="museumId" required>
           <option value="">-- Choose a museum --</option>
           {{#each museums}}
-            <option value="{{_id}}">{{title}}</option>
+            <option value="{{_id}}">{{title}} </option>
           {{/each}}
         </select>
       </div>
     </div>
   </div>
+
+  <div class="field">
+    <label class="label">Select Exhibition</label>
+    <div class="control">
+      <div class="select">
+        <select name="exhibitionId" required>
+          <option value="">-- Choose an exhibition --</option>
+          {{#each exhibitions}}
+            <option value="{{_id}}">{{title}} ({{exhibitionId}})</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </div>
+
   <input class="input" type="file" name="image" accept="image/*">
   <button class="button is-primary" type="submit">Upload to Gallery</button>
 </form>
+
 
 {{#if error}}
   <div class="notification is-danger">
@@ -55,7 +71,9 @@
           <div class="card-content">
             <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
             <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
             <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
             <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
           </div>
           {{!-- <a class="button is-info is-small" href="/imageGallery/editimage/{{id}}">
@@ -80,3 +98,31 @@
     </div>
   {{/unless}}
 </section>
+
+{{!--REFERENCE: https://stackoverflow.com/questions/65902143/adding-event-listener-to-multiple-select-elements-in-js --}}
+<script>
+  // Extract all exhibitions from the museums array into a single flat list
+  const museums = {{{json museums}}};
+  const exhibitions = museums.flatMap(m => m.exhibitions || []);
+
+  const museumSelect = document.querySelector('select[name="museumId"]');
+  const exhibitionSelect = document.querySelector('select[name="exhibitionId"]');
+
+  museumSelect.addEventListener('change', function() {
+    const selectedMuseumId = this.value;
+    
+    // Clear exhibition options
+    exhibitionSelect.innerHTML = '<option value="">-- Choose an exhibition --</option>';
+    
+    // Filter the flattened list
+    const filtered = exhibitions.filter(ex => ex.museumid === selectedMuseumId);
+    
+    // Appending exhibition as Child to 
+    filtered.forEach(ex => {
+      const option = document.createElement('option');
+      option.value = ex._id;
+      option.textContent = ex.title;
+      exhibitionSelect.appendChild(option);
+    });
+  });
+</script>
