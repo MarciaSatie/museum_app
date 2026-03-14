@@ -17,6 +17,19 @@
 
 {{!-- REFERENCE: https://stackoverflow.com/questions/51120944/html-form-upload-file --}}
 <form action="/about/uploadimage" method="POST" enctype="multipart/form-data">
+ <div class="field">
+    <label class="label">Select Museum</label>
+    <div class="control">
+      <div class="select">
+        <select name="museumId" required>
+          <option value="">-- Choose a museum --</option>
+          {{#each museums}}
+            <option value="{{_id}}">{{title}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </div>
   <input class="input" type="file" name="image" accept="image/*">
   <button class="button is-primary" type="submit">Upload to Gallery</button>
 </form>
@@ -36,20 +49,22 @@
         <div class="card">
           <div class="card-image">
             <figure class="image is-4by3">
-              <img src="{{url}}" alt="{{name}}">
+              <img src="{{url}}" alt="{{image}}">
             </figure>
           </div>
           <div class="card-content">
-            <p class="is-size-7 has-text-centered"><strong>{{name}}</strong></p>
-            <p class="is-size-7 has-text-centered text-muted">{{size}}</p>
+            <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
+            <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
           </div>
-          {{!-- <a class="button is-info is-small" href="/about/editimage/{{public_id}}">
+          {{!-- <a class="button is-info is-small" href="/about/editimage/{{id}}">
             <span class="icon">
               <i class="fas fa-edit"></i>
             </span>
             <span>Edit</span>
           </a> --}}
-          <a class="button is-danger is-small" href="/about/deleteimage/{{public_id}}">
+          <a class="button is-danger is-small" href="/about/deleteimage/{{id}}">
             <span class="icon">
               <i class="fas fa-trash"></i>
             </span>
