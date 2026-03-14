@@ -130,3 +130,10 @@ ASSIGNMENT_REQUIREMENTS.md
 fullstack01-4860e-firebase-adminsdk-*.json
 firebase-service-account.json
 service-account.json
+
+# AWS
+.elasticbeantalk/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
