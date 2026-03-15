@@ -1,5 +1,9 @@
 # Museum App
 
+To see all functionalities use this user and password:
+user: homer@simpson.com
+password: secret
+
 A full-stack web application built with Hapi.js that allows users to create, manage, and explore museums, categories, and exhibitions. This application features user authentication, persistent MongoDB storage, a responsive web interface, and a comprehensive REST API with Swagger documentation.
 
 ## 🔗 Links
