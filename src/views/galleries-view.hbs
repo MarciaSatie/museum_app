@@ -1,0 +1,85 @@
+{{> menu active="galleries"}}
+
+<section class="section">
+  <h1> Hello from MyAppMusems </h1>
+  <p>
+    Welcome to the Museum Gallery. 
+    Our digital archive is designed to bring history to your fingertips. 
+    This space is a living collection where curators can upload high-quality snapshots of artifacts and exhibits. 
+    To maintain a fast and focused browsing experience, our gallery is limited to our most recent highlights, 
+    ensuring that every time you visit, you see the very best of what our museum has to offer.
+  </p>
+</section>
+
+
+
+<hr> <section class="section">
+  <h2 class="title is-4">Museum Gallery</h2>
+  
+  <div class="columns is-multiline">
+    {{#each images}}
+      <div class="column is-one-third">
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img src="{{url}}" alt="{{image}}">
+            </figure>
+          </div>
+          <div class="card-content">
+            <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
+            <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
+            <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
+          </div>
+          {{!-- <a class="button is-info is-small" href="/imageGallery/editimage/{{id}}">
+            <span class="icon">
+              <i class="fas fa-edit"></i>
+            </span>
+            <span>Edit</span>
+          </a> --}}
+          <a class="button is-danger is-small" href="/imageGallery/deleteimage/{{id}}">
+            <span class="icon">
+              <i class="fas fa-trash"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+
+  {{#unless images}}
+    <div class="notification is-info is-light">
+      The gallery is currently empty. Upload your first museum artifact above!
+    </div>
+  {{/unless}}
+</section>
+
+{{!--REFERENCE: https://stackoverflow.com/questions/65902143/adding-event-listener-to-multiple-select-elements-in-js --}}
+<script>
+  // Extract all exhibitions from the museums array into a single flat list
+  const museums = {{{json museums}}};
+  const exhibitions = museums.flatMap(m => m.exhibitions || []);
+
+  const museumSelect = document.querySelector('select[name="museumId"]');
+  const exhibitionSelect = document.querySelector('select[name="exhibitionId"]');
+
+  museumSelect.addEventListener('change', function() {
+    const selectedMuseumId = this.value;
+    
+    // Clear exhibition options
+    exhibitionSelect.innerHTML = '<option value="">-- Choose an exhibition --</option>';
+    
+    // Filter the flattened list
+    const filtered = exhibitions.filter(ex => ex.museumid === selectedMuseumId);
+    
+    // Appending exhibition as Child to 
+    filtered.forEach(ex => {
+      const option = document.createElement('option');
+      option.value = ex._id;
+      option.textContent = ex.title;
+      exhibitionSelect.appendChild(option);
+    });
+  });
+</script>

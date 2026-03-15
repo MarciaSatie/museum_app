@@ -13,19 +13,6 @@ if (!getApps().length) {
   app = getApp();
 }
 
-// export async function getAllImagesByUserID_Firebase(userID) {
-//   try {
-//     const snapshot = await db.collection('image-db').get();
-//     const images = [];
-//     snapshot.forEach(doc => {
-//       images.push({ id: doc.id, ...doc.data() });
-//     });
-//     return images;
-//   } catch (err) {
-//     console.log(`Get all Images from Firebase FAIL: ${err}`);
-//     return [];
-//   }
-// }
 
 export async function getImagesFromCollection(collectionName) {
   try {

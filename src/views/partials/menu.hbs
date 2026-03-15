@@ -12,10 +12,11 @@
       <!-- Desktop menu (hidden on mobile) -->
       <div class="navbar-item is-hidden-mobile">
         <div class="buttons">
+          <a id="galleries" class="button" href="/galleries"> Museums Galleries </a>
           <a id="dashboard" class="button" href="/dashboard"> Museums Dashboard </a>
-          <a id="profile" class="button" href="/profile"> Profile </a>
-          <a id="imageGallery" class="button" href="/imageGallery"> User's Gallery </a>
           <a id="categories" class="button" href="/categories"> Categories </a>
+          <a id="imageGallery" class="button" href="/imageGallery"> User's Gallery </a>
+          <a id="profile" class="button" href="/profile"> Profile </a>
           {{#if isAdmin}}
             <a id="admin" class="button" href="/admin/users"> Admin </a>
           {{/if}}
@@ -23,10 +24,11 @@
         </div>
       </div>
       <!-- Mobile menu (hidden on desktop) -->
-      <a id="dashboard-mobile" class="navbar-item is-hidden-desktop" href="/dashboard"> Dashboard </a>
-      <a id="profile-mobile" class="navbar-item is-hidden-desktop" href="/profile"> Profile </a>
+      <a id="galleries-mobile" class="navbar-item is-hidden-desktop" href="/galleries"> Museums Galleries </a>
+      <a id="dashboard-mobile" class="navbar-item is-hidden-desktop" href="/dashboard"> Museums Dashboard  </a>
+      <a id="categories-mobile" class="navbar-item is-hidden-desktop" href="/categories"> Categories </a>
       <a id="imageGallery-mobile" class="navbar-item is-hidden-desktop" href="/imageGallery"> imageGallery </a>
-            <a id="categories-mobile" class="navbar-item is-hidden-desktop" href="/categories"> Categories </a>
+      <a id="profile-mobile" class="navbar-item is-hidden-desktop" href="/profile"> Profile </a>      
       {{#if isAdmin}}
         <a id="admin-mobile" class="navbar-item is-hidden-desktop" href="/admin/users"> Admin </a>
       {{/if}}

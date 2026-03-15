@@ -93,8 +93,25 @@
       "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
       "latitude": 52.485678,
       "longitude": -1.903456,
-      "museumVisitCount": 0,
-      "_id": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786"
+      "museumVisitCount": 3,
+      "_id": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786",
+      "exhibitions": [
+        {
+          "title": "Moon Landing 60 Years",
+          "description": "Apollo 11 anniversary",
+          "startDate": "2026-07-20",
+          "endDate": "2026-12-31",
+          "_id": "343d0196-0926-476a-9bf2-ea5992d58947",
+          "museumid": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786"
+        },
+        {
+          "title": "planets",
+          "artist": "Neil deGrasse Tyson (",
+          "duration": 60,
+          "_id": "0e9e479c-73de-4206-a14a-964d3ad242b1",
+          "museumid": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786"
+        }
+      ]
     },
     {
       "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
@@ -103,8 +120,26 @@
       "categoryId": "059a6cd6-a5f2-43a7-8232-87e793ab94ff",
       "latitude": 52.488123,
       "longitude": -1.897654,
-      "museumVisitCount": 0,
-      "_id": "9f16518e-e49a-40c5-a5fb-7f282fba93d4"
+      "museumVisitCount": 1,
+      "_id": "9f16518e-e49a-40c5-a5fb-7f282fba93d4",
+      "exhibitions": [
+        {
+          "title": "Renaissance Masters",
+          "description": "Da Vinci and Michelangelo",
+          "startDate": "2026-04-15",
+          "endDate": "2026-08-15",
+          "_id": "a77b19fd-d992-4ac0-9fe9-f57baa176f87",
+          "museumid": "9f16518e-e49a-40c5-a5fb-7f282fba93d4"
+        },
+        {
+          "title": "Baroque Beauty",
+          "description": "17th century European art",
+          "startDate": "2026-09-01",
+          "endDate": "2027-01-31",
+          "_id": "b10e650b-d09e-44d7-b7a8-52c91994f84d",
+          "museumid": "9f16518e-e49a-40c5-a5fb-7f282fba93d4"
+        }
+      ]
     },
     {
       "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
@@ -123,8 +158,18 @@
       "categoryId": "5741fd0e-24a6-4b5b-861f-b3e43dc9ab28",
       "latitude": 52.486789,
       "longitude": -1.902345,
-      "museumVisitCount": 0,
-      "_id": "50590e85-263c-4993-8e77-8988a3414565"
+      "museumVisitCount": 1,
+      "_id": "50590e85-263c-4993-8e77-8988a3414565",
+      "exhibitions": [
+        {
+          "title": "Coral Reefs in Crisis",
+          "description": "Ocean conservation efforts",
+          "startDate": "2026-06-08",
+          "endDate": "2026-12-31",
+          "_id": "2cc9e635-c3e8-443c-8c5f-8ebd831a3c40",
+          "museumid": "50590e85-263c-4993-8e77-8988a3414565"
+        }
+      ]
     },
     {
       "userid": "82b9f2b9-5dc3-48cb-ab6f-c7549c94a248",
@@ -343,6 +388,13 @@
       "endDate": "2026-08-26",
       "_id": "cc5e0711-1695-446c-90ca-b8bdb719ae66",
       "museumid": "747d4d8e-5ef0-47ee-bc4f-a81686db922a"
+    },
+    {
+      "title": "planets",
+      "artist": "Neil deGrasse Tyson (",
+      "duration": 60,
+      "_id": "0e9e479c-73de-4206-a14a-964d3ad242b1",
+      "museumid": "e2d80ebf-8ca1-4d0c-a558-90f0377a7786"
     }
   ]
 }

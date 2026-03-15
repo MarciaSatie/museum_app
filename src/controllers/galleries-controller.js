@@ -3,22 +3,22 @@ import { getImagesFromCollection,addDataToFirestore,getAllImagesFirebase,deleteI
 import { imageStore } from "../models/cloudinary.js";
 import { db } from "../models/db.js";
 
-export const imageGalleryController = {
+export const galleriesController = {
   index: {
     handler: async function (request, h) {
       const user = request.auth.credentials;
       const isAdmin = user && user.role === "admin";
-      const images = await getImagesFromCollection(user._id);
-      const museums = await db.museumStore.getUserMuseums(user._id);
+      const images = await getAllImagesFirebase();
+      const museums = await db.museumStore.getAllMuseums();
       const exhibitions = await db.exhibitionStore.getExhibitionsByMuseumId();
       console.log("DEBUG IMAGES:", images);
 
       const viewData = {
-        title: "imageGallery MyAppMusems",
+        title: "Check All Galleries",
         user,
         isAdmin,
       };
-      return h.view("imageGallery-view", {
+      return h.view("galleries-view", {
         title: "Museum Gallery",
         images: images, // pass the array of images to Handlebars
         museums: museums,

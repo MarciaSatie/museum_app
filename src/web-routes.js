@@ -4,6 +4,7 @@ import { dashboardController } from "./controllers/dashboard-controller.js";
 import { museumController } from "./controllers/museum-controller.js";
 import { adminController } from "./controllers/admin-controller.js";
 import { categoryController } from "./controllers/category-controller.js";
+import { galleriesController } from "./controllers/galleries-controller.js";
 
 export const webRoutes = [
   { method: "GET", path: "/", config: accountsController.index },
@@ -45,7 +46,7 @@ export const webRoutes = [
   { method: "POST", path: "/dashboard/editmuseum/{id}", config: dashboardController.editMuseum },
   
 
-  // firebase Storage
+  { method: "GET", path: "/galleries", config: galleriesController.index },
 
 ];
 
