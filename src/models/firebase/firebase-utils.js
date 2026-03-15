@@ -47,6 +47,17 @@ export async function getAllImagesFromCollectionsBesides(collectionName) {
   }
 }
 
+export async function getAllCollectionsFirebase() {
+  try {
+    const collections = await db.listCollections();
+
+    return collections;
+  } catch (err) {
+    console.log(`Get all Images from all collections FAIL: ${err}`);
+    return [];
+  }
+}
+
 export async function getAllImagesFirebase() {
   try {
     const collections = await db.listCollections();

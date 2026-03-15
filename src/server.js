@@ -97,6 +97,9 @@ async function init(options = {}) {
 
   Handlebars.registerHelper("eq", (a, b) => a === b);
   Handlebars.registerHelper("json", (context) => JSON.stringify(context)); // register a JSON helper for Handlebars
+  Handlebars.registerHelper("lookup", function(obj, field) {
+                                                              return obj && obj[field];
+                                                            });
 
   server.views({
     engines: {
