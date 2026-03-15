@@ -11,57 +11,58 @@
   </p>
 </section>
 
-
-
-<hr> <section class="section">
+<hr>
+<section class="section">
   <h2 class="title is-3">Museum Gallery</h2>
-  
-    {{#each collections}}
-      {{#each ../users}}
-        {{#if (eq this._id ../id)}}
-          <h2 class="title is-4"><strong>{{this.firstName}} {{this.lastName}}</strong> Collection</h2>
-        {{/if}}
-      {{/each}}
-
-      
-        <div class="columns is-multiline">
-          {{#each images}}
-            <div class="column is-one-third">
-              <div class="card">
-                <div class="card-image">
-                  <figure class="image is-4by3">
-                    <img src="{{url}}" alt="{{image}}">
-                  </figure>
+  {{#each collections}}
+    {{#each ../users}}
+      {{#if (eq this._id ../id)}}
+        <h2 class="title is-4"><strong>{{this.firstName}} {{this.lastName}}</strong> Collection</h2>
+        
+        <div class="swiper-container user-gallery-{{../id}}" style="width:100%; height:auto;">
+          <div class="swiper-wrapper">
+            {{#each ../images}}
+              <div class="swiper-slide">
+                <div class="card p-1" >
+                  <div class="card-image">
+                    <figure class="image is-4by3">
+                      <img src="{{url}}" alt="{{image}}" >
+                    </figure>
+                  </div>
+                  <div class="card-content">
+                    <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
+                    <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
+                    <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
+                    <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
+                    <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
+                    <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
+                  </div>
+                  <a class="button is-danger is-small" href="/imageGallery/deleteimage/{{id}}">
+                    <span class="icon">
+                      <i class="fas fa-trash"></i>
+                    </span>
+                  </a>
                 </div>
-                <div class="card-content">
-                  <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
-                  <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
-                </div>
-                {{!-- <a class="button is-info is-small" href="/imageGallery/editimage/{{id}}">
-                  <span class="icon">
-                    <i class="fas fa-edit"></i>
-                  </span>
-                  <span>Edit</span>
-                </a> --}}
-                <a class="button is-danger is-small" href="/imageGallery/deleteimage/{{id}}">
-                  <span class="icon">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                </a>
               </div>
-            </div>
-          {{/each}}
+            {{/each}}
+          </div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
         </div>
+      <script>
+        document.querySelectorAll('.swiper-container').forEach(function(container) {
+          new Swiper(container, {
+            navigation: {
+              nextEl: container.querySelector('.swiper-button-next'),
+              prevEl: container.querySelector('.swiper-button-prev'),
+            },
+            loop: true,
+            slidesPerView: 4
 
-      </br>
-      <!-- ...rest of your card... -->
+          });
+        });
+      </script>
+      {{/if}}
     {{/each}}
-
-
+  {{/each}}
 </section>
-
-{{!--REFERENCE: https://stackoverflow.com/questions/65902143/adding-event-listener-to-multiple-select-elements-in-js --}}
