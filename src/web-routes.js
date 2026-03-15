@@ -47,8 +47,7 @@ export const webRoutes = [
   
 
   { method: "GET", path: "/galleries", config: galleriesController.index },
-  //{ method: "GET", path: "/galleries/sendPostcard/{id}", config: galleriesController.sendPostcard},
-  
+  { method: "POST", path: "/galleries/sendpostcard/{id}", config: galleriesController.sendPostcard },
 
 ];
 

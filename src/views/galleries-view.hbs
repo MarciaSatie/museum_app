@@ -23,28 +23,46 @@
         <div class="swiper-container user-gallery-{{../id}}" style="width:100%; height:auto;">
           <div class="swiper-wrapper">
             {{#each ../images}}
-              <div class="swiper-slide">
-                <div class="card p-1" >
-                  <div class="card-image">
-                    <figure class="image is-4by3">
-                      <img src="{{url}}" alt="{{image}}" >
-                    </figure>
+                <div class="swiper-slide">
+                  <div class="card p-1">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img src="{{url}}" alt="{{image}}">
+                      </figure>
+                    </div>
+
+                    <div class="card-content">
+                      <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
+                      <p class="is-size-7 has-text-centered text-muted">{{size}}</p>
+
+                      <form action="/galleries/sendpostcard/{{id}}" method="POST" style="margin-top: 10px;">
+                        <div class="field has-addons">
+                          <div class="control is-expanded">
+                            <input 
+                              class="input is-small" 
+                              type="email" 
+                              name="recipientEmail" 
+                              placeholder="Send to email..." 
+                              required
+                            >
+                          </div>
+                          <div class="control">
+                            <button class="button is-info is-small" type="submit">
+                              <span class="icon">
+                                <i class="fas fa-paper-plane"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        <input type="hidden" name="message" value="Check out this artifact from the Museum Gallery: {{url}}">
+                      </form>
+                    </div>
                   </div>
-                  <div class="card-content">
-                    <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
-                    <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
-                    <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
-                    <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
-                    <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
-                    <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
-                  </div>
-                    <a class="button is-info is-small" href="/imageGallery/sendPostcard/{{id}}" style="margin-top: 5px;">
-                      <span class="icon">
-                        <i class="fas fa-paper-plane"></i>
-                      </span>
-                    </a>
                 </div>
-              </div>
             {{/each}}
           </div>
           <div class="swiper-button-next"></div>
