@@ -6,6 +6,7 @@ A full-stack web application built with Hapi.js that allows users to create, man
 
 - **GitHub Repository**: https://github.com/MarciaSatie/museum_app.git
 - **Live Deployment**: https://museum-app-2-bo7c.onrender.com
+- ** AWS Amplify Deployment ** : https://main.d2v2439p2a2dzc.amplifyapp.com/
 - **API Documentation (Swagger)**: http://localhost:3000/documentation *(when running locally)*
 
 ## 📚 API Documentation
