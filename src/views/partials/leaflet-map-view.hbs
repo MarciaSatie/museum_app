@@ -1,0 +1,29 @@
+{{!-- 
+Leaflet is a JavaScript library that draws maps in the browser, 
+using HTML and the DOM, as  controller runs on the server (Node.js), not in the browser.
+
+I had to add this Javascript code in teh client-side.
+--}}
+
+
+<div id="map-all-museums" style="height: 400px;"></div>
+<script>
+  const museums = [
+    {{#each museums}}
+      {
+        lat: {{latitude}},
+        lng: {{longitude}},
+        name: "{{title}}",
+        pov: "{{pov}}"
+      },
+    {{/each}}
+  ];
+  const map = L.map('map-all-museums').setView([museums[0].lat, museums[0].lng], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+  museums.forEach(museum => {
+    L.marker([museum.lat, museum.lng]).addTo(map)
+      .bindPopup(museum.name + "<br>POV: " + museum.pov);
+  });
+</script>

@@ -52,6 +52,9 @@ export const galleriesController = {
       });
     },
   },
+
+  
+
 };
 
 

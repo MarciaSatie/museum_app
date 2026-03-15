@@ -30,6 +30,7 @@
     "hapi-swagger": "^17.3.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.3",
+    "leaflet": "^1.9.4",
     "lowdb": "^7.0.1",
     "mongodb": "^7.1.0",
     "mongoose": "^9.2.1",

@@ -11,6 +11,7 @@
   </p>
 </section>
 
+
 <hr>
 <section class="section">
   <h2 class="title is-3">Museum Gallery</h2>
@@ -37,11 +38,11 @@
                     <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
                     <p class="is-size-7 has-text-centered text-muted"> {{size}}</p>
                   </div>
-                  <a class="button is-danger is-small" href="/imageGallery/deleteimage/{{id}}">
-                    <span class="icon">
-                      <i class="fas fa-trash"></i>
-                    </span>
-                  </a>
+                    <a class="button is-info is-small" href="/imageGallery/sendPostcard/{{id}}" style="margin-top: 5px;">
+                      <span class="icon">
+                        <i class="fas fa-paper-plane"></i>
+                      </span>
+                    </a>
                 </div>
               </div>
             {{/each}}
@@ -65,4 +66,10 @@
       {{/if}}
     {{/each}}
   {{/each}}
+</section>
+
+<hr>
+<section>
+  <h2 class="title is-3">Also check all museums in the Map.</h2>
+  {{> leaflet-map-view latitude=this.latitude longitude=this.longitude pov=this.pov title=this.title }}
 </section>
