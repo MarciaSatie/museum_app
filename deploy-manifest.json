@@ -1,6 +1,13 @@
 {
     "version": 1,
+<<<<<<< HEAD
     "framework": { "name": "hapi", "version": "21.x" },
+=======
+    "framework": { 
+      "name": "hapi", 
+      "version": "21.0.0" 
+    },
+>>>>>>> origin/main
     "routes": [
       {
         "path": "/*",
@@ -10,7 +17,11 @@
     "computeResources": [
       {
         "name": "default",
+<<<<<<< HEAD
         "runtime": "nodejs22.x",
+=======
+        "runtime": "nodejs20.x",
+>>>>>>> origin/main
         "entrypoint": "src/server.js"
       }
     ]

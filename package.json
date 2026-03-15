@@ -10,7 +10,9 @@
     "lint": "./node_modules/.bin/eslint . --ext .js",
     "test": "./node_modules/mocha/bin/_mocha --ui tdd test/**/*.js --exit",
     "build": "echo 'No frontend build needed'",
-    "postbuild": "mkdir -p .amplify-hosting/compute/default && cp -r src .amplify-hosting/compute/default/ && cp -r node_modules .amplify-hosting/compute/default/ && cp deploy-manifest.json .amplify-hosting/deploy-manifest.json || true"
+    "postbuild": "mkdir -p .amplify-hosting/compute/default && cp -r src .amplify-hosting/compute/default/ && cp -r node_modules .amplify-hosting/compute/default/ && cp deploy-manifest.json .amplify-hosting/deploy-manifest.json"
+
+
   },
   "dependencies": {
     "@google-cloud/storage": "^7.19.0",
