@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "framework": { "name": "hapi", "version": "21.x" },
+    "framework": { "name": "hapi", "version": "21.0.0" },
     "routes": [
       {
         "path": "/*",
