@@ -33,8 +33,12 @@ export const museumJsonStore = {
   async deleteMuseumById(id) {
     await db.read();
     const index = db.data.museums.findIndex((m) => m._id === id);
-    await exhibitionJsonStore.deleteExhibitionsByMuseumId(museum._id);
-    db.data.museums.splice(index, 1);
+    const museum = db.data.museums[index];
+    if (museum) {
+      await exhibitionJsonStore.deleteExhibitionsByMuseumId(museum._id);
+      db.data.museums.splice(index, 1);
+      await db.write();
+    }
     await db.write();
   },
 
