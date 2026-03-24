@@ -1,5 +1,5 @@
+import Boom from "@hapi/boom";
 import { createToken } from "./jwt-utils.js";
-import Boom from "@hapi/boom"; //imports standardized HTTP error helpers.
 import { db } from "../models/db.js";
 import { JwtAuth, UserCredentialsSpec } from "../models/joi-schemas.js";
 
@@ -17,7 +17,10 @@ export const userApi = {
           return Boom.unauthorized("Invalid password");
         }
         const token = createToken(user);
+        console.log("➡️➡️➡️ JWT token:", token);
+        
         return h.response({ success: true, token: token }).code(201);
+
       } catch (err) {
         return Boom.serverUnavailable("Database Error");
       }

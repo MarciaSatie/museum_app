@@ -1,25 +1,26 @@
+import dotenv from "dotenv";
+
 import Vision from "@hapi/vision";
 import Hapi from "@hapi/hapi";
 import Cookie from "@hapi/cookie";
 import Inert from "@hapi/inert";
 import HapiSwagger from "hapi-swagger";
-import dotenv from "dotenv";
 import path from "path";
 import Joi from "joi";
 import { fileURLToPath } from "url";
 import Handlebars from "handlebars";
+import jwt from "hapi-auth-jwt2";
 import { webRoutes } from "./web-routes.js";
 import { db } from "./models/db.js";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { userJsonStore } from "./models/json/user-json-store.js";
 import { apiRoutes } from "./api-routes.js";
-import jwt from "hapi-auth-jwt2";
 import { validate } from "./api/jwt-utils.js";
 
+dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
 
 // Helper: Migrate existing JSON users to MongoDB on first run
 async function migrateUsersToMongo() {
@@ -97,7 +98,7 @@ async function init(options = {}) {
 
   Handlebars.registerHelper("eq", (a, b) => a === b);
   Handlebars.registerHelper("json", (context) => JSON.stringify(context)); // register a JSON helper for Handlebars
-  Handlebars.registerHelper("lookup", function(obj, field) {return obj && obj[field];})
+  Handlebars.registerHelper("lookup", (obj, field) => obj && obj[field]);
 
   server.views({
     engines: {
@@ -123,7 +124,7 @@ async function init(options = {}) {
   server.auth.default("session");
 
   server.auth.strategy("jwt", "jwt", {
-    key: process.env.cookie_password,
+    key: process.env.JWT_SECRET,
     validate: validate,
     verifyOptions: { algorithms: ["HS256"] }
   });
@@ -162,6 +163,6 @@ export { init };
 
 // Only start if this file is run directly (not imported)
 // In ES modules, we check if this is the main module
-if (process.argv[1] && process.argv[1].endsWith('server.js')) {
+if (process.argv[1] && process.argv[1].endsWith("server.js")) {
   init();
 }

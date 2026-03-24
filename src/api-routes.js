@@ -27,5 +27,6 @@ export const apiRoutes = [
   { method: "DELETE", path: "/api/exhibitions/{id}", config: { ...exhibitionApi.delete, tags: ["api", "exhibitions"], description: "Delete exhibition" } },
 
   // Exposes login endpoint for API clients to get JWT.
-  { method: "POST", path: "/api/authenticate", config: { ...userApi.authenticate, tags: ["api", "users"], description: "Authenticate user and return JWT token" } },
+  { method: "POST", path: "/api/authenticate", config: { ...userApi.authenticate, tags: ["api", "users"], description: "Authenticate user and return JWT token" } }
+
 ];

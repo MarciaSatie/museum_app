@@ -13,7 +13,7 @@ export const museumService = {
   },
 
   getAuthHeaders() {
-    return { headers: { Authorization: 'Bearer ' + authToken } };
+    return { headers: { Authorization: `Bearer ${  authToken}` } };
   },
 
   // Museum endpoints

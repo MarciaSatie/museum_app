@@ -1,9 +1,10 @@
 
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 import {getAllCollectionsFirebase, getImagesFromCollection,addDataToFirestore,getAllImagesFirebase,deleteImageFromFirestore} from "../models/firebase/firebase-utils.js";
 import { imageStore } from "../models/cloudinary.js";
 import { db } from "../models/db.js";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+
 dotenv.config();
 
 export const galleriesController = {
@@ -29,7 +30,7 @@ export const galleriesController = {
                                                 })
                                               );
 
-      let allImages = [];
+      const allImages = [];
       for (const collection of collections) {
         const snapshot = await collection.get();
         snapshot.forEach(doc => {

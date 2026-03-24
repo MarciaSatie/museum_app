@@ -31,7 +31,7 @@ export async function getImagesFromCollection(collectionName) {
 export async function getAllImagesFromCollectionsBesides(collectionName) {
   try {
     const collections = await db.listCollections();
-    let allImages = [];
+    const allImages = [];
     for (const collection of collections) {
       if (collection.id !== collectionName) {
         const snapshot = await collection.get();
@@ -61,7 +61,7 @@ export async function getAllCollectionsFirebase() {
 export async function getAllImagesFirebase() {
   try {
     const collections = await db.listCollections();
-    let allImages = [];
+    const allImages = [];
     for (const collection of collections) {
       const snapshot = await collection.get();
       snapshot.forEach(doc => {
@@ -77,7 +77,7 @@ export async function getAllImagesFirebase() {
 
 export async function addDataToFirestore(imageInfo) {
   try {
-    let date = new Date().toLocaleDateString("de-DE");
+    const date = new Date().toLocaleDateString("de-DE");
     const docRef = await db.collection(imageInfo.userId,).add({
       image: imageInfo.name.slice(0,-4),
       musuem:imageInfo.museum,
@@ -100,9 +100,9 @@ export async function addDataToFirestore(imageInfo) {
 // Delete a document from Firestore by ID
 export async function deleteImageFromFirestore(docId) {
   try {
-    await db.collection('image-db').doc(docId).delete();
+    await db.collection("image-db").doc(docId).delete();
     console.log(`Document ${docId} deleted.`);
   } catch (error) {
-    console.error('Error deleting document:', error);
+    console.error("Error deleting document:", error);
   }
 }

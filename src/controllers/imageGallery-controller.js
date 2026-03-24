@@ -54,14 +54,14 @@ export const imageGalleryController = {
     handler: async function (request, h) {
       const user = request.auth.credentials;
       const imageFile = request.payload.image;
-      const museumId = request.payload.museumId;
+      const {museumId} = request.payload;
       const museums = await db.museumStore.getAllMuseums();
       const museumObj = museums.find(m => m._id === museumId||"unknow");
-      const exhibitionId = request.payload.exhibitionId;
+      const {exhibitionId} = request.payload;
       const exhibitions = await db.exhibitionStore.getAllExhibitions();
       const exhibitionObj = exhibitions.find(e => e._id === exhibitionId);
 
-      let imageInfo = {};
+      const imageInfo = {};
       if (!imageFile) {
         return h.view("imageGallery-view", { error: "No file uploaded." });
       }
