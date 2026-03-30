@@ -18,12 +18,6 @@ suite("Museum API tests", () => {
     await server.stop();
   });
 
-  setup(async () => {
-    const museums = await museumService.getAllMuseums();
-    for (const museum of museums) {
-      await museumService.deleteMuseum(museum._id);
-    }
-  });
 
   test("get all museums", async () => {
     const museums = await museumService.getAllMuseums();
