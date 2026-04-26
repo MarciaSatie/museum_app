@@ -57,6 +57,45 @@ async function migrateUsersToMongo() {
   }
 }
 
+async function bootstrapDevelopmentUsers() {
+  const shouldBootstrap = process.env.NODE_ENV !== "production" && process.env.BOOTSTRAP_DEV_USERS !== "false";
+
+  if (!shouldBootstrap) {
+    return;
+  }
+
+  const defaultUsers = [
+    {
+      firstName: "Homer",
+      lastName: "Simpson",
+      email: "homer@simpson.com",
+      password: process.env.DEV_HOMER_PASSWORD || "secret",
+      role: "admin",
+    },
+    {
+      firstName: "Marge",
+      lastName: "Simpson",
+      email: "marge@simpson.com",
+      password: process.env.DEV_MARGE_PASSWORD || "secret",
+      role: "admin",
+    },
+  ];
+
+  for (const user of defaultUsers) {
+    // eslint-disable-next-line no-await-in-loop
+    const existing = await db.userStore.getUserByEmail(user.email);
+    if (!existing) {
+      // eslint-disable-next-line no-await-in-loop
+      await db.userStore.addUser(user);
+      console.log(`Created development user: ${user.email}`);
+    } else if (existing.role !== "admin") {
+      // eslint-disable-next-line no-await-in-loop
+      await db.userStore.updateUser({ ...existing, role: "admin" });
+      console.log(`Promoted development user to admin: ${user.email}`);
+    }
+  }
+}
+
 async function init(options = {}) {
   const port = options.port ?? process.env.PORT ?? 3000;
   const server = Hapi.server({
@@ -142,10 +181,13 @@ async function init(options = {}) {
   // initialize DB - Choose storage mode:
   // db.init("memory");  // All data in RAM (fastest, lost on restart)
   // db.init("mongo");   // Users + Categories in MongoDB, Museums/Exhibitions in JSON
-  db.init();            // Default: Users + Categories in MongoDB, Museums/Exhibitions in JSON
+  await db.init();      // Default: Users + Categories in MongoDB, Museums/Exhibitions in JSON
   
   // Migrate existing JSON users to MongoDB on first run
   await migrateUsersToMongo();
+
+  // Ensure demo accounts exist for local development and test runs.
+  await bootstrapDevelopmentUsers();
 
   server.route(webRoutes);
   server.route(apiRoutes);

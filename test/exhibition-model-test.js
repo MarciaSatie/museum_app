@@ -7,7 +7,7 @@ suite("Exhibition Model tests", () => {
   let testMuseum;
 
   setup(async () => {
-    db.init();
+    await db.init();
     await db.userStore.deleteAll();
     await db.museumStore.deleteAllMuseums();
     await db.exhibitionStore.deleteAll();

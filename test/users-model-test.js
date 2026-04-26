@@ -9,7 +9,7 @@ import { maggie, testUsers } from "./fixtures.js";
 suite("User Model tests", () => {
   // Setup: initialize the store and populate test users before each suite run
   setup(async () => {
-    db.init();
+    await db.init();
     await db.userStore.deleteAll();
     for (let i = 0; i < testUsers.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop

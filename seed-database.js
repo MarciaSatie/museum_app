@@ -5,7 +5,7 @@ import { museumJsonStore } from "./src/models/json/museum-json-store.js";
 import { exhibitionJsonStore } from "./src/models/json/exhibition-json-store.js";
 
 dotenv.config();
-db.init("mongo");
+await db.init("mongo");
 
 const seedUsers = [
     { id: "47462d66-5bd7-4c51-a208-087e292d563c", name: "Homer Simpson" },

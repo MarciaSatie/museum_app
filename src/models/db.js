@@ -13,7 +13,7 @@ export const db = {
   exhibitionStore: null,
   categoryStore: null,
 
-  init(storeType) {
+  async init(storeType) {
     switch (storeType) {
       case "memory":
         // Memory mode: All data in RAM (fastest, lost on restart)
@@ -24,7 +24,7 @@ export const db = {
         break;
       case "mongo":
         // MongoDB mode: Users in cloud, museums/exhibitions in JSON
-        connectMongo();
+        await connectMongo();
         this.userStore = userMongoStore;
         this.museumStore = museumJsonStore;
         this.exhibitionStore = exhibitionJsonStore;
@@ -32,7 +32,7 @@ export const db = {
         break;
       default:
         // Default: Users in MongoDB, Museums/Exhibitions in JSON
-        connectMongo();
+        await connectMongo();
         this.userStore = userMongoStore;
         this.museumStore = museumJsonStore;
         this.exhibitionStore = exhibitionJsonStore;
