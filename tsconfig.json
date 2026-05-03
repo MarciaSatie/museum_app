@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",
+      "module": "ESNext",
+      "moduleResolution": "Bundler",
+      "allowJs": true,           
+      "checkJs": false,          
+      "noEmit": true,            
+      "strict": true,           
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "resolveJsonModule": true
+    },
+    "include": ["src/**/*", "test/**/*"]
+  }
+  

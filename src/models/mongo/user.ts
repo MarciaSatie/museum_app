@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model, InferSchemaType } from "mongoose";
+import { UserInterface } from "../types"
 
-const userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema<UserInterface>(
   {
     _id: {
       type: String,
@@ -33,4 +34,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const User = mongoose.model("User", userSchema);
+// MAGIC LINE: This creates the TypeScript interface automatically from the Schema above
+export type UserType = InferSchemaType<typeof userSchema>;
+export const UserModel = mongoose.model<UserInterface>("User", userSchema);

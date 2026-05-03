@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model, InferSchemaType } from "mongoose";
 
 // creating a new schema
 const schema = new mongoose.Schema({
@@ -10,4 +10,6 @@ const schema = new mongoose.Schema({
   updatedAt: Date,
 }, { timestamps: true });
 
-export const Category = mongoose.model("Category", schema);
+// MAGIC LINE: This creates the TypeScript interface automatically from the Schema above
+export type CategoryType = InferSchemaType<typeof schema>;
+export const CategoryModel = mongoose.model("Category", schema);

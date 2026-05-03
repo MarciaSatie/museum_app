@@ -5,12 +5,9 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon  src/server.js",
-    "start": "node src/server.js",
-    "lint": "./node_modules/.bin/eslint . --ext .js",
-    "test": "./node_modules/mocha/bin/_mocha --ui tdd test/**/*.js --exit",
-    "build": "echo 'No frontend build needed'",
-    "postbuild": "mkdir -p .amplify-hosting/compute/default && cp -r src .amplify-hosting/compute/default/ && cp -r node_modules .amplify-hosting/compute/default/ && cp deploy-manifest.json .amplify-hosting/deploy-manifest.json"
+    "dev": "tsx watch src/server.js",
+    "test": "mocha --ui tdd test/**/*.js --node-option loader=tsx --exit",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.19.0",
@@ -37,6 +34,13 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "@types/hapi__cookie": "^12.0.5",
+    "@types/hapi__hapi": "^20.0.13",
+    "@types/hapi__inert": "^5.2.10",
+    "@types/hapi__vision": "^5.5.8",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^25.6.0",
     "chai": "^6.2.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -44,6 +48,8 @@
     "eslint-plugin-import": "^2.32.0",
     "mocha": "^11.7.4",
     "nodemon": "^3.1.14",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   }
 }
