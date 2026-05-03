@@ -13,7 +13,6 @@ import jwt from "hapi-auth-jwt2";
 import { webRoutes } from "./web-routes.js";
 import { db } from "./models/db.js";
 import { accountsController } from "./controllers/accounts-controller.js";
-import { userJsonStore } from "./models/json/user-json-store.js";
 import { apiRoutes } from "./api-routes.js";
 import { validate } from "./api/jwt-utils.js";
 
@@ -21,41 +20,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-// Helper: Migrate existing JSON users to MongoDB on first run
-async function migrateUsersToMongo() {
-  try {
-    const usersInMongo = await db.userStore.getAllUsers();
-
-    // If users already exist in MongoDB, skip migration
-    if (usersInMongo && usersInMongo.length > 0) {
-      console.log(`✅ MongoDB already has ${usersInMongo.length} users - skipping migration`);
-      return;
-    }
-
-    // Get users from JSON (not used anymore)
-    const usersInJSON = await userJsonStore.getAllUsers();
-
-    if (usersInJSON && usersInJSON.length > 0) {
-      console.log(`⏳ Migrating ${usersInJSON.length} users from JSON to MongoDB...`);
-
-      await Promise.all(
-        usersInJSON.map(async (user) => {
-          try {
-            await db.userStore.addUser(user);
-          } catch (error) {
-            // Skip if user already exists (unique email constraint)
-            console.log(`⚠️ Skipped user ${user.email}: ${error.message}`);
-          }
-        })
-      );
-
-      console.log("✅ Successfully migrated users to MongoDB!");
-    }
-  } catch (error) {
-    console.log(`⚠️ Migration note: ${error.message}`);
-  }
-}
 
 async function bootstrapDevelopmentUsers() {
   const shouldBootstrap = process.env.NODE_ENV !== "production" && process.env.BOOTSTRAP_DEV_USERS !== "false";
@@ -180,11 +144,8 @@ async function init(options = {}) {
 
   // initialize DB - Choose storage mode:
   // db.init("memory");  // All data in RAM (fastest, lost on restart)
-  // db.init("mongo");   // Users + Categories in MongoDB, Museums/Exhibitions in JSON
-  await db.init();      // Default: Users + Categories in MongoDB, Museums/Exhibitions in JSON
-  
-  // Migrate existing JSON users to MongoDB on first run
-  await migrateUsersToMongo();
+  // db.init("mongo");   // All non-image data in MongoDB Atlas
+  await db.init();      // Default: All non-image data in MongoDB Atlas
 
   // Ensure demo accounts exist for local development and test runs.
   await bootstrapDevelopmentUsers();

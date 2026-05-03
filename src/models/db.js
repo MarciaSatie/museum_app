@@ -1,10 +1,10 @@
 import { userMemStore } from "./mem/user-mem-store.js";
 import { museumMemStore } from "./mem/museum-mem-store.js";
 import { exhibitionMemStore } from "./mem/exhibition-mem-store.js";
-import { museumJsonStore } from "./json/museum-json-store.js";
-import { exhibitionJsonStore } from "./json/exhibition-json-store.js";
 import { connectMongo } from "./mongo/connect.js";
 import { userMongoStore } from "./mongo/user-mongo-store.js";
+import { museumMongoStore } from "./mongo/museum-mongo-store.js";
+import { exhibitionMongoStore } from "./mongo/exhibition-mongo-store.js";
 import { categoryMongoStore } from "./mongo/category-mongo-store.js";
 
 export const db = {
@@ -23,19 +23,19 @@ export const db = {
         // Categories still unavailable in memory mode
         break;
       case "mongo":
-        // MongoDB mode: Users in cloud, museums/exhibitions in JSON
+        // MongoDB mode: All non-image data in MongoDB Atlas
         await connectMongo();
         this.userStore = userMongoStore;
-        this.museumStore = museumJsonStore;
-        this.exhibitionStore = exhibitionJsonStore;
+        this.museumStore = museumMongoStore;
+        this.exhibitionStore = exhibitionMongoStore;
         this.categoryStore = categoryMongoStore;
         break;
       default:
-        // Default: Users in MongoDB, Museums/Exhibitions in JSON
+        // Default: All non-image data in MongoDB Atlas
         await connectMongo();
         this.userStore = userMongoStore;
-        this.museumStore = museumJsonStore;
-        this.exhibitionStore = exhibitionJsonStore;
+        this.museumStore = museumMongoStore;
+        this.exhibitionStore = exhibitionMongoStore;
         this.categoryStore = categoryMongoStore;
     }
   },

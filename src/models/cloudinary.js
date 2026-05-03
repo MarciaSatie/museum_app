@@ -18,9 +18,9 @@ export const imageStore = {
     return result.resources;
   },
 
-  uploadImageCloudinary: async function(imagePath) {
+  uploadImageCloudinary: async function(imagePath, options = {}) {
     try{
-      const response = await cloudinary.v2.uploader.upload(imagePath);
+      const response = await cloudinary.v2.uploader.upload(imagePath, options);
       return response.url;
     }catch(err){console.log(`UPLOAD ERROR: ${err}`)}
   },

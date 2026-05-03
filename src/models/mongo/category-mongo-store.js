@@ -49,7 +49,7 @@ export const categoryMongoStore = {
 
   async updateCategory(category) {
     try {
-      const updated = await Category.findByIdAndUpdate(category._id, category, { new: true }).lean();
+      const updated = await Category.findByIdAndUpdate(category._id, category, { returnDocument: "after" }).lean();
       if (!updated) return null;
       return normalizeCategory(updated);
     } catch (error) {

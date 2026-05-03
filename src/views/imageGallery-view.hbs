@@ -99,7 +99,7 @@
 <script>
   // Extract all exhibitions from the museums array into a single flat list
   const museums = {{{json museums}}};
-  const exhibitions = museums.flatMap(m => m.exhibitions || []);
+  const exhibitions = {{{json exhibitions}}};
 
   const museumSelect = document.querySelector('select[name="museumId"]');
   const exhibitionSelect = document.querySelector('select[name="exhibitionId"]');

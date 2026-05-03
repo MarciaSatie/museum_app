@@ -1,7 +1,6 @@
 
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import {getAllCollectionsFirebase, getImagesFromCollection,addDataToFirestore,getAllImagesFirebase,deleteImageFromFirestore} from "../models/firebase/firebase-utils.js";
 import { imageStore } from "../models/cloudinary.js";
 import { db } from "../models/db.js";
 
@@ -12,47 +11,24 @@ export const galleriesController = {
     handler: async function (request, h) {
       const user = request.auth.credentials;
       const isAdmin = user && user.role === "admin";
-      const collections = await getAllCollectionsFirebase();
+      const images = (await imageStore.getAllImages()).map((image) => ({
+        id: image.public_id,
+        image: image.public_id.split("/").pop(),
+        url: image.secure_url || image.url,
+        museumTitle: image.context?.custom?.museumTitle || "Unknown museum",
+        exhibitionTitle: image.context?.custom?.exhibitionTitle || "Unknown exhibition",
+        date: image.created_at ? new Date(image.created_at).toLocaleDateString("de-DE") : "",
+        userName: image.context?.custom?.userName || "Unknown",
+        size: image.bytes ? `${Math.round(image.bytes / 1024)} KB` : "",
+      }));
       const museums = await db.museumStore.getAllMuseums();
       const exhibitions = await db.exhibitionStore.getExhibitionsByMuseumId();
-      const users = await db.userStore.getAllUsers();
-      const collectionObjs = await Promise.all(
-                                                collections.map(async (col) => {
-                                                  const snapshot = await col.get();
-                                                  const images = [];
-                                                  snapshot.forEach(doc => {
-                                                    images.push({ id: doc.id, ...doc.data() });
-                                                  });
-                                                  return {
-                                                    id: col.id,
-                                                    images: images // images for this collection
-                                                  };
-                                                })
-                                              );
-
-      const allImages = [];
-      for (const collection of collections) {
-        const snapshot = await collection.get();
-        snapshot.forEach(doc => {
-          allImages.push({
-            userCollection: collection.id, // collection name
-            id: doc.id,
-            ...doc.data()
-          });
-        });
-      }
-
-      
-
-
 
       return h.view("galleries-view", {
         title: "Museum Gallery",
-        collections: collectionObjs,
-        images: collectionObjs.images,
+        images,
         museums,
         exhibitions,
-        users,
         user,
         isAdmin
       });
@@ -72,16 +48,9 @@ export const galleriesController = {
       const { recipientEmail } = request.payload;
       const imageId = request.params.id;
     
-      // Find the image by ID (assuming you have a function or array of images)
-      const museums = await db.museumStore.getAllMuseums();
-      let imageUrl = "";
-      for (const museum of museums) {
-        const found = museum.images?.find(img => img.id === imageId);
-        if (found) {
-          imageUrl = found.url;
-          break;
-        }
-      }
+      const images = await imageStore.getAllImages();
+      const foundImage = images.find((image) => image.public_id === imageId);
+      const imageUrl = foundImage?.secure_url || foundImage?.url || "";
     
       await transporter.sendMail({
         from: process.env.EMAIL,

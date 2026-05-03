@@ -43,7 +43,11 @@ export const museumApi = {
 
     handler: async function(request, h) {
       try {
-        const museum = await db.museumStore.addMuseum(request.payload);
+        const ownerId = request.auth.credentials?._id;
+        const museum = await db.museumStore.addMuseum({
+          ...request.payload,
+          userid: ownerId,
+        });
         return h.response(museum).code(201);
       } catch (err) {
         console.log("Error details:", err);

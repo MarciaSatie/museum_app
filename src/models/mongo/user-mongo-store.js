@@ -47,7 +47,7 @@ export const userMongoStore = {
 
   async updateUser(user) {
     try {
-      const updated = await User.findByIdAndUpdate(user._id, user, { new: true }).lean();
+      const updated = await User.findByIdAndUpdate(user._id, user, { returnDocument: "after" }).lean();
       return normalizeUser(updated);
     } catch (error) {
       return null;

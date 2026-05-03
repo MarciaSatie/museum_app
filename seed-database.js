@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import { db } from "./src/models/db.js";
 import { categoryMongoStore } from "./src/models/mongo/category-mongo-store.js";
-import { museumJsonStore } from "./src/models/json/museum-json-store.js";
-import { exhibitionJsonStore } from "./src/models/json/exhibition-json-store.js";
+import { museumMongoStore } from "./src/models/mongo/museum-mongo-store.js";
+import { exhibitionMongoStore } from "./src/models/mongo/exhibition-mongo-store.js";
 
 dotenv.config();
 await db.init("mongo");
@@ -43,10 +43,10 @@ const seedUsers = [
    * @returns return the new Information added in the database or return the current one, if already exists.
    */
   async function ensureMuseum(museumData) {
-    const museums = await museumJsonStore.getAllMuseums();
+    const museums = await museumMongoStore.getAllMuseums();
     const found = museums.find((m) => m.userid === museumData.userid && m.title === museumData.title);
     if (found) return found;
-    return museumJsonStore.addMuseum(museumData);
+    return museumMongoStore.addMuseum(museumData);
   }
   
   async function seedHomerMuseums(categoryIds) {
@@ -176,10 +176,10 @@ const seedUsers = [
   
   // === EXHIBITION HELPERS ===
   async function ensureExhibition(museumId, exhibitionData) {
-    const exhibitions = await exhibitionJsonStore.getAllExhibitions();
+    const exhibitions = await exhibitionMongoStore.getAllExhibitions();
     const found = exhibitions.find((e) => e.museumid === museumId && e.title === exhibitionData.title);
     if (found) return found;
-    return exhibitionJsonStore.addExhibition(museumId, exhibitionData);
+    return exhibitionMongoStore.addExhibition(museumId, exhibitionData);
   }
   
   async function seedExhibitions(museums) {
