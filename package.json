@@ -2,10 +2,10 @@
   "name": "app_museum",
   "version": "0.4.0",
   "description": "A Playlist application for the HDip in Computing, WIT",
-  "main": "src/server.js",
+  "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.js",
+    "dev": "tsx watch src/server.ts",
     "test": "mocha --ui tdd test/**/*.js --node-option loader=tsx --exit",
     "type-check": "tsc --noEmit"
   },

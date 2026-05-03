@@ -4,7 +4,7 @@ import { UserModel, type UserType} from "./user";
 
 // Helper function to ensure _id is treated as a string
 // 'any' is used here because Mongoose objects can be messy before normalization
-const normalizeUserType = (user: any): UserType | null => {
+const normalizeUser = (user: any): UserType | null => {
   if (user && user._id) {
     return { ...user, _id: String(user._id) };
   }
@@ -14,52 +14,57 @@ const normalizeUserType = (user: any): UserType | null => {
 export const userMongoStore = {
   async getAllUserTypes(): Promise<UserType[]> {
     const users = await UserModel.find().lean();
-    return users.map((u) => normalizeUserType(u) as UserType);
+    return users.map((u) => normalizeUser(u) as UserType);
   },
 
-  async getUserTypeById(id: string): Promise<UserType | null> {
+  // async getUserByEmail(email: string): Promise<UserType | null> { // was getUserTypeByEmail
+  //   const user = await UserModel.findOne({ email: email }).lean();
+  //   return normalizeUser(user);
+  // },
+
+  async getUserById(id: string): Promise<UserType | null> {
     try {
       if (!id) return null;
       const user = await UserModel.findOne({ _id: id }).lean();
-      return normalizeUserType(user);
+      return normalizeUser(user);
     } catch (error) {
       return null;
     }
   },
 
-  async addUserType(user: UserType): Promise<UserType | null> {
+  async addUser(user: UserType): Promise<UserType | null> {
     console.log("💾 Adding user to MongoDB:", user.email);
     try {
       // Ensure _id is present (matching your UUID logic)
       const userData = { ...user, _id: user._id || v4() };
-      const newUserType = new UserModel(userData);
-      const userObj = await newUserType.save();
+      const newUser = new UserModel(userData);
+      const userObj = await newUser.save();
       
-      console.log("✅ UserType saved to MongoDB with _id:", userObj._id);
-      return await this.getUserTypeById(String(userObj._id));
+      console.log("✅ User saved to MongoDB with _id:", userObj._id);
+      return await this.getUserById(String(userObj._id));
     } catch (error: any) {
       console.error("❌ Error adding user:", error.message);
       throw error;
     }
   },
 
-  async getUserTypeByEmail(email: string): Promise<UserType | null> {
+  async getUserByEmail(email: string): Promise<UserType | null> {
     const user = await UserModel.findOne({ email: email }).lean();
-    return normalizeUserType(user);
+    return normalizeUser(user);
   },
 
-  async updateUserType(user: UserType): Promise<UserType | null> {
+  async updateUser(user: UserType): Promise<UserType | null> {
     try {
       const updated = await UserModel.findByIdAndUpdate(user._id, user, { 
         returnDocument: "after" 
       }).lean();
-      return normalizeUserType(updated);
+      return normalizeUser(updated);
     } catch (error) {
       return null;
     }
   },
 
-  async deleteUserTypeById(id: string): Promise<void> {
+  async deleteUserById(id: string): Promise<void> {
     try {
       await UserModel.deleteOne({ _id: id });
     } catch (error) {

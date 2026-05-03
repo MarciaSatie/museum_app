@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, InferSchemaType } from "mongoose";
-import { MuseumInterface} from "../types"
-const museumSchema = new mongoose.Schema<MuseumInterface>(
+
+const museumSchema = new mongoose.Schema(
   {
     _id: { type: String,},
     userid: { type: String, required: true, index: true,},

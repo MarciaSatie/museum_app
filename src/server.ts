@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-
 import Vision from "@hapi/vision";
 import Hapi from "@hapi/hapi";
 import Cookie from "@hapi/cookie";
@@ -9,24 +8,21 @@ import path from "path";
 import Joi from "joi";
 import { fileURLToPath } from "url";
 import Handlebars from "handlebars";
-import jwt from "hapi-auth-jwt2";
-import { webRoutes } from "./web-routes.js";
-import { db } from "./models/db.js";
-import { accountsController } from "./controllers/accounts-controller.js";
-import { apiRoutes } from "./api-routes.js";
-import { validate } from "./api/jwt-utils.js";
+import * as jwt from "hapi-auth-jwt2";
+import { webRoutes } from "./web-routes";
+import { db } from "./models/db";
+import { accountsController } from "./controllers/accounts-controller";
+import { apiRoutes } from "./api-routes";
+import { validate } from "./api/jwt-utils";
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 async function bootstrapDevelopmentUsers() {
   const shouldBootstrap = process.env.NODE_ENV !== "production" && process.env.BOOTSTRAP_DEV_USERS !== "false";
 
-  if (!shouldBootstrap) {
-    return;
-  }
+  if (!shouldBootstrap) return;
 
   const defaultUsers = [
     {
@@ -46,67 +42,60 @@ async function bootstrapDevelopmentUsers() {
   ];
 
   for (const user of defaultUsers) {
-    // eslint-disable-next-line no-await-in-loop
-    const existing = await db.userStore.getUserByEmail(user.email);
+    // Use '!' because we know db.init() has been called by now
+    const existing = await db.userStore!.getUserByEmail(user.email);
     if (!existing) {
-      // eslint-disable-next-line no-await-in-loop
-      await db.userStore.addUser(user);
+      await db.userStore!.addUser(user as any);
       console.log(`Created development user: ${user.email}`);
     } else if (existing.role !== "admin") {
-      // eslint-disable-next-line no-await-in-loop
-      await db.userStore.updateUser({ ...existing, role: "admin" });
+      await db.userStore!.updateUser({ ...existing, role: "admin" });
       console.log(`Promoted development user to admin: ${user.email}`);
     }
   }
 }
 
-async function init(options = {}) {
+// Add ': any' to options so TypeScript doesn't complain about empty objects
+async function init(options: any = {}) {
   const port = options.port ?? process.env.PORT ?? 3000;
   const server = Hapi.server({
     port,
   });
 
-  await server.register(jwt);
-  // Swagger configuration
-  const swaggerOptions = {
-    info: {
-      title: "Museum API Documentation",
-      version: "0.4.0",
-      description: "API for managing museums, categories, and exhibitions",
-    },
-    documentationPath: "/documentation",
-    auth: false,
-    grouping: "tags",
-    securityDefinitions: {
-      jwt: {
-        type: "apiKey",
-        name: "Authorization",
-        in: "header",
-      },
-    },
-    security: [{ jwt: [] }],
-  };
-
+  // Register plugins
+  // Register plugins
   await server.register([
+    jwt,
+    Cookie,
     Inert,
     Vision,
     {
       plugin: HapiSwagger,
-      options: swaggerOptions,
+      options: {
+        info: {
+          title: "Museum API Documentation",
+          version: "0.4.0",
+          description: "API for managing museums, categories, and exhibitions",
+        },
+        documentationPath: "/documentation",
+        auth: false,
+        grouping: "tags",
+        securityDefinitions: {
+          jwt: { type: "apiKey", name: "Authorization", in: "header" },
+        },
+        security: [{ jwt: [] }],
+      },
     },
-  ]);
+  ] as any); // <--- Add 'as any' here
 
-  await server.register(Cookie);
+
   server.validator(Joi);
 
   Handlebars.registerHelper("eq", (a, b) => a === b);
-  Handlebars.registerHelper("json", (context) => JSON.stringify(context)); // register a JSON helper for Handlebars
+  Handlebars.registerHelper("json", (context) => JSON.stringify(context));
   Handlebars.registerHelper("lookup", (obj, field) => obj && obj[field]);
 
   server.views({
-    engines: {
-      hbs: Handlebars,
-    },
+    engines: { hbs: Handlebars },
     relativeTo: __dirname,
     path: "./views",
     layoutPath: "./views/layouts",
@@ -117,41 +106,38 @@ async function init(options = {}) {
   
   server.auth.strategy("session", "cookie", {
     cookie: {
-      name: process.env.cookie_name,
-      password: process.env.cookie_password,
+      name: process.env.cookie_name || "session",
+      password: process.env.cookie_password || "secret-password-must-be-32-chars-long",
       isSecure: false,
     },
     redirectTo: "/",
-    validate: accountsController.validate,
+    validate: (accountsController as any).validate,
   });
   server.auth.default("session");
 
   server.auth.strategy("jwt", "jwt", {
-    key: process.env.JWT_SECRET,
+    key: process.env.JWT_SECRET || "secret",
     validate: validate,
     verifyOptions: { algorithms: ["HS256"] }
   });
 
-
-  // Log errors to console for debugging
   server.ext("onPreResponse", (request, h) => {
-    const { response } = request;
+    const { response } = request as any;
     if (response && response.isBoom) {
       console.error("Route error:", response);
     }
     return h.continue;
   });
 
-  // initialize DB - Choose storage mode:
-  // db.init("memory");  // All data in RAM (fastest, lost on restart)
-  // db.init("mongo");   // All non-image data in MongoDB Atlas
-  await db.init();      // Default: All non-image data in MongoDB Atlas
+  // Initialize DB first
+  await db.init("mongo");
 
-  // Ensure demo accounts exist for local development and test runs.
+  // Then bootstrap users
   await bootstrapDevelopmentUsers();
 
-  server.route(webRoutes);
-  server.route(apiRoutes);
+  server.route(webRoutes as any);
+  server.route(apiRoutes as any);
+  
   await server.start();
   console.log("Server running on %s", server.info.uri);
   return server;
@@ -164,8 +150,8 @@ process.on("unhandledRejection", (err) => {
 
 export { init };
 
-// Only start if this file is run directly (not imported)
-// In ES modules, we check if this is the main module
-if (process.argv[1] && process.argv[1].endsWith("server.js")) {
+// Check if file is run directly
+const currentFilePath = fileURLToPath(import.meta.url);
+if (process.argv[1] && (process.argv[1] === currentFilePath || process.argv[1].endsWith("server.ts"))) {
   init();
 }
