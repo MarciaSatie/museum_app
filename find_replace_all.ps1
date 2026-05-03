@@ -28,18 +28,40 @@ param (
     [string]$oldWord,
 
     [Parameter(Mandatory=$true)]
-    [string]$newWord
+    [string]$newWord,
+
+    [Parameter(Mandatory=$false)]
+    [string]$path = "." # Default to current directory if not provided
 )
 
 # --- STEP 1: RENAME WORDS INSIDE FILES ---
-Get-ChildItem -Path "." -Recurse -File | ForEach-Object {
+Write-Host "Searching and replacing '$oldWord' with '$newWord' in files within '$path'..."
+Get-ChildItem -Path $path -Recurse -File | ForEach-Object {
     $content = Get-Content $_.FullName -Raw
     if ($content -match $oldWord) {
         $content -replace $oldWord, $newWord | Set-Content $_.FullName
     }
 }
 # --- STEP 2: RENAME THE FILES ---
-Get-ChildItem -Path "." -Filter "*$oldWord*" -Recurse | Where-Object { !$_.PSIsContainer } | Rename-Item -NewName { $_.Name -replace $oldWord, $newWord }
+Write-Host "Renaming files containing '$oldWord' to '$newWord' within '$path'..."
+Get-ChildItem -Path $path -Filter "*$oldWord*" -Recurse | Where-Object { !$_.PSIsContainer } | ForEach-Object {
+    $newName = $_.Name -replace $oldWord, $newWord
+    $newPath = Join-Path $_.DirectoryName $newName
+    if (Test-Path $newPath) {
+        Write-Warning "Skipping file rename: '$newPath' already exists."
+    } else {
+        Rename-Item -Path $_.FullName -NewName $newName
+    }
+}
 
 # --- STEP 3: RENAME THE FOLDERS ---
-Get-ChildItem -Path "." -Filter "*$oldWord*" -Recurse | Where-Object { $_.PSIsContainer } | Rename-Item -NewName { $_.Name -replace $oldWord, $newWord }
+Write-Host "Renaming folders containing '$oldWord' to '$newWord' within '$path'..."
+Get-ChildItem -Path $path -Filter "*$oldWord*" -Recurse | Where-Object { $_.PSIsContainer } | ForEach-Object {
+    $newName = $_.Name -replace $oldWord, $newWord
+    $newPath = Join-Path $_.Parent.FullName $newName
+    if (Test-Path $newPath) {
+        Write-Warning "Skipping folder rename: '$newPath' already exists."
+    } else {
+        Rename-Item -Path $_.FullName -NewName $newName
+    }
+}
