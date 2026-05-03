@@ -1,17 +1,20 @@
-
-import nodemailer from "nodemailer";
+import * as nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import { imageStore } from "../models/cloudinary.js";
-import { db } from "../models/db.js";
+import { Request, ResponseToolkit } from "@hapi/hapi";
+import { imageStore } from "../models/cloudinary"; // Removed .js
+import { db } from "../models/db"; // Removed .js
 
 dotenv.config();
 
 export const galleriesController = {
   index: {
-    handler: async function (request, h) {
-      const user = request.auth.credentials;
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const user = request.auth.credentials as any;
       const isAdmin = user && user.role === "admin";
-      const images = (await imageStore.getAllImages()).map((image) => ({
+      
+      // Map Cloudinary resources to your view format
+      const rawImages = await imageStore.getAllImages();
+      const images = rawImages.map((image: any) => ({
         id: image.public_id,
         image: image.public_id.split("/").pop(),
         url: image.secure_url || image.url,
@@ -21,8 +24,9 @@ export const galleriesController = {
         userName: image.context?.custom?.userName || "Unknown",
         size: image.bytes ? `${Math.round(image.bytes / 1024)} KB` : "",
       }));
-      const museums = await db.museumStore.getAllMuseums();
-      const exhibitions = await db.exhibitionStore.getExhibitionsByMuseumId();
+
+      const museums = await db.museumStore!.getAllMuseums();
+      const exhibitions = await db.exhibitionStore!.getExhibitionsByMuseumId("");
 
       return h.view("galleries-view", {
         title: "Museum Gallery",
@@ -36,7 +40,7 @@ export const galleriesController = {
   },
 
   sendPostcard: {
-    handler: async function (request, h) {
+    handler: async function (request: Request, h: ResponseToolkit) {
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -45,24 +49,26 @@ export const galleriesController = {
         },
       });
     
-      const { recipientEmail } = request.payload;
+      const payload = request.payload as any;
+      const recipientEmail = payload.recipientEmail;
       const imageId = request.params.id;
     
       const images = await imageStore.getAllImages();
-      const foundImage = images.find((image) => image.public_id === imageId);
+      const foundImage = images.find((image: any) => image.public_id === imageId);
       const imageUrl = foundImage?.secure_url || foundImage?.url || "";
     
-      await transporter.sendMail({
-        from: process.env.EMAIL,
-        to: recipientEmail,
-        subject: "A Postcard from the Museum Gallery",
-        html: `<h1>Someone sent you a postcard!</h1><img src="${imageUrl}" alt="Postcard">`,
-      });
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL,
+          to: recipientEmail,
+          subject: "A Postcard from the Museum Gallery",
+          html: `<h1>Someone sent you a postcard!</h1><img src="${imageUrl}" alt="Postcard">`,
+        });
+      } catch (error) {
+        console.error("Email error:", error);
+      }
     
       return h.redirect("/galleries");
     }
   },
-
 };
-
-

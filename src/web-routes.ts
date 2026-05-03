@@ -1,12 +1,13 @@
-import { imageGalleryController } from "./controllers/imageGallery-controller.js";
-import { accountsController } from "./controllers/accounts-controller.js";
-import { dashboardController } from "./controllers/dashboard-controller.js";
-import { museumController } from "./controllers/museum-controller.js";
-import { adminController } from "./controllers/admin-controller.js";
-import { categoryController } from "./controllers/category-controller.js";
-import { galleriesController } from "./controllers/galleries-controller.js";
 
-export const webRoutes = [
+import { imageGalleryController } from "./controllers/imageGallery-controller";
+import { accountsController } from "./controllers/accounts-controller";
+import { dashboardController } from "./controllers/dashboard-controller";
+import { museumController } from "./controllers/museum-controller";
+import { adminController } from "./controllers/admin-controller";
+import { categoryController } from "./controllers/category-controller";
+import { galleriesController } from "./controllers/galleries-controller";
+
+export const webRoutes= [
   { method: "GET", path: "/", config: accountsController.index },
   { method: "GET", path: "/signup", config: accountsController.showSignup },
   { method: "GET", path: "/login", config: accountsController.showLogin },
@@ -15,16 +16,15 @@ export const webRoutes = [
   { method: "POST", path: "/authenticate", config: accountsController.login },
   { method: "GET", path: "/profile", config: accountsController.showProfile },
   { method: "POST", path: "/profile", config: accountsController.updateProfile },
-  { method: "GET", path: "/admin", config: { handler: (request, h) => h.redirect("/admin/users") } },
+  { method: "GET", path: "/admin", handler: (request: any, h: any) => h.redirect("/admin/users") },
   { method: "GET", path: "/admin/users", config: adminController.listUsers },
   { method: "GET", path: "/admin/users/", config: adminController.listUsers },
   { method: "GET", path: "/admin/deleteuser/{id}", config: adminController.deleteUser },
   { method: "GET", path: "/admin/toggleadmin/{id}", config: adminController.toggleAdmin },
 
-    // Payload is the "cargo" or the actual data being carried by a request. In this canse the image
   { method: "GET", path: "/imageGallery", config: imageGalleryController.index },
   { method: "GET", path: "/imageGallery/click", config: imageGalleryController.clickMe },
-  { method: "POST", path: "/imageGallery/uploadimage", config:imageGalleryController.uploadImage},
+  { method: "POST", path: "/imageGallery/uploadimage", config: imageGalleryController.uploadImage },
   { method: "GET", path: "/imageGallery/deleteimage/{id*}", config: imageGalleryController.deleteImage },
 
   { method: "GET", path: "/dashboard", config: dashboardController.index },
@@ -44,11 +44,7 @@ export const webRoutes = [
 
   { method: "GET", path: "/dashboard/editmuseum/{id}", config: dashboardController.editMuseumPage },
   { method: "POST", path: "/dashboard/editmuseum/{id}", config: dashboardController.editMuseum },
-  
 
   { method: "GET", path: "/galleries", config: galleriesController.index },
   { method: "POST", path: "/galleries/sendpostcard/{id}", config: galleriesController.sendPostcard },
-
 ];
-
-

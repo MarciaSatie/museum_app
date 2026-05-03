@@ -1,11 +1,11 @@
 import Joi from "joi";
 
-export const UserSpec = {
+export const UserSpec = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-};
+}).label("UserSpec");
 
 export const UserCredentialsSpec = Joi.object()
   .keys({
@@ -14,20 +14,23 @@ export const UserCredentialsSpec = Joi.object()
   })
   .label("UserCredentials");
 
-export const ExhibitionSpec = {
+export const ExhibitionSpec = Joi.object({
   title: Joi.string().required(),
   artist: Joi.string().required(),
-  duration: Joi.number().allow("").optional(),
-};
+  // Matching your earlier change where duration is a String
+  duration: Joi.string().allow("").optional(), 
+  description: Joi.string().allow("").optional(),
+  startDate: Joi.string().allow("").optional(),
+  endDate: Joi.string().allow("").optional(),
+}).label("ExhibitionSpec");
 
 export const MuseumSpec = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().allow(""),
-  categoryId: Joi.string().required(), // ← add this line
+  categoryId: Joi.string().required(),
   latitude: Joi.number().allow(null),
   longitude: Joi.number().allow(null),
-  // ...other fields
-});
+}).label("MuseumSpec");
 
 export const JwtAuth = Joi.object()
   .keys({

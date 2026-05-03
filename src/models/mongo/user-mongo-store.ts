@@ -12,11 +12,10 @@ const normalizeUser = (user: any): UserType | null => {
 };
 
 export const userMongoStore = {
-  async getAllUserTypes(): Promise<UserType[]> {
+  async getAllUsers(): Promise<UserType[]> { 
     const users = await UserModel.find().lean();
     return users.map((u) => normalizeUser(u) as UserType);
   },
-
   // async getUserByEmail(email: string): Promise<UserType | null> { // was getUserTypeByEmail
   //   const user = await UserModel.findOne({ email: email }).lean();
   //   return normalizeUser(user);

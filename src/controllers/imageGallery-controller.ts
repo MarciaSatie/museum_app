@@ -1,15 +1,17 @@
-import { imageStore } from "../models/cloudinary.js";
-import { db } from "../models/db.js";
+import { Request, ResponseToolkit } from "@hapi/hapi";
+import { imageStore } from "../models/cloudinary"; // Removed .js
+import { db } from "../models/db"; // Removed .js
 
 export const imageGalleryController = {
   index: {
-    handler: async function (request, h) {
-      const user = request.auth.credentials;
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const user = request.auth.credentials as any;
       const isAdmin = user && user.role === "admin";
+      
       const allImages = await imageStore.getAllImages();
       const images = allImages
-        .filter((image) => image.context?.custom?.userId === user._id)
-        .map((image) => ({
+        .filter((image: any) => image.context?.custom?.userId === user._id)
+        .map((image: any) => ({
           id: image.public_id,
           image: image.public_id.split("/").pop(),
           url: image.secure_url || image.url,
@@ -19,8 +21,10 @@ export const imageGalleryController = {
           userName: image.context?.custom?.userName || user.firstName,
           size: image.bytes ? `${Math.round(image.bytes / 1024)} KB` : "",
         }));
-      const museums = await db.museumStore.getUserMuseums(user._id);
-      const exhibitions = await db.exhibitionStore.getExhibitionsByMuseumId();
+
+      const museums = await db.museumStore!.getUserMuseums(user._id);
+      const exhibitions = await db.exhibitionStore!.getExhibitionsByMuseumId("");
+
       console.log("DEBUG IMAGES:", images);
       return h.view("imageGallery-view", {
         title: "Museum Gallery",
@@ -34,7 +38,7 @@ export const imageGalleryController = {
   },
 
   deleteImage: {
-    handler: async function (request, h) {
+    handler: async function (request: Request, h: ResponseToolkit) {
       const imageId = request.params.id;
       console.log(`Delete Image ID: ${imageId}`);
       try {
@@ -47,43 +51,42 @@ export const imageGalleryController = {
   },
 
   clickMe: {
-    handler: function (request, h) {
+    handler: function (request: Request, h: ResponseToolkit) {
       console.log("ClickMe!!");
       return h.redirect("/imageGallery");
     },
   },
   
   uploadImage: {
-    handler: async function (request, h) {
-      const user = request.auth.credentials;
-      const imageFile = request.payload.image;
-      const {museumId} = request.payload;
-      const museums = await db.museumStore.getAllMuseums();
-      const museumObj = museums.find((museum) => museum._id === museumId);
-      const {exhibitionId} = request.payload;
-      const exhibitions = await db.exhibitionStore.getAllExhibitions();
-      const exhibitionObj = exhibitions.find((exhibition) => exhibition._id === exhibitionId);
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const user = request.auth.credentials as any;
+      const payload = request.payload as any;
+      const imageFile = payload.image;
+      const { museumId } = payload;
+      
+      const museums = await db.museumStore!.getAllMuseums();
+      const museumObj = museums.find((museum: any) => museum._id === museumId);
+      
+      const { exhibitionId } = payload;
+      const exhibitions = await db.exhibitionStore!.getAllExhibitions();
+      const exhibitionObj = exhibitions.find((exhibition: any) => exhibition._id === exhibitionId);
 
-      const imageInfo = {};
-      if (!imageFile) {
-        return h.view("imageGallery-view", { error: "No file uploaded." });
+      if (!imageFile || !museumObj || !exhibitionObj) {
+        return h.view("imageGallery-view", { error: "Missing required upload data." });
       }
+
       console.log("File is safe to upload!");
-      imageInfo.museum= museumId;
-      imageInfo.museumTitle = museumObj.title;
-      imageInfo.exhibition = exhibitionObj.title;
-      imageInfo.path = await imageStore.uploadImageCloudinary(imageFile.path, {
+      
+      await imageStore.uploadImageCloudinary(imageFile.path, {
         tags: [user._id, museumId, exhibitionId].filter(Boolean),
         context: {
           userId: user._id,
           userName: user.firstName,
-          museumTitle: museumObj?.title || "",
-          exhibitionTitle: exhibitionObj?.title || "",
+          museumTitle: museumObj.title || "",
+          exhibitionTitle: exhibitionObj.title || "",
         },
       });
-      imageInfo.name = imageFile.filename;
-      imageInfo.userId = user._id;
-      imageInfo.userName = user.firstName;
+
       return h.redirect("/imageGallery");
     },
     payload: {
@@ -92,9 +95,5 @@ export const imageGalleryController = {
       maxBytes: 209715200,
       parse: true,
     },
-
   },
-
 };
-
-

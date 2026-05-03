@@ -1,22 +1,32 @@
-import { UserSpec, UserCredentialsSpec } from "../models/joi-schemas.js";
-import { db } from "../models/db.js";
+import { default as Joi } from "joi";
+import { Request, ResponseToolkit } from "@hapi/hapi";
+import { UserSpec, UserCredentialsSpec } from "../models/joi-schemas"; 
+import { db } from "../models/db";
+
+// Add this interface to "teach" TypeScript about CookieAuth
+interface CookieRequest extends Request {
+  cookieAuth: {
+    set: (data: any) => void;
+    clear: () => void;
+  };
+}
 
 const UserSettingsSpec = {
-  firstName: UserSpec.firstName,
-  lastName: UserSpec.lastName,
-  email: UserSpec.email,
+  firstName: UserSpec.extract("firstName"),
+  lastName: UserSpec.extract("lastName"),
+  email: UserSpec.extract("email"),
 };
 
 export const accountsController = {
   index: {
     auth: false,
-    handler: function (request, h) {
+     handler: function (request: Request, h: ResponseToolkit) {
       return h.view("main", { title: "Welcome to Playlist" });
     },
   },
   showSignup: {
     auth: false,
-    handler: function (request, h) {
+     handler: function (request: Request, h: ResponseToolkit) {
       return h.view("signup-view", { title: "Sign up for Playlist" });
     },
   },
@@ -25,12 +35,15 @@ export const accountsController = {
     validate: {
       payload: UserSpec,
       options: { abortEarly: false },
-      failAction: function (request, h, error) {
-        return h.view("signup-view", { title: "Sign up error", errors: error.details }).takeover().code(400);
+      failAction: function (request: Request, h: ResponseToolkit, error: any) {
+        return h.view("signup-view", { 
+          title: "Sign up error", 
+          errors: error.details 
+        }).takeover().code(400);
       },
     },
-    handler: async function (request, h) {
-      const user = { ...request.payload };
+    handler: async function (request: Request, h: ResponseToolkit)  {
+      const user = { ...request.payload as any };
       console.log("📝 Signup attempt:", user.email);
       try {
         const existingUsers = await db.userStore.getAllUsers();
@@ -41,7 +54,7 @@ export const accountsController = {
         const newUser = await db.userStore.addUser(user);
         console.log("✅ User created:", newUser ? newUser.email : "null");
         return h.redirect("/");
-      } catch (error) {
+      } catch (error: any) {
         console.error("❌ Signup error:", error.message);
         return h.view("signup-view", { 
           title: "Sign up error", 
@@ -52,7 +65,7 @@ export const accountsController = {
   },
   showLogin: {
     auth: false,
-    handler: function (request, h) {
+     handler: function (request: Request, h: ResponseToolkit) {
       return h.view("login-view", { title: "Login to Playlist" });
     },
   },
@@ -61,40 +74,42 @@ export const accountsController = {
     validate: {
       payload: UserCredentialsSpec,
       options: { abortEarly: false },
-      failAction: function (request, h, error) {
+      // 1. Add types to failAction
+      failAction: function (request: CookieRequest, h: ResponseToolkit, error: any) {
         console.log("❌ Login validation failed:", error.details);
         return h.view("login-view", { title: "Log in error", errors: error.details }).takeover().code(400);
       },
     },
-    handler: async function (request, h) {
-      const { email, password } = request.payload;
-      console.log("Login attempt:", email);
-      const user = await db.userStore.getUserByEmail(email);
-      console.log("User found:", user ? "Yes" : "No");
-      if (user) {
-        console.log("User _id type:", typeof user._id);
-        console.log("User _id value:", user._id);
-        console.log("Password match:", user.password === password);
-      }
+    handler: async function (request: CookieRequest, h: ResponseToolkit) {
+      // 1. Get the data from the form
+      const { email, password } = request.payload as any;
+      
+      // 2. Find the user in the DB
+      const user = await db.userStore!.getUserByEmail(email);
+      
+      // 3. If no user or wrong password, stop here
       if (!user || user.password !== password) {
-        console.log("Login failed - redirecting to /");
+        console.log("Login failed");
         return h.redirect("/");
       }
+
+      // 4. NOW that 'user' exists, set the cookie
       console.log("Login success - setting cookie with id:", user._id);
-      request.cookieAuth.set({ id: user._id });
-      console.log("🔄 Redirecting to /dashboard");
+      request.cookieAuth.set({ id: user._id }); 
+      
       return h.redirect("/dashboard");
     },
   },
+
   logout: {
-    handler: function (request, h) {
+     handler: function (request: Request, h: ResponseToolkit) {
       request.cookieAuth.clear();
       return h.redirect("/");
     },
   },
 
   showProfile: {
-    handler: async function (request, h) {
+    handler: async function (request: Request, h: ResponseToolkit)  {
       const user = request.auth.credentials;
       const isAdmin = user && user.role === "admin";
       return h.view("profile-view", {
@@ -109,8 +124,9 @@ export const accountsController = {
     validate: {
       payload: UserSettingsSpec,
       options: { abortEarly: false },
-      failAction: function (request, h, error) {
-        const user = request.auth.credentials;
+      // 1. Add types to failAction
+      failAction: function (request: Request, h: ResponseToolkit, error: any) {
+        const user = request.auth.credentials as any; // Cast to any to read role
         const isAdmin = user && user.role === "admin";
         return h
           .view("profile-view", { title: "Profile update error", user, isAdmin, errors: error.details })
@@ -118,19 +134,27 @@ export const accountsController = {
           .code(400);
       },
     },
-    handler: async function (request, h) {
-      const user = request.auth.credentials;
-      user.firstName = request.payload.firstName;
-      user.lastName = request.payload.lastName;
-      user.email = request.payload.email;
-      await db.userStore.updateUser(user);
+    handler: async function (request: Request, h: ResponseToolkit) {
+      // 2. Cast both user and payload to any
+      const user = request.auth.credentials as any;
+      const payload = request.payload as any;
+      
+      user.firstName = payload.firstName;
+      user.lastName = payload.lastName;
+      user.email = payload.email;
+      
+      // 3. Add ! to the store
+      await db.userStore!.updateUser(user);
       return h.redirect("/dashboard");
     },
   },
 
-  async validate(request, session) {
+  // 4. Add types to the session validation
+  async validate(request: Request, session: any) {
     console.log("🔐 Validating session:", session);
-    const user = await db.userStore.getUserById(session.id);
+    // Use ! for the store and session.id is safe because of 'any'
+    const user = await db.userStore!.getUserById(session.id);
+    
     console.log("🔐 User from session:", user ? `Found (${user.email})` : "Not found");
     if (user) {
       console.log("👤 User role in session:", user.role);
@@ -143,4 +167,5 @@ export const accountsController = {
     console.log("✅ Validation success");
     return { isValid: true, credentials: user };
   },
+
 };
