@@ -18,11 +18,11 @@ export const imageStore = {
     return result.resources;
   },
 
-  // Uploads a file and returns the URL string
-  uploadImageCloudinary: async function(imagePath: string, options = {}): Promise<string | undefined> {
+  // Uploads a file and returns the full response object
+  uploadImageCloudinary: async function(imagePath: string, options = {}): Promise<any> {
     try {
       const response = await cloudinary.uploader.upload(imagePath, options);
-      return response.url;
+      return response; // Return the full response object now
     } catch (err) {
       console.log(`UPLOAD ERROR: ${err}`);
       return undefined;
