@@ -63,6 +63,9 @@ export const galleriesController = {
           user: userData,
           museum: museumData,
           exhibition: null, // Exhibition not stored as full object
+          //Social
+          likes: image.likeCount || 0,
+          isLiked: image.likedBy?.includes(user._id) || false,
         };
       });
 
@@ -129,6 +132,24 @@ export const galleriesController = {
         console.error("Email error:", error);
       }
     
+      return h.redirect("/galleries");
+    }
+  },
+
+  likeImage: {
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const user = request.auth.credentials as any;
+      const imageId = request.params.id; // from /galleries/like/{id}
+
+      // Check if already liked to toggle (Optional but better UX)
+      const alreadyLiked = await db.imageStore.isLikedByUser(imageId, user._id);
+      
+      if (alreadyLiked) {
+        await db.imageStore.unlikeImage(imageId, user._id);
+      } else {
+        await db.imageStore.likeImage(imageId, user._id);
+      }
+
       return h.redirect("/galleries");
     }
   },
