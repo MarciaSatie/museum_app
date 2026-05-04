@@ -86,4 +86,50 @@ export const imageMongoStore = {
   async deleteAllImages(): Promise<void> {
     await ImageModel.deleteMany({});
   },
+
+  async likeImage(publicId: string, userId: string): Promise<ImageType | null> {
+    try {
+      const image = await ImageModel.findOne({ publicId });
+      if (!image) return null;
+
+      // Check if user already liked
+      if (!image.likedBy.includes(userId)) {
+        image.likedBy.push(userId);
+        image.likeCount = image.likedBy.length;
+        await image.save();
+      }
+
+      return normalizeImage(image.toObject());
+    } catch (error) {
+      console.error("Error liking image:", error);
+      return null;
+    }
+  },
+
+  async unlikeImage(publicId: string, userId: string): Promise<ImageType | null> {
+    try {
+      const image = await ImageModel.findOne({ publicId });
+      if (!image) return null;
+
+      // Remove user from likedBy array
+      image.likedBy = image.likedBy.filter((id: string) => id !== userId);
+      image.likeCount = image.likedBy.length;
+      await image.save();
+
+      return normalizeImage(image.toObject());
+    } catch (error) {
+      console.error("Error unliking image:", error);
+      return null;
+    }
+  },
+
+  async isLikedByUser(publicId: string, userId: string): Promise<boolean> {
+    try {
+      const image = await ImageModel.findOne({ publicId }).lean();
+      if (!image) return false;
+      return image.likedBy.includes(userId);
+    } catch (error) {
+      return false;
+    }
+  },
 };

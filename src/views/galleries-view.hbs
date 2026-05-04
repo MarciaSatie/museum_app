@@ -33,6 +33,21 @@
             <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
             <p class="is-size-7 has-text-centered text-muted">{{size}}</p>
 
+            <!-- Likes -->
+            <div class="level is-mobile mt-2">
+              <div class="level-left">
+                <form action="/galleries/like/{{id}}" method="POST">
+                  <button class="button is-white is-small" type="submit">
+                    <span class="icon has-text-danger">
+                      <i class="fas fa-heart"></i>
+                    </span>
+                    <span>{{likes}}</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!--  Sending email Form -->
             <form action="/galleries/sendpostcard/{{id}}" method="POST" style="margin-top: 10px;">
               <div class="field has-addons">
                 <div class="control is-expanded">

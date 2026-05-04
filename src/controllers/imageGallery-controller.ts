@@ -1,4 +1,5 @@
 import { Request, ResponseToolkit } from "@hapi/hapi";
+import path from "path";
 import { imageStore } from "../models/cloudinary"; // Removed .js
 import { db } from "../models/db"; // Removed .js
 
@@ -108,13 +109,28 @@ export const imageGalleryController = {
           const today = new Date();
           const formattedDate = today.toLocaleDateString("de-DE");
           
-          // Extract image name from public_id
-          const imageName = uploadResult.public_id.split("/").pop() || "img";
-          
+          // Prefer the original uploaded filename (Hapi provides it), try multiple fallbacks,
+          // and finally fall back to the Cloudinary public_id tail.
+          console.log("Upload payload file object:", {
+            path: imageFile?.path,
+            filename_prop: imageFile?.filename,
+            hapi: imageFile?.hapi,
+          });
+
+          const fallbackFromTemp = imageFile && imageFile.path ? path.basename(String(imageFile.path)) : undefined;
+          const originalFileName =
+            (imageFile && imageFile.hapi && imageFile.hapi.filename) ||
+            (imageFile && imageFile.filename) ||
+            uploadResult.original_filename ||
+            fallbackFromTemp ||
+            (uploadResult.public_id && uploadResult.public_id.split("/").pop()) ||
+            "img";
+          console.log("Resolved originalFileName:", originalFileName);
+
           const mongoResult = await db.imageStore.addImage({
             _id: undefined,
             publicId: uploadResult.public_id,
-            image: imageName,
+            image: originalFileName,
             userId: user._id,
             userName: user.firstName, // Denormalized
             museum: museumId, // Museum ID

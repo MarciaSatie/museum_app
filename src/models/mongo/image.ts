@@ -14,6 +14,8 @@ const imageSchema = new Schema(
     date: { type: String, default: "" }, // Formatted date string
     size: { type: Number, default: 0 },
     uploadDate: { type: Date, default: () => new Date() },
+    likeCount: { type: Number, default: 0 }, // Total number of likes
+    likedBy: { type: [String], default: [] }, // Array of user IDs who liked
   },
   { timestamps: true }
 );
