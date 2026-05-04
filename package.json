@@ -35,10 +35,12 @@
   },
   "devDependencies": {
     "@types/chai": "^5.2.3",
+    "@types/hapi__boom": "^7.4.1",
     "@types/hapi__cookie": "^12.0.5",
     "@types/hapi__hapi": "^20.0.13",
     "@types/hapi__inert": "^5.2.10",
     "@types/hapi__vision": "^5.5.8",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.6.0",
     "@types/nodemailer": "^8.0.0",
