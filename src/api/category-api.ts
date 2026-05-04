@@ -4,7 +4,7 @@ import { Request, ResponseToolkit, ResponseObject } from "@hapi/hapi";
 import { db } from "../models/db";
 
 // Define the shape of a Category for your store
-interface Category {
+export interface Category {
   _id?: string;
   name: string;
   description?: string;

@@ -1,32 +1,33 @@
 import { assert } from "chai";
-import { init } from "../../src/server.js";
-import { museumService } from "./museum-service.js";
-import { testCategories } from "../fixtures.js";
+import { Server } from "@hapi/hapi";
+import { init } from "../../src/server";
+import { museumService } from "./museum-service";
+import { testCategories } from "../fixtures";
+import { Category } from "../../src/api/category-api"; 
+import "mocha";
 
-// Groups related tests together
+// Use the Category interface from your API file if exported, 
+// or define a local one for the test
+
 suite("Category API tests", () => {
-  let server;
+  let server: Server; // Type the server instance
 
-  // Runs ONCE before ALL tests in the suite
-  suiteSetup(async function() {
-    this.timeout(10000); // Increase timeout for server init + auth
+  suiteSetup(async function (this: any) {
+    this.timeout(10000);
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
-    // Authenticate before running tests
+    // Ensure these credentials match your test seed data
     await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
   });
 
-  // Runs ONCE after ALL tests in the suite
   suiteTeardown(async () => {
     await server.stop();
   });
 
-  // Runs BEFORE EACH individual test
   setup(async () => {
-    const categories = await museumService.getAllCategories();
+    const categories: Category[] = await museumService.getAllCategories();
     for (const category of categories) {
-      // eslint-disable-next-line no-await-in-loop
-      await museumService.deleteCategory(category._id);
+      await museumService.deleteCategory(category._id!);
     }
   });
 
@@ -36,33 +37,33 @@ suite("Category API tests", () => {
   });
 
   test("create a category", async () => {
-    const category = await museumService.createCategory(testCategories[0]);
+    const category: Category = await museumService.createCategory(testCategories[0]);
     assert.isNotNull(category._id);
     assert.equal(category.name, testCategories[0].name);
     assert.equal(category.description, testCategories[0].description);
   });
 
   test("get a category by id", async () => {
-    const created = await museumService.createCategory(testCategories[0]);
-    const retrieved = await museumService.getCategory(created._id);
+    const created: Category = await museumService.createCategory(testCategories[0]);
+    const retrieved: Category = await museumService.getCategory(created._id!);
     assert.equal(retrieved._id, created._id);
     assert.equal(retrieved.name, testCategories[0].name);
   });
 
   test("delete a category", async () => {
-    const created = await museumService.createCategory(testCategories[0]);
-    await museumService.deleteCategory(created._id);
+    const created: Category = await museumService.createCategory(testCategories[0]);
+    await museumService.deleteCategory(created._id!);
     try {
-      await museumService.getCategory(created._id);
+      await museumService.getCategory(created._id!);
       assert.fail("Category should be deleted");
-    } catch (err) {
+    } catch (err: any) {
+      // In TS, caught errors are 'unknown'. Use 'any' or check status property.
       assert.equal(err.response.status, 404);
     }
   });
 
   test("create multiple categories", async () => {
     for (const cat of testCategories) {
-      // eslint-disable-next-line no-await-in-loop
       await museumService.createCategory(cat);
     }
     const allCategories = await museumService.getAllCategories();
