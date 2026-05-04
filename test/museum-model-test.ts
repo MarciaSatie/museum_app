@@ -1,9 +1,12 @@
+import "mocha";
 import { assert } from "chai";
-import { db } from "../src/models/db.js";
-import { testUsers, testMuseums } from "./fixtures.js";
+import { db } from "../src/models/db";
+import { testUsers, testMuseums } from "./fixtures";
+import { User } from "../src/api/jwt-utils";
+import { Museum } from "../src/api/museum-api";
 
 suite("Museum Model tests", () => {
-  let loggedInUser;
+  let loggedInUser: User;
 
   setup(async () => {
     await db.init();
@@ -15,7 +18,7 @@ suite("Museum Model tests", () => {
   });
 
   test("add a museum", async () => {
-    const newMuseum = {
+    const newMuseum: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[0].title,
       description: testMuseums[0].description,
@@ -31,7 +34,7 @@ suite("Museum Model tests", () => {
   });
 
   test("get museum by ID", async () => {
-    const newMuseum = {
+    const newMuseum: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[0].title,
       description: testMuseums[0].description,
@@ -39,51 +42,63 @@ suite("Museum Model tests", () => {
       longitude: testMuseums[0].longitude,
     };
     const museum = await db.museumStore.addMuseum(newMuseum);
-    const retrievedMuseum = await db.museumStore.getMuseumById(museum._id);
+    const retrievedMuseum = await db.museumStore.getMuseumById(museum._id!);
     
     assert.equal(retrievedMuseum._id, museum._id);
     assert.equal(retrievedMuseum.title, museum.title);
   });
 
   test("get user museums", async () => {
-    const museum1 = {
+    const museum1: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[0].title,
       description: testMuseums[0].description,
+      latitude: testMuseums[0].latitude,
+      longitude: testMuseums[0].longitude,
     };
-    const museum2 = {
+    const museum2: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[1].title,
       description: testMuseums[1].description,
+      latitude: testMuseums[1].latitude,
+      longitude: testMuseums[1].longitude,
     };
     await db.museumStore.addMuseum(museum1);
     await db.museumStore.addMuseum(museum2);
     
-    const userMuseums = await db.museumStore.getUserMuseums(loggedInUser._id);
+    const userMuseums = await db.museumStore.getUserMuseums(loggedInUser._id!);
     assert.equal(userMuseums.length, 2);
   });
 
   test("delete museum by ID", async () => {
-    const newMuseum = {
+    const newMuseum: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[0].title,
       description: testMuseums[0].description,
+      latitude: testMuseums[0].latitude,
+      longitude: testMuseums[0].longitude,
     };
     const museum = await db.museumStore.addMuseum(newMuseum);
-    await db.museumStore.deleteMuseumById(museum._id);
+    await db.museumStore.deleteMuseumById(museum._id!);
     
-    const retrievedMuseum = await db.museumStore.getMuseumById(museum._id);
+    const retrievedMuseum = await db.museumStore.getMuseumById(museum._id!);
     assert.isUndefined(retrievedMuseum);
   });
 
   test("delete all museums", async () => {
-    const museum1 = {
+    const museum1: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[0].title,
+      description: testMuseums[0].description,
+      latitude: testMuseums[0].latitude,
+      longitude: testMuseums[0].longitude,
     };
-    const museum2 = {
+    const museum2: Museum = {
       userid: loggedInUser._id,
       title: testMuseums[1].title,
+      description: testMuseums[1].description,
+      latitude: testMuseums[1].latitude,
+      longitude: testMuseums[1].longitude,
     };
     await db.museumStore.addMuseum(museum1);
     await db.museumStore.addMuseum(museum2);

@@ -1,36 +1,51 @@
+import { User } from "../src/api/jwt-utils";
+import { Museum } from "../src/api/museum-api";
+import { Exhibition } from "../src/api/exhibition-api";
+import { Category } from "../src/api/category-api";
+
 export const serviceUrl = "http://localhost:3000";
 
-export const maggie = {
+// Define a type for Credentials since it's a subset of User
+export interface Credentials {
+  email: string;
+  password?: string;
+}
+
+export const maggie: User = {
+  _id: "", // Initializing with empty strings as User interface likely requires them
   firstName: "Maggie",
   lastName: "Simpson",
   email: "maggie@simpson.com",
   password: "secret",
 };
 
-export const maggieCredentials = {
+export const maggieCredentials: Credentials = {
   email: "maggie@simpson.com",
   password: "secret",
 };
 
-export const homerCredentials = {
+export const homerCredentials: Credentials = {
   email: "homer@simpson.com",
   password: "secret",
 };
 
-export const testUsers = [
+export const testUsers: User[] = [
   {
+    _id: "",
     firstName: "Homer",
     lastName: "Simpson",
     email: "homer@simpson.com",
     password: "secret",
   },
   {
+    _id: "",
     firstName: "Marge",
     lastName: "Simpson",
     email: "marge@simpson.com",
     password: "secret",
   },
   {
+    _id: "",
     firstName: "Bart",
     lastName: "Simpson",
     email: "bart@simpson.com",
@@ -38,7 +53,7 @@ export const testUsers = [
   },
 ];
 
-export const testMuseums = [
+export const testMuseums: Museum[] = [
   {
     title: "National Art Gallery",
     description: "A gallery featuring modern and contemporary art",
@@ -59,7 +74,7 @@ export const testMuseums = [
   },
 ];
 
-export const testExhibitions = [
+export const testExhibitions: Exhibition[] = [
   {
     title: "Modern Masters",
     artist: "Various Artists",
@@ -77,7 +92,7 @@ export const testExhibitions = [
   },
 ];
 
-export const testCategories = [
+export const testCategories: Category[] = [
   {
     name: "Art",
     description: "Fine arts and paintings",
