@@ -137,3 +137,5 @@ service-account.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+.ReadMe_Files

@@ -24,6 +24,13 @@ interface EnrichedImage {
   exhibition: ExhibitionType | null;
 }
 
+interface UserGallery {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  images: EnrichedImage[];
+}
+
 export const galleriesController = {
   index: {
     handler: async function (request: Request, h: ResponseToolkit) {
@@ -69,9 +76,36 @@ export const galleriesController = {
         };
       });
 
+      const userGalleryMap = new Map<string, UserGallery>();
+
+      for (const image of images) {
+        const userId = image.user?._id || "unknown-user";
+        const userName = image.user
+          ? `${image.user.firstName} ${image.user.lastName}`.trim()
+          : image.userName || "Unknown user";
+        const userEmail = image.user?.email || "";
+
+        const existingGallery = userGalleryMap.get(userId);
+        if (existingGallery) {
+          existingGallery.images.push(image);
+        } else {
+          userGalleryMap.set(userId, {
+            userId,
+            userName,
+            userEmail,
+            images: [image],
+          });
+        }
+      }
+
+      const userGalleries = Array.from(userGalleryMap.values()).sort((left, right) =>
+        left.userName.localeCompare(right.userName)
+      );
+
       return h.view("galleries-view", {
         title: "Museum Gallery",
         images,
+        userGalleries,
         museums,
         exhibitions,
         user,
