@@ -108,7 +108,13 @@ export const galleriesController = {
 
       // Attach comments to the matching user gallery (by galleryOwnerId)
       for (const g of Array.from(userGalleryMap.values())) {
-        const userComments = comments.filter((c: any) => String(c.galleryOwnerId) === String(g.userId));
+        let userComments = comments.filter((c: any) => String(c.galleryOwnerId) === String(g.userId));
+        // Sort newest first by createdAt
+        userComments = userComments.sort((a: any, b: any) => {
+          const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return db - da;
+        });
         g.comments = userComments;
       }
 
@@ -122,7 +128,7 @@ export const galleriesController = {
         user,
         isAdmin,
         allUsers,
-        allComments: comments // Now Handlebars can see the comments!
+        allComments: comments
       });
     },
   },
@@ -166,6 +172,59 @@ export const galleriesController = {
         return h.redirect("/galleries");
     }
     
+    },
+  },
+
+  incrementLikeComment: {
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const user = request.auth.credentials as any;
+      const commentId = request.params.id; // Corrected variable
+      console.log("DEBUG: Liking Comment ID:", commentId);
+      console.log("DEBUG: Current User ID:", user?._id);
+
+      if (!user?._id) {
+        console.error("❌ USER ID IS MISSING!");
+        return h.redirect("/galleries");
+     }
+     
+      const alreadyLiked = await db.socialStore.isLikedByUser(commentId, user._id);
+
+      if (alreadyLiked) {
+        await db.socialStore.decrementLike(commentId, user._id);
+        console.log("The ID being liked is:", commentId);
+      } else {
+        await db.socialStore.incrementLike(commentId, user._id);
+        console.log("User already liked this post")
+      }
+      
+      return h.redirect("/galleries"); 
+    },
+  },
+  
+  incrementDislikeComment: {
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const user = request.auth.credentials as any;
+      const commentId = request.params.id; // Corrected variable
+      console.log("DEBUG: Disliking Comment ID:", commentId);
+      console.log("DEBUG: Current User ID:", user?._id);
+
+      if (!user?._id) {
+        console.error("❌ USER ID IS MISSING!");
+        return h.redirect("/galleries");
+      }
+
+      const alreadyLiked = await db.socialStore.isDislikedByUser(commentId, user._id);
+
+      
+      if (alreadyLiked) {
+        await db.socialStore.decrementDislike(commentId, user._id);
+        console.log("The ID being liked is:", commentId);
+      } else {
+        await db.socialStore.incrementDislike(commentId, user._id);
+        console.log("User already liked this post")
+      }
+      
+      return h.redirect("/galleries"); 
     },
   },
 
@@ -229,7 +288,6 @@ export const galleriesController = {
       const user = request.auth.credentials as any;
       const imageId = request.params.id; // from /galleries/like/{id}
 
-      // Check if already liked to toggle (Optional but better UX)
       const alreadyLiked = await db.imageStore.isLikedByUser(imageId, user._id);
       
       if (alreadyLiked) {

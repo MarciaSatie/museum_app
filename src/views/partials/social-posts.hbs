@@ -17,10 +17,28 @@
     <div class="box" style="margin-bottom:0.5rem; min-width:0;">
         <p class="is-size-7 has-text-grey">{{displayDate}}</p>
       <p><strong>{{firstName}} {{lastName}}</strong>: {{comment}}</p>
-      <div class="tags">
-        <span class="tag is-light">Likes: {{like}}</span>
-          <span class="tag is-light">Dislikes: {{dislike}}</span>
-      </div>
+    <div class="field is-grouped">
+      <!-- Like Button -->
+      <p class="control">
+        <a href="/social/like/{{_id}}" class="button is-light is-success" title="Like">
+          <span class="icon">
+            <i class="fas fa-thumbs-up"></i>
+          </span>
+          <span>{{like}}</span>
+        </a>
+      </p>
+
+      <!-- Dislike Button -->
+      <p class="control">
+        <a href="/social/dislike/{{_id}}" class="button is-light is-danger" title="Dislike">
+          <span class="icon">
+            <i class="fas fa-thumbs-down"></i>
+          </span>
+          <span>{{dislike}}</span>
+        </a>
+      </p>
+    </div>
+
     </div>
   {{/each}}
 </div>

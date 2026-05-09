@@ -9,6 +9,8 @@ const socialSchema = new Schema(
     comment: { type: String, required: true },
     like: { type: Number, default: 0 },
     dislike: { type: Number, default: 0 },
+    likedList: { type: [String], default: [] },
+    dislikedList: { type: [String], default: [] },
   },
   { timestamps: true }
 );
