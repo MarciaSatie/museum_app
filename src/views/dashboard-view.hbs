@@ -8,8 +8,12 @@
 </section>
   {{> analytics-view}}
 
-<section class="section">
+<section>
+  <h2 class="title is-3">My Museums POI in the Map.</h2>
+  {{> leaflet-map-view latitude=this.latitude longitude=this.longitude pov=this.pov title=this.title }}
+</section>
 
+<section class="section">
   <div class="box">
     <div>
       <h2 class="title is-4">
