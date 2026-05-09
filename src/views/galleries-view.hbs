@@ -1,9 +1,11 @@
+<!-- Social Gallery Page-->
+
 {{> menu active="galleries"}}
 
 <section class="section">
   <h1> Hello from MyAppMusems </h1>
   <p>
-    Welcome to the Museum Gallery. 
+    Welcome to the Social Gallery. 
     Our digital archive is designed to bring history to your fingertips. 
     This space is a living collection where curators can upload high-quality snapshots of artifacts and exhibits. 
     To maintain a fast and focused browsing experience, our gallery is limited to our most recent highlights, 
@@ -14,7 +16,7 @@
 
 <hr>
 <section class="section">
-  <h2 class="title is-3">Museum Gallery</h2>
+  <h2 class="title is-3">Social Gallery</h2>
   {{#each userGalleries}}
     <div class="box mb-5">
       <div class="level is-mobile mb-3">
@@ -30,73 +32,86 @@
           <span class="tag is-link is-light">{{images.length}} image(s)</span>
         </div>
       </div>
+      <div class="columns is-variable is-6">
+        <div class="column is-8">
+          <div class="swiper gallery-swiper" data-gallery-swiper>
+            <div class="swiper-wrapper">
+              {{#each images}}
+                <div class="swiper-slide">
+                  <div class="card p-1">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img src="{{url}}" alt="{{image}}">
+                      </figure>
+                    </div>
 
-      <div class="swiper gallery-swiper" data-gallery-swiper>
-        <div class="swiper-wrapper">
-          {{#each images}}
-            <div class="swiper-slide">
-              <div class="card p-1">
-                <div class="card-image">
-                  <figure class="image is-4by3">
-                    <img src="{{url}}" alt="{{image}}">
-                  </figure>
-                </div>
+                    <div class="card-content">
+                      <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
+                      <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
+                      <p class="is-size-7 has-text-centered text-muted">{{size}}</p>
 
-                <div class="card-content">
-                  <p class="is-size-7 has-text-centered"><strong>Name: {{image}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>Museum: {{museumTitle}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>Exhibition: {{exhibitionTitle}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>Date: {{date}}</strong></p>
-                  <p class="is-size-7 has-text-centered"><strong>By: @{{userName}}</strong></p>
-                  <p class="is-size-7 has-text-centered text-muted">{{size}}</p>
+                      <div class="level is-mobile mt-2">
+                        <div class="level-left">
+                          <form action="/galleries/like/{{id}}" method="POST">
+                            <button class="button is-white is-small" type="submit">
+                              <span class="icon has-text-danger">
+                                <i class="fas fa-heart"></i>
+                              </span>
+                              <span>{{likes}}</span>
+                            </button>
+                          </form>
+                        </div>
+                      </div>
 
-                  <!-- Likes -->
-                  <div class="level is-mobile mt-2">
-                    <div class="level-left">
-                      <form action="/galleries/like/{{id}}" method="POST">
-                        <button class="button is-white is-small" type="submit">
-                          <span class="icon has-text-danger">
-                            <i class="fas fa-heart"></i>
-                          </span>
-                          <span>{{likes}}</span>
-                        </button>
+                      <form action="/galleries/sendpostcard/{{id}}" method="POST" style="margin-top: 10px;">
+                        <div class="field has-addons">
+                          <div class="control is-expanded">
+                            <input 
+                              class="input is-small" 
+                              type="email" 
+                              name="recipientEmail" 
+                              placeholder="Send to email..." 
+                              required
+                            >
+                          </div>
+                          <div class="control">
+                            <button class="button is-info is-small" type="submit">
+                              <span class="icon">
+                                <i class="fas fa-paper-plane"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        <input type="hidden" name="message" value="Check out this artifact from the Museum Gallery: {{url}}">
                       </form>
                     </div>
                   </div>
-
-                  <!--  Sending email Form -->
-                  <form action="/galleries/sendpostcard/{{id}}" method="POST" style="margin-top: 10px;">
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <input 
-                          class="input is-small" 
-                          type="email" 
-                          name="recipientEmail" 
-                          placeholder="Send to email..." 
-                          required
-                        >
-                      </div>
-                      <div class="control">
-                        <button class="button is-info is-small" type="submit">
-                          <span class="icon">
-                            <i class="fas fa-paper-plane"></i>
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                    <input type="hidden" name="message" value="Check out this artifact from the Museum Gallery: {{url}}">
-                  </form>
                 </div>
-              </div>
+              {{/each}}
             </div>
-          {{/each}}
+
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
         </div>
 
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+        <div class="column is-4 has-background-white-ter *-1">
+          <div class="content ">
+            <h2 class="title is-5">Leave a comment to {{userName}}</h2>
+            {{> social-posts allComments=this.comments galleryOwnerId=this.userId}}
+            <p>
+              This gallery shows the latest uploads from this user. Use the slider to browse each card.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
+
+      
   {{/each}}
 </section>
 

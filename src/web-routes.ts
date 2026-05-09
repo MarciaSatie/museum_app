@@ -6,6 +6,7 @@ import { museumController } from "./controllers/museum-controller";
 import { adminController } from "./controllers/admin-controller";
 import { categoryController } from "./controllers/category-controller";
 import { galleriesController } from "./controllers/galleries-controller";
+import { socialController } from "./controllers/social-controller";
 
 export const webRoutes= [
   { method: "GET", path: "/", config: accountsController.index },
@@ -48,5 +49,7 @@ export const webRoutes= [
   { method: "GET", path: "/galleries", config: galleriesController.index },
   { method: "POST", path: "/galleries/sendpostcard/{id}", config: galleriesController.sendPostcard },
   { method: "POST", path: "/galleries/like/{id}", config: galleriesController.likeImage },
+
+  { method: "POST", path: "/leave-comment", config: galleriesController.leaveComment },
 
 ];

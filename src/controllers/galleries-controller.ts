@@ -1,8 +1,8 @@
 import * as nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { Request, ResponseToolkit } from "@hapi/hapi";
-import { imageStore } from "../models/cloudinary"; // Removed .js
-import { db } from "../models/db"; // Removed .js
+import { imageStore } from "../models/cloudinary";
+import { db } from "../models/db"; 
 import type { UserType } from "../models/mongo/user";
 import type { MuseumType } from "../models/mongo/museum";
 import type { ExhibitionType } from "../models/mongo/exhibition";
@@ -29,6 +29,7 @@ interface UserGallery {
   userName: string;
   userEmail: string;
   images: EnrichedImage[];
+  comments?: any[];
 }
 
 export const galleriesController = {
@@ -37,25 +38,17 @@ export const galleriesController = {
       const user = request.auth.credentials as any;
       const isAdmin = user && user.role === "admin";
       
-      // Fetch all museums, exhibitions, and users from MongoDB
       const museums = await db.museumStore!.getAllMuseums();
       const exhibitions = await db.exhibitionStore!.getAllExhibitions();
       const allUsers = await db.userStore!.getAllUsers();
-      
-      // Fetch all images from MongoDB
       const mongoImages = await db.imageStore!.getAllImages();
       
-      // Create lookup maps for full data access
       const userMap = new Map<string, UserType>(allUsers.map((u: UserType) => [u._id!, u]));
       const museumMap = new Map<string, MuseumType>(museums.map((m: MuseumType) => [m._id!, m]));
-      const exhibitionMap = new Map<string, ExhibitionType>(exhibitions.map((e: ExhibitionType) => [e._id!, e]));
-      
-      // Map MongoDB images (data is already denormalized, but we add full objects)
+
+      // 1. Properly map the images
       const images: EnrichedImage[] = mongoImages.map((image: any) => {
-        // Look up full objects from maps
         const userData = image.userId ? userMap.get(image.userId) ?? null : null;
-        const museumData = image.museum ? museumMap.get(image.museum) ?? null : null;
-        
         return {
           id: image.publicId,
           image: image.image,
@@ -66,52 +59,113 @@ export const galleriesController = {
           userName: image.userName || "Unknown",
           userEmail: userData?.email || "",
           size: image.size ? `${Math.round(image.size / 1024)} KB` : "",
-          // Include full MongoDB objects for the view if needed
           user: userData,
-          museum: museumData,
-          exhibition: null, // Exhibition not stored as full object
-          //Social
+          museum: image.museum ? museumMap.get(image.museum) ?? null : null,
+          exhibition: null,
           likes: image.likeCount || 0,
           isLiked: image.likedBy?.includes(user._id) || false,
         };
       });
 
+      // 2. Build User Gallery Map (Same as your code)
       const userGalleryMap = new Map<string, UserGallery>();
-
       for (const image of images) {
         const userId = image.user?._id || "unknown-user";
-        const userName = image.user
-          ? `${image.user.firstName} ${image.user.lastName}`.trim()
-          : image.userName || "Unknown user";
-        const userEmail = image.user?.email || "";
-
         const existingGallery = userGalleryMap.get(userId);
         if (existingGallery) {
           existingGallery.images.push(image);
         } else {
           userGalleryMap.set(userId, {
             userId,
-            userName,
-            userEmail,
+            userName: image.user ? `${image.user.firstName} ${image.user.lastName}` : image.userName,
+            userEmail: image.user?.email || "",
             images: [image],
+            comments: [],
           });
         }
       }
 
-      const userGalleries = Array.from(userGalleryMap.values()).sort((left, right) =>
-        left.userName.localeCompare(right.userName)
-      );
+      // 3. FETCH COMMENTS HERE (Outside the map)
+      // Since this is the general galleries page, we get all social posts
+      const comments = await db.socialStore!.getAllComments();
 
+      // Format comment dates for display (concise, locale-aware)
+      comments.forEach((c: any) => {
+        try {
+          const date = c.createdAt ? new Date(c.createdAt) : new Date();
+          c.displayDate = date.toLocaleString("en-IE", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        } catch (e) {
+          c.displayDate = String(c.createdAt || "");
+        }
+      });
+
+      // Attach comments to the matching user gallery (by galleryOwnerId)
+      for (const g of Array.from(userGalleryMap.values())) {
+        const userComments = comments.filter((c: any) => String(c.galleryOwnerId) === String(g.userId));
+        g.comments = userComments;
+      }
+
+      // 4. FINALLY RENDER
       return h.view("galleries-view", {
         title: "Museum Gallery",
         images,
-        userGalleries,
+        userGalleries: Array.from(userGalleryMap.values()),
         museums,
         exhibitions,
         user,
         isAdmin,
-        allUsers
+        allUsers,
+        allComments: comments // Now Handlebars can see the comments!
       });
+    },
+  },
+
+  leaveComment: {
+    handler: async function (request: Request, h: ResponseToolkit) {
+    const user = request.auth.credentials as any;
+    const { userText, galleryOwnerId } = request.payload as any;
+
+    console.log("📝 Form text received:", userText);
+    console.log("👤 Posted by user:", user?._id);
+    console.log("🎯 Target gallery owner id:", galleryOwnerId);
+
+    // Validate input
+    if (!userText || userText.trim().length === 0) {
+        console.log("❌ Empty text submitted, ignoring");
+        return h.redirect("/galleries");
+    }
+
+    try {
+        // 1. Prepare the data object
+        const commentPayload = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        comment: userText,
+        like: 0,
+        dislike: 0
+        };
+        // Associate the comment with the target gallery owner (from the form)
+        const ownerIdToUse = galleryOwnerId || (user && user._id);
+        if (ownerIdToUse) {
+          (commentPayload as any).galleryOwnerId = ownerIdToUse;
+        }
+        // 2. Saving at sociala db (social-mongo-store)
+        await db.socialStore.addComment(commentPayload);
+        
+        console.log("✅ Comment saved to MongoDB!");
+        return h.redirect("/galleries");
+    } catch (error: any) {
+        console.error("❌ Error saving comment:", error.message);
+        return h.redirect("/galleries");
+    }
+    
     },
   },
 
@@ -187,4 +241,7 @@ export const galleriesController = {
       return h.redirect("/galleries");
     }
   },
+
+
+
 };
