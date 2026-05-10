@@ -2,52 +2,86 @@ import { Request, ResponseToolkit } from "@hapi/hapi";
 import { MuseumSpec } from "../models/joi-schemas"; // Removed .js
 import { db } from "../models/db"; // Removed .js
 
+/**
+ * Find the newest image for each museum and store it in a Map.
+ * This prepares data for enriching museums with thumbnail URLs.
+ */
+function getLatestImageByMuseum(mongoImages: any[]) {
+  const latestImageByMuseum = new Map<string, any>();
+
+  for (const image of mongoImages as any[]) {
+    if (!image.museum) continue;
+
+    const existing = latestImageByMuseum.get(image.museum);
+    const currentTs = new Date(image.createdAt || image.uploadDate || 0).getTime();
+    const existingTs = existing ? new Date(existing.createdAt || existing.uploadDate || 0).getTime() : 0;
+
+    if (!existing || currentTs > existingTs) {
+      latestImageByMuseum.set(image.museum, image);
+    }
+  }
+
+  return latestImageByMuseum;
+}
+
+/**
+ * Add owner name and latest image URL to each museum.
+ * This prepares data so the view can display a thumbnail and owner info.
+ */
+function enrichMuseumsWithOwnerAndImage(museums: any[], loggedInUser: any, latestImageByMuseum: Map<string, any>) {
+  return museums.map((museum: any) => ({
+    ...museum,
+    ownerFirstName: loggedInUser.firstName || "Unknown",
+    ownerLastName: loggedInUser.lastName || "Unknown",
+    latestImageUrl: latestImageByMuseum.get(museum._id)?.url || null,
+    latestImageName: latestImageByMuseum.get(museum._id)?.image || "",
+  }));
+}
+
+/**
+ * Sort museums by visit count and return the top 5.
+ * This is used to show the most popular museums on the dashboard.
+ */
+function getTopVisitedMuseums(museums: any[], limit: number = 5) {
+  return [...museums]
+    .sort((a: any, b: any) => (b.museumVisitCount ?? 0) - (a.museumVisitCount ?? 0))
+    .slice(0, limit);
+}
+
 export const dashboardController = {
   index: {
+    /**
+     * Load the user's museums, enrich them with images and owner info, and render the dashboard.
+     */
     handler: async function (request: Request, h: ResponseToolkit) {
       const loggedInUser = request.auth.credentials as any;
       console.log("📊 Dashboard accessed by:", loggedInUser?.email || "unknown");
-      
+
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
-      
-      // Use ! to unlock the stores
+
+      // Load the current user's museums
       let museums = await db.museumStore!.getUserMuseums(loggedInUser._id);
 
-      // Attach latest image per museum (if any) so list partial can show a thumbnail
+      // Prepare image data for thumbnail display
       const mongoImages = await db.imageStore!.getAllImages();
-      const latestImageByMuseum = new Map<string, any>();
-      for (const image of mongoImages as any[]) {
-        if (!image.museum) continue;
-        const existing = latestImageByMuseum.get(image.museum);
-        const currentTs = new Date(image.createdAt || image.uploadDate || 0).getTime();
-        const existingTs = existing ? new Date(existing.createdAt || existing.uploadDate || 0).getTime() : 0;
-        if (!existing || currentTs > existingTs) {
-          latestImageByMuseum.set(image.museum, image);
-        }
-      }
+      const latestImageByMuseum = getLatestImageByMuseum(mongoImages);
 
-      // Enrich museums with owner name info and latest image
-      museums = museums.map((m: any) => ({
-        ...m,
-        ownerFirstName: loggedInUser.firstName || "Unknown",
-        ownerLastName: loggedInUser.lastName || "Unknown",
-        latestImageUrl: latestImageByMuseum.get(m._id)?.url || null,
-        latestImageName: latestImageByMuseum.get(m._id)?.image || "",
-      }));
-      
+      // Add owner name and latest image URL to each museum
+      museums = enrichMuseumsWithOwnerAndImage(museums, loggedInUser, latestImageByMuseum);
+
+      // Filter by category if provided in query
       const query = request.query as any;
       const categoryId = query.categoryId;
-      
       if (categoryId) {
         museums = museums.filter((museum: any) => museum.categoryId === categoryId);
       }
-      
-      const topVisitedMuseums = [...museums]
-        .sort((a: any, b: any) => (b.museumVisitCount ?? 0) - (a.museumVisitCount ?? 0))
-        .slice(0, 5);
 
+      // Get top 5 most visited museums for dashboard stats
+      const topVisitedMuseums = getTopVisitedMuseums(museums);
+
+      // Load all categories for the filter dropdown
       const categories = await db.categoryStore!.getAllCategories();
-      
+
       const viewData = {
         title: "MyAppMusems Dashboard",
         user: loggedInUser,
@@ -62,6 +96,9 @@ export const dashboardController = {
   },
 
   addMuseum: {
+    /**
+     * Validate and save a new museum created by the logged-in user.
+     */
     validate: {
       payload: MuseumSpec,
       options: { abortEarly: false },
@@ -88,6 +125,9 @@ export const dashboardController = {
   },
 
   deleteMuseum: {
+    /**
+     * Delete a museum by id and redirect back to the dashboard.
+     */
     handler: async function (request: Request, h: ResponseToolkit) {
       const museum = await db.museumStore!.getMuseumById(request.params.id);
       if (museum) {
@@ -98,6 +138,9 @@ export const dashboardController = {
   },
 
   editMuseumPage: {
+    /**
+     * Load the edit form for a specific museum.
+     */
     handler: async function (request: Request, h: ResponseToolkit) {
       const loggedInUser = request.auth.credentials as any;
       const isAdmin = loggedInUser && loggedInUser.role === "admin";
@@ -116,6 +159,9 @@ export const dashboardController = {
   },
 
   editMuseum: {
+    /**
+     * Update an existing museum with new title, description, location, category, and status.
+     */
     handler: async function (request: Request, h: ResponseToolkit) {
       const museumId = request.params.id;
       const payload = request.payload as any;

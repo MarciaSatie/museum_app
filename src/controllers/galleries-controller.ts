@@ -1,7 +1,6 @@
 import * as nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { Request, ResponseToolkit } from "@hapi/hapi";
-import { imageStore } from "../models/cloudinary";
 import { db } from "../models/db";
 import type { UserType } from "../models/mongo/user";
 import type { MuseumType } from "../models/mongo/museum";
@@ -23,7 +22,7 @@ interface EnrichedImage {
   user: UserType | null;
   museum: MuseumType | null;
   exhibition: ExhibitionType | null;
-  categories: CategoryType | null;
+  categories: CategoryType[];
 }
 
 interface UserGallery {
@@ -34,8 +33,193 @@ interface UserGallery {
   comments?: any[];
 }
 
+interface MuseumWithOwnerAndLatestImage extends MuseumType {
+  ownerFirstName: string;
+  ownerLastName: string;
+  latestImageUrl: string | null;
+  latestImageName: string;
+}
+
+/**
+ * Build a fast lookup map from user id to user object.
+ * This makes it easy to find the owner of a museum or image without looping
+ * through the whole users array every time.
+ */
+function buildUserMap(users: UserType[]) {
+  // Fast lookup: user id -> user object.
+  return new Map<string, UserType>(users.map((user: UserType) => [user._id!, user]));
+}
+
+/**
+ * Build a fast lookup map from museum id to museum object.
+ * This is used when we need to attach museum data to an image or comment.
+ */
+function buildMuseumMap(museums: MuseumType[]) {
+  // Fast lookup: museum id -> museum object.
+  return new Map<string, MuseumType>(museums.map((museum: MuseumType) => [museum._id!, museum]));
+}
+
+/**
+ * Extract the ids of all public museums into a Set.
+ * The Set lets us check `has()` quickly when we decide which images are allowed.
+ */
+function getPublicMuseumIds(museums: MuseumType[]) {
+  // Set gives quick `.has()` checks when we filter images.
+  return new Set(museums.filter((museum: any) => museum.status === "public").map((museum: any) => museum._id));
+}
+
+/**
+ * Find the newest image for each public museum.
+ * The result is stored in a Map so we can later attach the latest image URL
+ * to the matching museum in constant time.
+ */
+function getLatestImageByMuseum(mongoImages: any[], publicMuseumIds: Set<string>) {
+  // Map lets us keep only the newest image for each museum.
+  const latestImageByMuseum = new Map<string, any>();
+
+  for (const image of mongoImages) {
+    if (!image.museum || !publicMuseumIds.has(image.museum)) continue;
+
+    const currentImage = latestImageByMuseum.get(image.museum);
+    const currentTime = new Date(image.createdAt || image.uploadDate || 0).getTime();
+    const savedTime = currentImage ? new Date(currentImage.createdAt || currentImage.uploadDate || 0).getTime() : 0;
+
+    if (!currentImage || currentTime > savedTime) {
+      latestImageByMuseum.set(image.museum, image);
+    }
+  }
+
+  return latestImageByMuseum;
+}
+
+/**
+ * Add owner name and latest image information to each museum.
+ * This prepares the data for the template so the view stays simple.
+ */
+function enrichMuseumsWithOwnerAndImage(
+  museums: MuseumType[],
+  userMap: Map<string, UserType>,
+  latestImageByMuseum: Map<string, any>
+) {
+  return museums.map((museum: any) => {
+    const owner = userMap.get(museum.userid) || null;
+    const latestImage = latestImageByMuseum.get(museum._id);
+
+    return {
+      ...museum,
+      ownerFirstName: owner?.firstName || "Unknown",
+      ownerLastName: owner?.lastName || "Unknown",
+      latestImageUrl: latestImage?.url || null,
+      latestImageName: latestImage?.image || "",
+    } as MuseumWithOwnerAndLatestImage;
+  });
+}
+
+/**
+ * Convert raw image documents into view-friendly image objects.
+ * We also attach the owner, museum, and category data so the template can
+ * render richer information without extra logic.
+ */
+function buildEnrichedImages(
+  mongoImages: any[],
+  userMap: Map<string, UserType>,
+  museumMap: Map<string, MuseumType>,
+  categories: CategoryType[],
+  currentUser: any
+) {
+  return mongoImages.map((image: any) => {
+    const userData = image.userId ? userMap.get(image.userId) ?? null : null;
+
+    return {
+      id: image.publicId,
+      image: image.image,
+      url: image.url,
+      museumTitle: image.museumTitle || "Unknown museum",
+      exhibitionTitle: image.exhibitionTitle || "Unknown exhibition",
+      date: image.date || "",
+      userName: image.userName || "Unknown",
+      userEmail: userData?.email || "",
+      size: image.size ? `${Math.round(image.size / 1024)} KB` : "",
+      user: userData,
+      museum: image.museum ? museumMap.get(image.museum) ?? null : null,
+      exhibition: null,
+      likes: image.likeCount || 0,
+      isLiked: image.likedBy?.includes(currentUser._id) || false,
+      categories,
+    } as EnrichedImage;
+  });
+}
+
+/**
+ * Group images by owner so the gallery page can show one section per user.
+ */
+function buildUserGalleryMap(images: EnrichedImage[]) {
+  const userGalleryMap = new Map<string, UserGallery>();
+
+  for (const image of images) {
+    const userId = image.user?._id || "unknown-user";
+    const existingGallery = userGalleryMap.get(userId);
+
+    if (existingGallery) {
+      existingGallery.images.push(image);
+      continue;
+    }
+
+    userGalleryMap.set(userId, {
+      userId,
+      userName: image.user ? `${image.user.firstName} ${image.user.lastName}` : image.userName,
+      userEmail: image.user?.email || "",
+      images: [image],
+      comments: [],
+    });
+  }
+
+  return userGalleryMap;
+}
+
+/**
+ * Format comment timestamps into a readable date string for the view.
+ */
+function formatCommentDates(comments: any[]) {
+  for (const comment of comments) {
+    try {
+      const date = comment.createdAt ? new Date(comment.createdAt) : new Date();
+      comment.displayDate = date.toLocaleString("en-IE", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      comment.displayDate = String(comment.createdAt || "");
+    }
+  }
+}
+
+/**
+ * Attach the correct comments to each user gallery and sort them newest first.
+ */
+function attachCommentsToUserGalleries(userGalleryMap: Map<string, UserGallery>, comments: any[]) {
+  for (const gallery of Array.from(userGalleryMap.values())) {
+    const userComments = comments
+      .filter((comment: any) => String(comment.galleryOwnerId) === String(gallery.userId))
+      .sort((left: any, right: any) => {
+        const leftTime = left.createdAt ? new Date(left.createdAt).getTime() : 0;
+        const rightTime = right.createdAt ? new Date(right.createdAt).getTime() : 0;
+        return rightTime - leftTime;
+      });
+
+    gallery.comments = userComments;
+  }
+}
+
 export const galleriesController = {
   index: {
+    /**
+     * Load the gallery page data, enrich museums and images, and render the view.
+     */
     handler: async function (request: Request, h: ResponseToolkit) {
       const user = request.auth.credentials as any;
       const isAdmin = user && user.role === "admin";
@@ -52,115 +236,27 @@ export const galleriesController = {
         museums = museums.filter((museum: any) => museum.categoryId === categoryId);
       }
 
-      const userMap = new Map<string, UserType>(allUsers.map((u: UserType) => [u._id!, u]));
-      const museumMap = new Map<string, MuseumType>(museums.map((m: MuseumType) => [m._id!, m]));
+      const userMap = buildUserMap(allUsers);
+      const museumMap = buildMuseumMap(museums);
+      const publicMuseumIds = getPublicMuseumIds(museums);
+      const latestImageByMuseum = getLatestImageByMuseum(mongoImages as any[], publicMuseumIds);
 
-      // Filter just Public Museums
-      const publicMuseums = museums.filter((m: any) => m.status === "public");
-      const publicMuseumIds = new Set(publicMuseums.map((m) => m._id));
-      const latestImageByMuseum = new Map<string, any>();
-      for (const image of mongoImages as any[]) {
-        // Only process if the image belongs to a museum AND that museum is PUBLIC
-        if (!image.museum || !publicMuseumIds.has(image.museum)) continue;
+      // Add display-friendly owner and image info to each museum.
+      const enrichedMuseums = enrichMuseumsWithOwnerAndImage(museums, userMap, latestImageByMuseum);
+      const enrichedPublicMuseums = enrichedMuseums.filter((museum: any) => museum.status === "public");
 
-        const existing = latestImageByMuseum.get(image.museum);
-        const currentTs = new Date(image.createdAt || image.uploadDate || 0).getTime();
-        const existingTs = existing ? new Date(existing.createdAt || existing.uploadDate || 0).getTime() : 0;
+      // Add user/museum details to each image so the gallery cards can show richer text.
+      const images: EnrichedImage[] = buildEnrichedImages(mongoImages as any[], userMap, museumMap, categories, user);
 
-        // Standard "find latest" logic
-        if (!existing || currentTs > existingTs) {
-          latestImageByMuseum.set(image.museum, image);
-        }
-      }
-      // Enrich museums with owner name info
-      const enrichedMuseums = museums.map((m: any) => {
-        const owner = userMap.get(m.userid) || null;
-        const latestImage = latestImageByMuseum.get(m._id);
-        return {
-          ...m,
-          ownerFirstName: owner?.firstName || "Unknown",
-          ownerLastName: owner?.lastName || "Unknown",
-          latestImageUrl: latestImage?.url || null,
-          latestImageName: latestImage?.image || "",
-        };
-      });
+      // Group images into galleries per user.
+      const userGalleryMap = buildUserGalleryMap(images);
 
-      // Build enriched public museums list for the view (only public)
-      const enrichedPublicMuseums = enrichedMuseums.filter((m: any) => m.status === "public");
-
-      // 1. Properly map the images
-      const images: EnrichedImage[] = mongoImages.map((image: any) => {
-        const userData = image.userId ? (userMap.get(image.userId) ?? null) : null;
-        return {
-          id: image.publicId,
-          image: image.image,
-          url: image.url,
-          museumTitle: image.museumTitle || "Unknown museum",
-          exhibitionTitle: image.exhibitionTitle || "Unknown exhibition",
-          date: image.date || "",
-          userName: image.userName || "Unknown",
-          userEmail: userData?.email || "",
-          size: image.size ? `${Math.round(image.size / 1024)} KB` : "",
-          user: userData,
-          museum: image.museum ? (museumMap.get(image.museum) ?? null) : null,
-          exhibition: null,
-          likes: image.likeCount || 0,
-          isLiked: image.likedBy?.includes(user._id) || false,
-          categories: categories,
-        };
-      });
-
-      // 2. Build User Gallery Map
-      const userGalleryMap = new Map<string, UserGallery>();
-      for (const image of images) {
-        const userId = image.user?._id || "unknown-user";
-        const existingGallery = userGalleryMap.get(userId);
-        if (existingGallery) {
-          existingGallery.images.push(image);
-        } else {
-          userGalleryMap.set(userId, {
-            userId,
-            userName: image.user ? `${image.user.firstName} ${image.user.lastName}` : image.userName,
-            userEmail: image.user?.email || "",
-            images: [image],
-            comments: [],
-          });
-        }
-      }
-
-      // 3. Social Posts
+      // Load comments once, format them once, then attach them to each gallery owner.
       const comments = await db.socialStore!.getAllComments();
+      formatCommentDates(comments);
+      attachCommentsToUserGalleries(userGalleryMap, comments);
 
-      // Format comment dates for display (concise, locale-aware)
-      comments.forEach((c: any) => {
-        try {
-          const date = c.createdAt ? new Date(c.createdAt) : new Date();
-          c.displayDate = date.toLocaleString("en-IE", {
-            weekday: "short",
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-        } catch (e) {
-          c.displayDate = String(c.createdAt || "");
-        }
-      });
-
-      // Attach comments to the matching user gallery (by galleryOwnerId)
-      for (const g of Array.from(userGalleryMap.values())) {
-        let userComments = comments.filter((c: any) => String(c.galleryOwnerId) === String(g.userId));
-        // Sort newest first by createdAt
-        userComments = userComments.sort((a: any, b: any) => {
-          const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return db - da;
-        });
-        g.comments = userComments;
-      }
-
-      // FINALLY RENDER (send informatioon to View)
+      // Send the view everything it needs, already prepared and easy to render.
       return h.view("galleries-view", {
         title: "Museum Gallery",
         images,

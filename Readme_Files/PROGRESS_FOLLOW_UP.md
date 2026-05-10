@@ -15,6 +15,15 @@ This document tracks what has already been achieved in the Museum App and what i
 - Level 1 is not fully complete yet: gallery and social scaffolding exist, but the assignment-level POI/review features are still missing. 🟡
 - Level 2 social gallery scaffolding exists, but it should be treated as follow-up work after Level 1 is complete. 🟡
 
+## Level 1 Completion Blocks
+
+The app still needs these items before Level 1 can be considered complete:
+
+- Private POIs: POI data model, CRUD routes, POI UI, ownership checks, Joi validation.
+- Reviews: review data model, CRUD routes, review UI on museum/exhibition pages, validation.
+- TDD: coverage tooling, stronger test coverage, CI test step, e2e tests for the core flows.
+- DevOps: tagged release workflow, release documentation, and automated checks/deploys on release tags.
+
 ## Level Checklist
 
 ### Level 1
@@ -112,8 +121,3 @@ This document tracks what has already been achieved in the Museum App and what i
 
 - Keep this file updated as features are completed. Use the status icons to give quick visibility during reviews.
 - If you want, I can open PRs that implement the prioritized items above starting with password hashing and a small favorites API.
-
-## Notes
-
-- Keep this file updated as features are completed.
-- Use it as a short status report for weekly progress reviews or submission prep.
