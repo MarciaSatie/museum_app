@@ -13,6 +13,13 @@ export const dashboardController = {
       // Use ! to unlock the stores
       let museums = await db.museumStore!.getUserMuseums(loggedInUser._id);
       
+      // Enrich museums with owner name info
+      museums = museums.map((m: any) => ({
+        ...m,
+        ownerFirstName: loggedInUser.firstName || "Unknown",
+        ownerLastName: loggedInUser.lastName || "Unknown",
+      }));
+      
       const query = request.query as any;
       const categoryId = query.categoryId;
       
@@ -58,6 +65,7 @@ export const dashboardController = {
         categoryId: payload.categoryId || null,
         latitude: payload.latitude ? Number(payload.latitude) : null,
         longitude: payload.longitude ? Number(payload.longitude) : null,
+        status: payload.status || "public",
       };
       await db.museumStore!.addMuseum(newMuseum as any);
       return h.redirect("/dashboard");
@@ -104,6 +112,7 @@ export const dashboardController = {
         museum.categoryId = payload.categoryId || null;
         museum.latitude = payload.latitude ? Number(payload.latitude) : null;
         museum.longitude = payload.longitude ? Number(payload.longitude) : null;
+        museum.status = payload.status || "public";
 
         await db.museumStore!.updateMuseum(museum as any);
       }

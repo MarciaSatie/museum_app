@@ -15,6 +15,7 @@
 
 
 <hr>
+<!-- Social Image Gallery per user -->
 <section class="section">
   <h2 class="title is-3">Social Gallery</h2>
   {{#each userGalleries}}
@@ -113,11 +114,15 @@
 </section>
 
 <hr>
+<!-- Museum POI / Leaflet Map-->
 <section>
-  <h2 class="title is-3">Also check Everybody's Museums POI in the Map.</h2>
+  <h2 class="title is-3">Museum POI</h2>
+  
+
   {{> leaflet-map-view latitude=this.latitude longitude=this.longitude pov=this.pov title=this.title }}
 </section>
 
+<!-- Swiper Script to interact with DOM-->
 <script>
   document.querySelectorAll('[data-gallery-swiper]').forEach((container) => {
     // eslint-disable-next-line no-new

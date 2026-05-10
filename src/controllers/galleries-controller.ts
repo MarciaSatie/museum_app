@@ -46,6 +46,16 @@ export const galleriesController = {
       const userMap = new Map<string, UserType>(allUsers.map((u: UserType) => [u._id!, u]));
       const museumMap = new Map<string, MuseumType>(museums.map((m: MuseumType) => [m._id!, m]));
 
+      // Enrich museums with owner name info
+      const enrichedMuseums = museums.map((m: any) => {
+        const owner = userMap.get(m.userid) || null;
+        return {
+          ...m,
+          ownerFirstName: owner?.firstName || "Unknown",
+          ownerLastName: owner?.lastName || "Unknown",
+        };
+      });
+
       // 1. Properly map the images
       const images: EnrichedImage[] = mongoImages.map((image: any) => {
         const userData = image.userId ? userMap.get(image.userId) ?? null : null;
@@ -123,7 +133,7 @@ export const galleriesController = {
         title: "Museum Gallery",
         images,
         userGalleries: Array.from(userGalleryMap.values()),
-        museums,
+        museums: enrichedMuseums,
         exhibitions,
         user,
         isAdmin,

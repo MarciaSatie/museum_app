@@ -5,16 +5,19 @@
     <h1 class="title">Edit Museum</h1>
 
     <form action="/dashboard/editmuseum/{{museum._id}}" method="POST">
+      <!-- Museum Name -->
       <div class="field">
         <label class="label">Museum Title</label>
         <input class="input" type="text" name="title" value="{{museum.title}}" required>
       </div>
 
+      <!-- Museum Description-->
       <div class="field">
         <label class="label">Description</label>
         <textarea class="textarea" name="description" rows="3">{{museum.description}}</textarea>
       </div>
 
+      <!-- Select a Category -->
       <div class="field">
         <label class="label">Category</label>
         <div class="control">
@@ -29,6 +32,7 @@
         </div>
       </div>
 
+      <!-- Latitude and Longitude -->
       <div class="columns">
         <div class="column">
           <div class="field">
@@ -43,7 +47,22 @@
           </div>
         </div>
       </div>
+      
+      <!-- Status: Public or Private POI -->
+      <div class="field">
+        <label class="label">Status</label>
+        <div class="control">
+          <div class="select">
+            <select name="status">
+              <option value="">-- Select a Status --</option>
+                <option value="private">Private</option>
+                <option value="public"selected>Public</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
+      <!-- Submit Button -->
       <div class="field is-grouped">
         <button class="button is-link">Update Museum</button>
         <a href="/dashboard" class="button is-light">Cancel</a>

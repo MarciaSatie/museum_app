@@ -10,6 +10,10 @@ const museumSchema = new mongoose.Schema(
     latitude: { type: Number, default: null,},
     longitude: { type: Number, default: null,},
     museumVisitCount: { type: Number, default: 0,},
+    isFavorite: { type: Boolean, default:false,},
+    status:  { type: String, required: true,},
+    rating: { type: Number, default: null,},
+
   },
   { timestamps: true }
 );

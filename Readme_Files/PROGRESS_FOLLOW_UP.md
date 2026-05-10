@@ -12,39 +12,52 @@ This document tracks what has already been achieved in the Museum App and what i
 - Authentication is implemented with sessions/cookies and JWT support for API access (partial). 🟡
 - Basic automated tests exist for models and API flows (unit tests present). 🟡
 - Deployment configuration exists for Render. 🟡
-- Level mapping: Level 1 Social 1 (Museum POI & My Gallery) — implemented. ✅
-- Level 2 POI mapping: Social Gallery feature scoped and partially implemented (gallery pages and sharing UI exist but social interactions need work). 🟡
+- Level 1 is not fully complete yet: gallery and social scaffolding exist, but the assignment-level POI/review features are still missing. 🟡
+- Level 2 social gallery scaffolding exists, but it should be treated as follow-up work after Level 1 is complete. 🟡
 
 ## Level Checklist
 
 ### Level 1
 
-- Social 1 — Museum POI & My Gallery: ✅ Complete
-	- Breakdown of what's done:
-		- Museum POI pages and data endpoints implemented (`museum-api`, `museum-controller`).
-		- `My Gallery` view and image gallery controller exist (`imageGallery-controller`, `galleries-view`).
-		- Basic UI for adding/viewing gallery items is present.
-	- Remaining (small polish): image upload UX improvements, user messaging that an item was saved. 🟡
+- Social 1 — Private POIs: 🔴 Not started
+	- Missing tasks:
+		- POI data model/schema in MongoDB.
+		- API endpoints for POI CRUD operations.
+		- Web UI to create, edit, delete, and view private POIs.
+		- Ownership/authorization so only the creator can access their POIs.
+		- Joi validation for POI payloads.
 
-- Social 2 — Likes / Comments / Follows: 🟡 In progress
-	- Breakdown:
-		- Core models for social interactions are not finalized.
-		- Tasks: add `favorites/likes` endpoints, UI buttons on gallery/POI items, persist user->item relations, and add tests.
+- Social 2 — Reviews: 🔴 Not started
+	- Missing tasks:
+		- Review schema/model.
+		- API endpoints for creating, reading, updating, and deleting reviews.
+		- Rating/text review UI on museum and exhibition pages.
+		- Review display on detail pages.
+		- Validation and authorization checks for review actions.
 
 - TDD: 🟡 Partially achieved
 	- Breakdown:
 		- Unit tests for models and some API flows exist (`test/`), but coverage reports and integration/e2e tests are missing.
-		- Tasks: add coverage tooling, increase test coverage, add CI test step.
+		- Missing tasks:
+			- Add coverage tooling (`nyc`/`c8` or similar).
+			- Increase test coverage for auth, validation, and authorization paths.
+			- Add CI test step.
+			- Add end-to-end tests for critical user flows.
 
-- Authentication: 🟡 Partially achieved
+- Authentication: ✅ Complete for Level 1 sanitisation
 	- Breakdown:
 		- Session and JWT flows implemented for web and API use.
-		- Missing: secure password hashing/salting for existing accounts, password reset flow, account verification, and stronger validation.
+		- Input/output sanitisation is covered by Joi validation and Handlebars escaping.
+		- Password hashing is now implemented in the login flow, but password reset/account verification remain future work.
 
-- DevOps: 🟡 Partially achieved
+- DevOps: 🔴 Not started for Level 1 release requirements
 	- Breakdown:
-		- Render deployment config exists, but release workflow (Git Flow, CI/CD checks) is incomplete.
-		- Tasks: add CI pipeline (tests + lint), release naming & branching discipline, automated deploys on merge.
+		- Render deployment config exists, but the Level 1 tagged release workflow is not in place.
+		- Missing tasks:
+			- Create semantic version tags for releases.
+			- Document the release process.
+			- Add CI checks for tests/lint before release.
+			- Automate deployment on tagged releases.
 
 ### Level 2
 
@@ -84,19 +97,16 @@ This document tracks what has already been achieved in the Museum App and what i
 
 ## Priority Follow-Up Tasks (with status)
 
-1. ✅ Level 1 Social 1: Museum POI & My Gallery — already implemented and verified.
-2. 🟡 Add password hashing and salting for user accounts
-	- Tasks: integrate `bcrypt`, migrate existing passwords safely, add password-reset flow, add unit tests.
-3. 🟡 Add test coverage reporting and e2e tests
-	- Tasks: add `nyc`/`c8` or similar coverage tooling, add Playwright e2e tests, surface coverage in CI.
-4. 🟡 Implement social interactions (favorites/likes/comments)
-	- Tasks: define models, create API endpoints, wire UI buttons, add tests and basic analytics.
-5. 🟡 Social Gallery (Level 2) — move from scaffold to feature-complete
+1. 🔴 Build Level 1 Private POIs
+	- Tasks: add POI schema, CRUD endpoints, ownership checks, UI pages, Joi validation.
+2. 🔴 Build Level 1 Reviews
+	- Tasks: add review schema, CRUD endpoints, review UI, museum/exhibition detail display, validation.
+3. 🟡 Finish Level 1 test coverage
+	- Tasks: add coverage tooling, expand auth/validation tests, add e2e coverage for core flows, wire into CI.
+4. 🔴 Add tagged release workflow
+	- Tasks: create version tags, document release steps, and automate deploys/checks on release.
+5. 🟡 Keep Level 2 social gallery work as follow-up
 	- Tasks: privacy controls, share flows, feed aggregation, notifications.
-6. 🔴 OAuth login support
-	- Tasks: register apps (Google/GitHub), implement provider flows, link provider accounts, add tests.
-7. 🟡 Improve release and deployment workflow
-	- Tasks: add CI (lint, tests, coverage), enforce Git Flow or trunk-based rules, automated deploy on merge.
 
 ## Notes
 
