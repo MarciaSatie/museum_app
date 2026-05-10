@@ -12,12 +12,27 @@ export const dashboardController = {
       
       // Use ! to unlock the stores
       let museums = await db.museumStore!.getUserMuseums(loggedInUser._id);
-      
-      // Enrich museums with owner name info
+
+      // Attach latest image per museum (if any) so list partial can show a thumbnail
+      const mongoImages = await db.imageStore!.getAllImages();
+      const latestImageByMuseum = new Map<string, any>();
+      for (const image of mongoImages as any[]) {
+        if (!image.museum) continue;
+        const existing = latestImageByMuseum.get(image.museum);
+        const currentTs = new Date(image.createdAt || image.uploadDate || 0).getTime();
+        const existingTs = existing ? new Date(existing.createdAt || existing.uploadDate || 0).getTime() : 0;
+        if (!existing || currentTs > existingTs) {
+          latestImageByMuseum.set(image.museum, image);
+        }
+      }
+
+      // Enrich museums with owner name info and latest image
       museums = museums.map((m: any) => ({
         ...m,
         ownerFirstName: loggedInUser.firstName || "Unknown",
         ownerLastName: loggedInUser.lastName || "Unknown",
+        latestImageUrl: latestImageByMuseum.get(m._id)?.url || null,
+        latestImageName: latestImageByMuseum.get(m._id)?.image || "",
       }));
       
       const query = request.query as any;

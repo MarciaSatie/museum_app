@@ -117,10 +117,45 @@
 <!-- Museum POI / Leaflet Map-->
 <section>
   <h2 class="title is-3">Museum POI</h2>
-  
+  <section class="section">
+    <!-- Leaflet Map-->
+    <div>
+      {{> leaflet-map-view latitude=this.latitude longitude=this.longitude pov=this.pov title=this.title }}
+    </div>
 
-  {{> leaflet-map-view latitude=this.latitude longitude=this.longitude pov=this.pov title=this.title }}
+    <!-- Museum List -->
+    <div class="box">
+      <div>
+        <form action="/galleries" method="GET">
+          <div class="field is-grouped is-grouped-multiline">
+            <div class="control">
+              <div class="select">
+                <select name="categoryId">
+                  <option value="">All Categories</option>
+                  {{#each categories}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+
+            <div class="control">
+              <button class="button is-link">Search</button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+
+      <br>
+      <div class="content">
+        {{> galleries-list-museums}}
+      </div>
+    </div>
+
 </section>
+
 
 <!-- Swiper Script to interact with DOM-->
 <script>

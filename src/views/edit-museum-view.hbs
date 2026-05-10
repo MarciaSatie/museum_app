@@ -54,13 +54,13 @@
         <div class="control">
           <div class="select">
             <select name="status">
-              <option value="">-- Select a Status --</option>
-                <option value="private">Private</option>
-                <option value="public"selected>Public</option>
+              <!-- eq: compare the current database value to "public" or "private" -->
+              <option value="private"{{#if (eq museum.status "private")}}selected{{/if}}>Private</option>
+              <option value="public" {{#if (eq museum.status "public")}}selected{{/if}}>Public</option>
             </select>
           </div>
         </div>
-      </div>
+</div>
 
       <!-- Submit Button -->
       <div class="field is-grouped">

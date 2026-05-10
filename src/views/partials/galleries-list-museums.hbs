@@ -1,0 +1,30 @@
+{{#each publicMuseums}}
+<div class="box box-link-hover-shadow">
+  <div class="columns is-vcentered">
+
+    {{#if latestImageUrl}}
+      <div class="column is-narrow">
+        <figure class="image is-16by9" style="width:160px;">
+          <img src="{{latestImageUrl}}" alt="Latest image for {{title}}">
+        </figure>
+      </div>
+    {{else}}
+      <div class="column is-narrow">
+        <p>No public image available</p>
+      </div>
+    {{/if}}
+
+    <div class="column">
+      <h2 class="title">{{title}}</h2>
+      {{#if description}}<p class="subtitle is-6">{{description}}</p>{{/if}}
+      <p class="subtitle is-6">By: {{ownerFirstName}} {{ownerLastName}}</p>
+      {{#if latitude}}
+      <p class="is-size-7"><strong>Location:</strong> {{latitude}}, {{longitude}}</p>
+      {{/if}}
+      <div class="buttons">
+        <a href="/dashboard/editmuseum/{{_id}}" class="button is-info">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
+{{/each}}

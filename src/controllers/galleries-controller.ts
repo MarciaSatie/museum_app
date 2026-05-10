@@ -2,10 +2,11 @@ import * as nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import { imageStore } from "../models/cloudinary";
-import { db } from "../models/db"; 
+import { db } from "../models/db";
 import type { UserType } from "../models/mongo/user";
 import type { MuseumType } from "../models/mongo/museum";
 import type { ExhibitionType } from "../models/mongo/exhibition";
+import type { CategoryType } from "../models/mongo/category";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ interface EnrichedImage {
   user: UserType | null;
   museum: MuseumType | null;
   exhibition: ExhibitionType | null;
+  categories: CategoryType | null;
 }
 
 interface UserGallery {
@@ -37,28 +39,58 @@ export const galleriesController = {
     handler: async function (request: Request, h: ResponseToolkit) {
       const user = request.auth.credentials as any;
       const isAdmin = user && user.role === "admin";
-      
-      const museums = await db.museumStore!.getAllMuseums();
+
+      let museums = await db.museumStore!.getAllMuseums();
       const exhibitions = await db.exhibitionStore!.getAllExhibitions();
       const allUsers = await db.userStore!.getAllUsers();
       const mongoImages = await db.imageStore!.getAllImages();
-      
+      const categories = await db.categoryStore!.getAllCategories();
+      const query = request.query as any;
+      const categoryId = query.categoryId;
+
+      if (categoryId) {
+        museums = museums.filter((museum: any) => museum.categoryId === categoryId);
+      }
+
       const userMap = new Map<string, UserType>(allUsers.map((u: UserType) => [u._id!, u]));
       const museumMap = new Map<string, MuseumType>(museums.map((m: MuseumType) => [m._id!, m]));
 
+      // Filter just Public Museums
+      const publicMuseums = museums.filter((m: any) => m.status === "public");
+      const publicMuseumIds = new Set(publicMuseums.map((m) => m._id));
+      const latestImageByMuseum = new Map<string, any>();
+      for (const image of mongoImages as any[]) {
+        // Only process if the image belongs to a museum AND that museum is PUBLIC
+        if (!image.museum || !publicMuseumIds.has(image.museum)) continue;
+
+        const existing = latestImageByMuseum.get(image.museum);
+        const currentTs = new Date(image.createdAt || image.uploadDate || 0).getTime();
+        const existingTs = existing ? new Date(existing.createdAt || existing.uploadDate || 0).getTime() : 0;
+
+        // Standard "find latest" logic
+        if (!existing || currentTs > existingTs) {
+          latestImageByMuseum.set(image.museum, image);
+        }
+      }
       // Enrich museums with owner name info
       const enrichedMuseums = museums.map((m: any) => {
         const owner = userMap.get(m.userid) || null;
+        const latestImage = latestImageByMuseum.get(m._id);
         return {
           ...m,
           ownerFirstName: owner?.firstName || "Unknown",
           ownerLastName: owner?.lastName || "Unknown",
+          latestImageUrl: latestImage?.url || null,
+          latestImageName: latestImage?.image || "",
         };
       });
 
+      // Build enriched public museums list for the view (only public)
+      const enrichedPublicMuseums = enrichedMuseums.filter((m: any) => m.status === "public");
+
       // 1. Properly map the images
       const images: EnrichedImage[] = mongoImages.map((image: any) => {
-        const userData = image.userId ? userMap.get(image.userId) ?? null : null;
+        const userData = image.userId ? (userMap.get(image.userId) ?? null) : null;
         return {
           id: image.publicId,
           image: image.image,
@@ -70,14 +102,15 @@ export const galleriesController = {
           userEmail: userData?.email || "",
           size: image.size ? `${Math.round(image.size / 1024)} KB` : "",
           user: userData,
-          museum: image.museum ? museumMap.get(image.museum) ?? null : null,
+          museum: image.museum ? (museumMap.get(image.museum) ?? null) : null,
           exhibition: null,
           likes: image.likeCount || 0,
           isLiked: image.likedBy?.includes(user._id) || false,
+          categories: categories,
         };
       });
 
-      // 2. Build User Gallery Map (Same as your code)
+      // 2. Build User Gallery Map
       const userGalleryMap = new Map<string, UserGallery>();
       for (const image of images) {
         const userId = image.user?._id || "unknown-user";
@@ -95,8 +128,7 @@ export const galleriesController = {
         }
       }
 
-      // 3. FETCH COMMENTS HERE (Outside the map)
-      // Since this is the general galleries page, we get all social posts
+      // 3. Social Posts
       const comments = await db.socialStore!.getAllComments();
 
       // Format comment dates for display (concise, locale-aware)
@@ -128,44 +160,46 @@ export const galleriesController = {
         g.comments = userComments;
       }
 
-      // 4. FINALLY RENDER
+      // FINALLY RENDER (send informatioon to View)
       return h.view("galleries-view", {
         title: "Museum Gallery",
         images,
         userGalleries: Array.from(userGalleryMap.values()),
         museums: enrichedMuseums,
+        categories,
         exhibitions,
         user,
         isAdmin,
         allUsers,
-        allComments: comments
+        allComments: comments,
+        publicMuseums: enrichedPublicMuseums,
       });
     },
   },
 
   leaveComment: {
     handler: async function (request: Request, h: ResponseToolkit) {
-    const user = request.auth.credentials as any;
-    const { userText, galleryOwnerId } = request.payload as any;
+      const user = request.auth.credentials as any;
+      const { userText, galleryOwnerId } = request.payload as any;
 
-    console.log("📝 Form text received:", userText);
-    console.log("👤 Posted by user:", user?._id);
-    console.log("🎯 Target gallery owner id:", galleryOwnerId);
+      console.log("📝 Form text received:", userText);
+      console.log("👤 Posted by user:", user?._id);
+      console.log("🎯 Target gallery owner id:", galleryOwnerId);
 
-    // Validate input
-    if (!userText || userText.trim().length === 0) {
+      // Validate input
+      if (!userText || userText.trim().length === 0) {
         console.log("❌ Empty text submitted, ignoring");
         return h.redirect("/galleries");
-    }
+      }
 
-    try {
+      try {
         // 1. Prepare the data object
         const commentPayload = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        comment: userText,
-        like: 0,
-        dislike: 0
+          firstName: user.firstName,
+          lastName: user.lastName,
+          comment: userText,
+          like: 0,
+          dislike: 0,
         };
         // Associate the comment with the target gallery owner (from the form)
         const ownerIdToUse = galleryOwnerId || (user && user._id);
@@ -174,14 +208,13 @@ export const galleriesController = {
         }
         // 2. Saving at sociala db (social-mongo-store)
         await db.socialStore.addComment(commentPayload);
-        
+
         console.log("✅ Comment saved to MongoDB!");
         return h.redirect("/galleries");
-    } catch (error: any) {
+      } catch (error: any) {
         console.error("❌ Error saving comment:", error.message);
         return h.redirect("/galleries");
-    }
-    
+      }
     },
   },
 
@@ -195,8 +228,8 @@ export const galleriesController = {
       if (!user?._id) {
         console.error("❌ USER ID IS MISSING!");
         return h.redirect("/galleries");
-     }
-     
+      }
+
       const alreadyLiked = await db.socialStore.isLikedByUser(commentId, user._id);
 
       if (alreadyLiked) {
@@ -204,13 +237,13 @@ export const galleriesController = {
         console.log("The ID being liked is:", commentId);
       } else {
         await db.socialStore.incrementLike(commentId, user._id);
-        console.log("User already liked this post")
+        console.log("User already liked this post");
       }
-      
-      return h.redirect("/galleries"); 
+
+      return h.redirect("/galleries");
     },
   },
-  
+
   incrementDislikeComment: {
     handler: async function (request: Request, h: ResponseToolkit) {
       const user = request.auth.credentials as any;
@@ -225,16 +258,15 @@ export const galleriesController = {
 
       const alreadyLiked = await db.socialStore.isDislikedByUser(commentId, user._id);
 
-      
       if (alreadyLiked) {
         await db.socialStore.decrementDislike(commentId, user._id);
         console.log("The ID being liked is:", commentId);
       } else {
         await db.socialStore.incrementDislike(commentId, user._id);
-        console.log("User already liked this post")
+        console.log("User already liked this post");
       }
-      
-      return h.redirect("/galleries"); 
+
+      return h.redirect("/galleries");
     },
   },
 
@@ -247,15 +279,15 @@ export const galleriesController = {
           pass: process.env.EMAIL_PASSWORD,
         },
       });
-    
+
       const payload = request.payload as any;
       const recipientEmail = payload.recipientEmail;
       const imageId = request.params.id;
-    
+
       try {
         // Get the image from MongoDB (has denormalized data)
         const foundImage = await db.imageStore!.getImageByPublicId(imageId);
-        
+
         if (!foundImage) {
           console.error("Image not found in MongoDB");
           return h.redirect("/galleries");
@@ -266,12 +298,12 @@ export const galleriesController = {
         if (foundImage.userId) {
           userData = await db.userStore!.getUserById(foundImage.userId);
         }
-        
+
         // Build email content with denormalized data from the image document
         const senderName = userData ? `${userData.firstName} ${userData.lastName}` : foundImage.userName || "A museum visitor";
         const museumTitle = foundImage.museumTitle || "Museum";
         const exhibitionTitle = foundImage.exhibitionTitle || "Exhibition";
-        
+
         await transporter.sendMail({
           from: process.env.EMAIL,
           to: recipientEmail,
@@ -288,9 +320,9 @@ export const galleriesController = {
       } catch (error) {
         console.error("Email error:", error);
       }
-    
+
       return h.redirect("/galleries");
-    }
+    },
   },
 
   likeImage: {
@@ -299,7 +331,7 @@ export const galleriesController = {
       const imageId = request.params.id; // from /galleries/like/{id}
 
       const alreadyLiked = await db.imageStore.isLikedByUser(imageId, user._id);
-      
+
       if (alreadyLiked) {
         await db.imageStore.unlikeImage(imageId, user._id);
       } else {
@@ -307,9 +339,21 @@ export const galleriesController = {
       }
 
       return h.redirect("/galleries");
-    }
+    },
   },
 
+  listCategories: {
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const loggedInUser = request.auth.credentials as any;
 
-
+      // Use ! to unlock the store
+      const categories = await db.categoryStore!.getAllCategories();
+      const viewData = {
+        title: "Categories",
+        user: loggedInUser,
+        categories: categories,
+      };
+      return h.view("galleries-view", viewData);
+    },
+  },
 };
