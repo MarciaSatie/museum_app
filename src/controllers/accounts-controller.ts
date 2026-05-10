@@ -2,14 +2,20 @@ import { default as Joi } from "joi";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import { UserSpec, UserCredentialsSpec } from "../models/joi-schemas"; 
 import { db } from "../models/db";
+import bcrypt from "bcrypt";
+const saltRounds = 10;
 
 // Add this interface to "teach" TypeScript about CookieAuth
 interface CookieRequest extends Request {
   cookieAuth: {
-    set: (data: any) => void;
-    clear: () => void;
+    // This combined signature handles both objects and key/value pairs
+    set(session: object): void;
+    set(key: string, value: string | object): void;
+    clear(key?: string): void;
+    ttl(milliseconds: number): void;
   };
 }
+
 
 const UserSettingsSpec = {
   firstName: UserSpec.extract("firstName"),
@@ -80,6 +86,7 @@ export const accountsController = {
         return h.view("login-view", { title: "Log in error", errors: error.details }).takeover().code(400);
       },
     },
+
     handler: async function (request: CookieRequest, h: ResponseToolkit) {
       // 1. Get the data from the form
       const { email, password } = request.payload as any;
@@ -87,18 +94,22 @@ export const accountsController = {
       // 2. Find the user in the DB
       const user = await db.userStore!.getUserByEmail(email);
       
-      // 3. If no user or wrong password, stop here
-      if (!user || user.password !== password) {
-        console.log("Login failed");
+      // 3. SECURE CHECK: Use bcrypt.compare instead of !==
+      // Compare: (plain_text_from_form, hashed_password_from_db)
+      const isMatch = user ? await bcrypt.compare(password, user.password) : false;
+    
+      if (!user || !isMatch) {
+        console.log("Login failed: Invalid email or password");
         return h.redirect("/");
       }
-
-      // 4. NOW that 'user' exists, set the cookie
-      console.log("Login success - setting cookie with id:", user._id);
+    
+      // 4. Login success - set the cookie
+      console.log("Login success - setting cookie for user:", user.email);
       request.cookieAuth.set({ id: user._id }); 
       
       return h.redirect("/dashboard");
     },
+    
   },
 
   logout: {
