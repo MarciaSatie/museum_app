@@ -2,6 +2,9 @@ import { v4 } from "uuid";
 // Note: We import the Model as 'UserModel' to avoid name collision with the 'UserType' type
 import { UserModel, type UserType} from "./user"; 
 
+import bcrypt from "bcrypt";
+const saltRounds = 10;
+
 // Helper function to ensure _id is treated as a string
 // 'any' is used here because Mongoose objects can be messy before normalization
 const normalizeUser = (user: any): UserType | null => {
@@ -34,8 +37,13 @@ export const userMongoStore = {
   async addUser(user: UserType): Promise<UserType | null> {
     console.log("💾 Adding user to MongoDB:", user.email);
     try {
-      // Ensure _id is present (matching your UUID logic)
-      const userData = { ...user, _id: user._id || v4() };
+      // 1. Hash the password BEFORE creating the model instance
+      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+      const userData = { 
+        ...user, 
+        _id: user._id || v4(),
+        password: hashedPassword // 2. Overwrite the plain text password with the hash
+      };
       const newUser = new UserModel(userData);
       const userObj = await newUser.save();
       
@@ -51,17 +59,25 @@ export const userMongoStore = {
     const user = await UserModel.findOne({ email: email }).lean();
     return normalizeUser(user);
   },
-
+  
   async updateUser(user: UserType): Promise<UserType | null> {
     try {
-      const updated = await UserModel.findByIdAndUpdate(user._id, user, { 
-        returnDocument: "after" 
-      }).lean();
+      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+      
+      // Merge the user object with the new hashed password
+      const updated = await UserModel.findByIdAndUpdate(
+        user._id, 
+        { ...user, password: hashedPassword }, // Fix: merge here
+        { returnDocument: "after" }
+      ).lean();
+  
       return normalizeUser(updated);
     } catch (error) {
+      console.error("❌ Update error:", error);
       return null;
     }
   },
+  
 
   async deleteUserById(id: string): Promise<void> {
     try {
@@ -75,3 +91,4 @@ export const userMongoStore = {
     await UserModel.deleteMany({});
   },
 };
+

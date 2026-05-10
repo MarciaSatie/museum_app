@@ -6,7 +6,6 @@ import { museumController } from "./controllers/museum-controller";
 import { adminController } from "./controllers/admin-controller";
 import { categoryController } from "./controllers/category-controller";
 import { galleriesController } from "./controllers/galleries-controller";
-import { socialController } from "./controllers/social-controller";
 
 export const webRoutes= [
   { method: "GET", path: "/", config: accountsController.index },
