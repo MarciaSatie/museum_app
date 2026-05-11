@@ -26,6 +26,7 @@
     <!-- Review -->
     
     <div class="column is-7">
+      <!-- Review Form-->
       <div>
         <form action="/galleries/review/{{_id}}" method="POST">
           <div class="field has-addons">
@@ -41,6 +42,7 @@
             </div>
           </div>
           <input type="hidden" name="museumId" value="{{_id}}">
+          <input type="hidden" name="reviewerId" value="{{../user._id}}">
         </form>
       </div>
       <div class="swiper review-swiper has-nav-space px-6" data-review-swiper style="width: 100%; overflow: hidden;">
@@ -50,6 +52,7 @@
               <div class="swiper-slide">
                 <div class="box p-5 is-flex is-flex-direction-column is-flex-grow-1">
                   <p class="is-size-5 has-text-centered">❝{{this}}❞</p>
+                  <p class="is-size-7 has-text-centered is-italic">@{{this.authorName}}</p>
                 </div>
               </div>
             {{/each}}

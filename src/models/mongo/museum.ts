@@ -13,7 +13,7 @@ const museumSchema = new mongoose.Schema(
     isFavorite: { type: Boolean, default:false,},
     status:  { type: String, required: true, default: "public" },
     rating: { type: Number, default: null,},
-    reviewList: { type: [String], default: [] },
+    reviewList: { type: [Schema.Types.Mixed], default: [] },
 
   },
   { timestamps: true }
