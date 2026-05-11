@@ -30,6 +30,10 @@
             <div class="control">
               <button class="button is-link" type="submit" aria-label="Leave a Review" title="Leave a Review">📝</button>
             </div>
+            <!-- Rating -->
+            <div>
+
+            </div>
           </div>
           <input type="hidden" name="museumId" value="{{_id}}">
         </form>
@@ -37,10 +41,58 @@
     </div>
 
     <!-- Review -->
-    <div class="column">
-      Hi
+    <div class="column is-7">
+      <div class="swiper review-swiper has-nav-space px-6" data-review-swiper style="width: 100%; overflow: hidden;">
+        <div class="swiper-wrapper">
+          {{#if reviewList}}
+            {{#each reviewList}}
+              <div class="swiper-slide">
+                <div class="box p-5 is-flex is-flex-direction-column is-flex-grow-1">
+                  <p class="is-size-5 has-text-centered">" {{this}} "</p>
+                </div>
+              </div>
+            {{/each}}
+          {{else}}
+            <div class="swiper-slide">
+              <div class="box p-3">
+                <p class="is-size-5 has-text-grey">No reviews yet</p>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
     </div>
 
   </div>
 </div>
 {{/each}}
+
+<!-- Swiper Script to interact with DOM-->
+<script>
+  document.querySelectorAll('[data-review-swiper]').forEach((container) => {
+    // eslint-disable-next-line no-new
+    new Swiper(container, {
+      slidesPerView: 1,
+      spaceBetween: 16,
+      watchOverflow: true,
+      pagination: {
+        el: container.querySelector('.swiper-pagination'),
+        clickable: true,
+      },
+      navigation: {
+        nextEl: container.querySelector('.swiper-button-next'),
+        prevEl: container.querySelector('.swiper-button-prev'),
+      },
+      breakpoints: {
+        0: { slidesPerView: 1 },    // Only 1 slide on small screens
+        600: { slidesPerView: 1 },  // 1 slides on medium
+        1024: { slidesPerView: 2 }, // 2 slides on desktop
+      },
+
+    });
+  });
+</script>
