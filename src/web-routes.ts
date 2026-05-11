@@ -48,6 +48,7 @@ export const webRoutes= [
   { method: "GET", path: "/galleries", config: galleriesController.index },
   { method: "POST", path: "/galleries/sendpostcard/{id}", config: galleriesController.sendPostcard },
   { method: "POST", path: "/galleries/like/{id}", config: galleriesController.likeImage },
+  { method: "POST", path: "/galleries/review/{_id}", config: galleriesController.reviewPOI },
 
   { method: "POST", path: "/leave-comment", config: galleriesController.leaveComment },
   //<a> tag (a link) for the Like button. When you click a link, the browser always sends a GET request.

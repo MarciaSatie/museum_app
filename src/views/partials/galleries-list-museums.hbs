@@ -22,9 +22,25 @@
       <p class="is-size-7"><strong>Location:</strong> {{latitude}}, {{longitude}}</p>
       {{/if}}
       <div class="buttons">
-        <a href="/dashboard/editmuseum/{{_id}}" class="button is-info">Edit</a>
+        <form action="/galleries/review/{{_id}}" method="POST">
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input class="input" name="userText" type="text" placeholder="Leave a Review..." required>
+            </div>
+            <div class="control">
+              <button class="button is-link" type="submit" aria-label="Leave a Review" title="Leave a Review">📝</button>
+            </div>
+          </div>
+          <input type="hidden" name="museumId" value="{{_id}}">
+        </form>
       </div>
     </div>
+
+    <!-- Review -->
+    <div class="column">
+      Hi
+    </div>
+
   </div>
 </div>
 {{/each}}

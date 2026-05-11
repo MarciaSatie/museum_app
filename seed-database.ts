@@ -93,8 +93,18 @@ async function main() {
 
   await ensureExhibition(String(homerMuseums[0]._id), { title: "Abstract Expressions", description: "Modern abstract paintings", startDate: "2026-04-01", endDate: "2026-06-30" });
   await ensureExhibition(String(homerMuseums[1]._id), { title: "D-Day Stories", description: "Personal accounts from Normandy", startDate: "2026-05-01", endDate: "2026-08-31" });
+  await ensureExhibition(String(homerMuseums[2]._id), { title: "Walking with Dinosaurs", description: "Pre-Historic Ages", startDate: "2026-06-01", endDate: "2026-12-30" });
+  await ensureExhibition(String(homerMuseums[3]._id), { title: "Flight Through Time", description: "Milestones in aviation history", startDate: "2026-03-20", endDate: "2026-10-20" });
+  await ensureExhibition(String(homerMuseums[4]._id), { title: "Moon Landing 60 Years", description: "Apollo 11 anniversary", startDate: "2026-07-20", endDate: "2026-12-31" });
+
   await ensureExhibition(String(margeMuseums[0]._id), { title: "Renaissance Masters", description: "Da Vinci and Michelangelo", startDate: "2026-04-15", endDate: "2026-08-15" });
+  await ensureExhibition(String(margeMuseums[1]._id), { title: "Pharaohs of Egypt", description: "Tutankhamun and ancient rulers", startDate: "2026-05-01", endDate: "2026-10-31" });
+  await ensureExhibition(String(margeMuseums[2]._id), { title: "Coral Reefs in Crisis", description: "Ocean conservation efforts", startDate: "2026-06-08", endDate: "2026-12-31" });
+  await ensureExhibition(String(margeMuseums[3]._id), { title: "Monet's Water Lilies", description: "Impressionist garden series", startDate: "2026-03-01", endDate: "2026-07-31" });
+
   await ensureExhibition(String(lisaMuseums[0]._id), { title: "Climate Solutions", description: "Renewable energy innovations", startDate: "2026-04-22", endDate: "2026-11-30" });
+  await ensureExhibition(String(lisaMuseums[1]._id), { title: "Miles Davis Tribute", description: "The prince of jazz", startDate: "2026-05-26", endDate: "2026-09-26" });
+  await ensureExhibition(String(lisaMuseums[2]._id), { title: "Suffragette Movement", description: "Women's voting rights history", startDate: "2026-03-08", endDate: "2026-08-26" });
 
   console.log("Seed complete.");
 }

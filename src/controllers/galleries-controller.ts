@@ -452,4 +452,21 @@ export const galleriesController = {
       return h.view("galleries-view", viewData);
     },
   },
+
+  reviewPOI:{
+    handler: async function (request: Request, h: ResponseToolkit) {
+      // request.params, takes information from URL
+      // requeest.payload, takes information from body of request.
+      const payload = request.payload as any;
+      const museumId = request.params.id || payload.museumId;
+      const review = payload.userText;
+
+      if (!museumId || !review) {
+        return h.redirect("/galleries");
+      }
+
+      await db.museumStore.addReviewById(museumId, review);
+      return h.redirect("/galleries");
+    },
+  },
 };
