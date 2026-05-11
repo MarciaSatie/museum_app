@@ -11,7 +11,7 @@ const museumSchema = new mongoose.Schema(
     longitude: { type: Number, default: null,},
     museumVisitCount: { type: Number, default: 0,},
     isFavorite: { type: Boolean, default:false,},
-    status:  { type: String, required: true,},
+    status:  { type: String, required: true, default: "public" },
     rating: { type: Number, default: null,},
 
   },

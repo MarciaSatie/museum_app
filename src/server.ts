@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 import Vision from "@hapi/vision";
 import Hapi from "@hapi/hapi";
 import Cookie from "@hapi/cookie";
@@ -44,12 +45,14 @@ async function bootstrapDevelopmentUsers() {
   for (const user of defaultUsers) {
     // Use '!' because we know db.init() has been called by now
     const existing = await db.userStore!.getUserByEmail(user.email);
+    const passwordMatches = existing ? await bcrypt.compare(user.password, existing.password || "") : false;
+
     if (!existing) {
       await db.userStore!.addUser(user as any);
       console.log(`Created development user: ${user.email}`);
-    } else if (existing.role !== "admin") {
-      await db.userStore!.updateUser({ ...existing, role: "admin" });
-      console.log(`Promoted development user to admin: ${user.email}`);
+    } else if (existing.role !== "admin" || !passwordMatches) {
+      await db.userStore!.updateUser({ ...existing, password: user.password, role: "admin" });
+      console.log(`Refreshed development user: ${user.email}`);
     }
   }
 }

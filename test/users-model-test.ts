@@ -20,7 +20,7 @@ suite("User Model tests", () => {
     assert.equal(newUser.firstName, maggie.firstName);
     assert.equal(newUser.lastName, maggie.lastName);
     assert.equal(newUser.email, maggie.email);
-    assert.equal(newUser.password, maggie.password);
+    assert.exists(newUser.password); // Password should exist but is hashed, not plain text
     assert.exists(newUser._id);
   });
 

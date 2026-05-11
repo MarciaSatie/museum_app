@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
-import { db } from "./src/models/db.js";
-import { categoryMongoStore } from "./src/models/mongo/category-mongo-store.js";
-import { museumMongoStore } from "./src/models/mongo/museum-mongo-store.js";
-import { exhibitionMongoStore } from "./src/models/mongo/exhibition-mongo-store.js";
+import { db } from "./src/models/db";
+import { categoryMongoStore } from "./src/models/mongo/category-mongo-store";
+import { museumMongoStore } from "./src/models/mongo/museum-mongo-store";
+import { exhibitionMongoStore } from "./src/models/mongo/exhibition-mongo-store";
 
 dotenv.config();
 await db.init("mongo");

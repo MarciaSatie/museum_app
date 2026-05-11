@@ -82,7 +82,7 @@ suite("Museum Model tests", () => {
     await db.museumStore.deleteMuseumById(museum._id!);
     
     const retrievedMuseum = await db.museumStore.getMuseumById(museum._id!);
-    assert.isUndefined(retrievedMuseum);
+    assert.isNull(retrievedMuseum);
   });
 
   test("delete all museums", async () => {

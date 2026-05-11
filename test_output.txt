@@ -1,0 +1,252 @@
+
+> app_museum@0.4.0 test
+> mocha --ui tdd --require tsx/cjs --timeout 10000 "test/**/*-test.ts" "test/minimal-test.ts" --exit
+
+◇ injected env (11) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+
+
+  Category API tests
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+database connected to test on ac-wy8wd2e-shard-00-02.9jqpm23.mongodb.net
+Mongo storage mode activated and stores assigned.
+Refreshed development user: homer@simpson.com
+Refreshed development user: marge@simpson.com
+Server running on http://MSatie:21996
+➡️➡️➡️ JWT token generated successfully
+    √ get all categories (145ms)
+💾 Adding category to MongoDB: Art
+✅ Category saved to MongoDB with _id: 1a217a2c-e126-4e14-a4d2-3ca3390b4364
+    √ create a category (212ms)
+💾 Adding category to MongoDB: Art
+✅ Category saved to MongoDB with _id: 377160f7-5de1-489b-b686-e03613f98669
+    √ get a category by id (327ms)
+💾 Adding category to MongoDB: Art
+✅ Category saved to MongoDB with _id: e8a719c0-86af-4283-96c9-37fe62850fb9
+Route error: Error: No Category with this id
+    at handler (C:\SETU\Semester3\FullStack1\Assigment\museum_app\src\api\category-api.ts:33:36)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async exports.Manager.execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\toolkit.js:60:28)
+    at async internals.handler (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\handler.js:46:20)
+    at async exports.execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\handler.js:31:20)
+    at async Request._lifecycle (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\request.js:384:32)
+    at async Request._execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\request.js:294:9) {
+  data: null,
+  isBoom: true,
+  isServer: false,
+  output: {
+    statusCode: 404,
+    payload: {
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'No Category with this id'
+    },
+    headers: {}
+  }
+}
+    √ delete a category (486ms)
+💾 Adding category to MongoDB: Art
+✅ Category saved to MongoDB with _id: 690ee50c-9621-4289-9f23-3467aff3d1cb
+💾 Adding category to MongoDB: History
+✅ Category saved to MongoDB with _id: b608b40f-0f82-447a-af51-c17d55004d36
+💾 Adding category to MongoDB: Science
+✅ Category saved to MongoDB with _id: 74b4698f-7e09-4ae9-96d6-19cf4a764425
+    √ create multiple categories (744ms)
+
+  Exhibition API tests
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Mongo storage mode activated and stores assigned.
+Server running on http://MSatie:22006
+➡️➡️➡️ JWT token generated successfully
+    √ get all exhibitions (141ms)
+    √ create an exhibition (148ms)
+    √ get an exhibition by id (276ms)
+Route error: Error: Exhibition not found
+    at handler (C:\SETU\Semester3\FullStack1\Assigment\museum_app\src\api\exhibition-api.ts:34:38)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async exports.Manager.execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\toolkit.js:60:28)
+    at async internals.handler (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\handler.js:46:20)
+    at async exports.execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\handler.js:31:20)
+    at async Request._lifecycle (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\request.js:384:32)
+    at async Request._execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\request.js:294:9) {
+  data: null,
+  isBoom: true,
+  isServer: false,
+  output: {
+    statusCode: 404,
+    payload: {
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Exhibition not found'
+    },
+    headers: {}
+  }
+}
+    √ delete an exhibition (443ms)
+    √ create multiple exhibitions (572ms)
+
+  Museum API tests
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Mongo storage mode activated and stores assigned.
+Server running on http://MSatie:22015
+➡️➡️➡️ JWT token generated successfully
+    √ get all museums (132ms)
+    √ create a museum (147ms)
+    √ get a museum by id (339ms)
+    √ update a museum (257ms)
+Route error: Error: Museum not found
+    at handler (C:\SETU\Semester3\FullStack1\Assigment\museum_app\src\api\museum-api.ts:35:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async exports.Manager.execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\toolkit.js:60:28)
+    at async internals.handler (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\handler.js:46:20)
+    at async exports.execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\handler.js:31:20)
+    at async Request._lifecycle (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\request.js:384:32)
+    at async Request._execute (C:\SETU\Semester3\FullStack1\Assigment\museum_app\node_modules\@hapi\hapi\lib\request.js:294:9) {
+  data: null,
+  isBoom: true,
+  isServer: false,
+  output: {
+    statusCode: 404,
+    payload: {
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Museum not found'
+    },
+    headers: {}
+  }
+}
+    √ delete a museum (538ms)
+
+  Simple connectivity test
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Mongo storage mode activated and stores assigned.
+Server running on http://MSatie:22025
+➡️➡️➡️ JWT token generated successfully
+    √ can connect to server (148ms)
+
+  Exhibition Model tests
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: 1897d1cb-0f44-48a1-af4f-ff1704a3082d
+    √ add an exhibition (89ms)
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: 673f220a-0ab2-47fe-a3b8-ea24c9941761
+    √ get exhibitions by museum ID (261ms)
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: a42f4c1b-297b-4da3-8166-375e6c31b00c
+    √ delete exhibition by ID (205ms)
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: 518705a7-de92-4c3d-81b3-2f767f587dcd
+    √ update exhibition (288ms)
+
+  Minimal test
+✅ Test is running!
+    √ just pass
+
+  Museum Model tests
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: e33d5bde-5618-479c-8e1a-b8a05c0a86c7
+    √ add a museum (145ms)
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: d8b6b322-ef0f-4cc1-8080-7532e51a167d
+    √ get museum by ID (190ms)
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: 513bae20-e4c7-4647-9f56-7abbd31f9623
+    √ get user museums (227ms)
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: 7d219a44-e6d6-4206-b39d-ff734a14495c
+    √ delete museum by ID (326ms)
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: f6d3bd02-291f-4924-a644-4860bc4edfa1
+    √ delete all museums (334ms)
+
+  User Model tests
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+💾 Adding user to MongoDB: maggie@simpson.com
+✅ User saved to MongoDB with _id: c7ae414a-0432-4eec-906f-a0e6f5db5467
+    √ create a user (199ms)
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+    √ delete all users (206ms)
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+💾 Adding user to MongoDB: maggie@simpson.com
+✅ User saved to MongoDB with _id: 1dab49c6-f3a5-476e-9844-139782e8ff63
+    √ get a user - success (335ms)
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+    √ delete One User - success (195ms)
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+    √ get a user - failures (132ms)
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+    √ get a user - bad params (73ms)
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Mongo storage mode activated and stores assigned.
+💾 Adding user to MongoDB: homer@simpson.com
+✅ User saved to MongoDB with _id: c7e86068-03a6-44d8-884b-f23548cec8ac
+💾 Adding user to MongoDB: marge@simpson.com
+✅ User saved to MongoDB with _id: 526f970a-cc98-4243-b5f9-4fea5e07fd46
+💾 Adding user to MongoDB: bart@simpson.com
+✅ User saved to MongoDB with _id: 2f45a56f-bed9-48fa-9120-05e2bdc04589
+    √ delete One User - fail (131ms)
+
+
+  33 passing (25s)
+

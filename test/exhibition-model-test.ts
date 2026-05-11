@@ -14,7 +14,7 @@ suite("Exhibition Model tests", () => {
     await db.init();
     await db.userStore.deleteAll();
     await db.museumStore.deleteAllMuseums();
-    await db.exhibitionStore.deleteAll();
+    await db.exhibitionStore.deleteAllExhibitions();
     
     // Create a test user and museum
     loggedInUser = await db.userStore.addUser(testUsers[0]);

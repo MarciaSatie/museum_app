@@ -1,4 +1,5 @@
 import Boom from "@hapi/boom";
+import bcrypt from "bcrypt";
 import { Request, ResponseToolkit, ResponseObject } from "@hapi/hapi";
 import { createToken, User } from "./jwt-utils"; // Import User interface from your utility
 import { db } from "../models/db";
@@ -15,7 +16,8 @@ export const userApi = {
         if (!user) {
           return Boom.unauthorized("User not found");
         }
-        if (user.password !== payload.password) {
+        const passwordMatches = await bcrypt.compare(payload.password, user.password || "");
+        if (!passwordMatches) {
           return Boom.unauthorized("Invalid password");
         }
 

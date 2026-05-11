@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "test": "mocha --ui tdd test/**/*.js --node-option loader=tsx --exit",
+    "test": "mocha --ui tdd --require tsx/cjs --timeout 10000 \"test/**/*-test.ts\" \"test/minimal-test.ts\" --exit",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
