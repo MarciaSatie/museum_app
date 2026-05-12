@@ -479,8 +479,8 @@ export const galleriesController = {
         authorId: userId,
         date: new Date()
       };
-      
-      await db.museumStore.addReviewById(museumId, reviewObject);
+
+      await db.museumStore!.addReviewById(museumId, reviewObject);
       return h.redirect("/galleries");
     },
   },

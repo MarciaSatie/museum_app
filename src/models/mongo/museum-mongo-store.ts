@@ -87,7 +87,7 @@ export const museumMongoStore = {
     // findByIdAndUpdate atomically updates one document by _id and returns the updated document (or null if not found).
     const updated = await MuseumModel.findByIdAndUpdate(
     id,
-    { $push: { reviewList: review } },
+    { $push: { reviewList: { $each: [review], $position: 0 } } },
     { new: true }
     ).lean(); // get a simple Object.
     
