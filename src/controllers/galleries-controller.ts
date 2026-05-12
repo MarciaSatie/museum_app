@@ -477,7 +477,7 @@ export const galleriesController = {
         text: review,
         authorName: `${userFirstName} ${userLastName}`,
         authorId: userId,
-        date: { type: Date, default: Date.now }
+        date: new Date()
       };
       
       await db.museumStore.addReviewById(museumId, reviewObject);

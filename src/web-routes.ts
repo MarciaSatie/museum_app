@@ -30,6 +30,7 @@ export const webRoutes= [
   { method: "GET", path: "/dashboard", config: dashboardController.index },
   { method: "POST", path: "/dashboard/addmuseum", config: dashboardController.addMuseum },
   { method: "GET", path: "/dashboard/deletemuseum/{id}", config: dashboardController.deleteMuseum },
+  { method: "GET", path: "/dashboard/deleteReview/{museumId}/{reviewIndex}", config: dashboardController.deleteReview },
 
   { method: "GET", path: "/museum/{id}", config: museumController.index },
   { method: "POST", path: "/museum/{id}/addexhibition", config: museumController.addExhibition },

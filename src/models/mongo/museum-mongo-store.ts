@@ -83,7 +83,7 @@ export const museumMongoStore = {
     return exhibitions.map((e) => normalize(e) as ExhibitionType);
   },
 
-  async addReviewById(id: string, review: string): Promise<boolean> {
+  async addReviewById(id: string, review: any): Promise<boolean> {
     // findByIdAndUpdate atomically updates one document by _id and returns the updated document (or null if not found).
     const updated = await MuseumModel.findByIdAndUpdate(
     id,
