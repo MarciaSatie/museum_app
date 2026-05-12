@@ -10,8 +10,8 @@ suite("Museum Model tests", () => {
 
   setup(async () => {
     await db.init();
-    await db.userStore.deleteAll();
-    await db.museumStore.deleteAllMuseums();
+    // await db.userStore.deleteAll();
+    // await db.museumStore.deleteAllMuseums();
     
     // Create a test user first
     loggedInUser = await db.userStore.addUser(testUsers[0]);
