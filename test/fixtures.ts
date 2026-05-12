@@ -24,31 +24,31 @@ export const maggieCredentials: Credentials = {
   password: "secret",
 };
 
-export const homerCredentials: Credentials = {
-  email: "homer@simpson.com",
+export const peterCredentials: Credentials = {
+  email: "peter@griffin.com",
   password: "secret",
 };
 
 export const testUsers: User[] = [
   {
     _id: "",
-    firstName: "Homer",
-    lastName: "Simpson",
-    email: "homer@simpson.com",
+    firstName: "Peter",
+    lastName: "Griffin",
+    email: "peter@griffin.com",
     password: "secret",
   },
   {
     _id: "",
-    firstName: "Marge",
-    lastName: "Simpson",
-    email: "marge@simpson.com",
+    firstName: "Lois",
+    lastName: "Griffin",
+    email: "lois@griffin.com",
     password: "secret",
   },
   {
     _id: "",
-    firstName: "Bart",
-    lastName: "Simpson",
-    email: "bart@simpson.com",
+    firstName: "Stewie",
+    lastName: "Griffin",
+    email: "stewie@griffin.com",
     password: "secret",
   },
 ];
@@ -71,6 +71,12 @@ export const testMuseums: Museum[] = [
     description: "Interactive exhibits and science demonstrations",
     latitude: 53.4129,
     longitude: -8.2439,
+  },
+  {
+    title: "Lab Center",
+    description: "Interactive Experimental exhibits in a Laboratory",
+    latitude: 53.5129,
+    longitude: -8.5439,
   },
 ];
 

@@ -13,11 +13,18 @@ suite("Museum API tests", () => {
     this.timeout(10000);
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
-    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
+    await museumService.authenticate({ email: "peter@griffin.com", password: "secret" });
   });
 
   suiteTeardown(async () => {
     await server.stop();
+  });
+
+  suiteTeardown(async () => {
+    const museums = await museumService.getAllMuseums();
+    for (const museum of museums) {
+      await museumService.deleteMuseum(museum._id!);
+    }
   });
 
   test("get all museums", async () => {

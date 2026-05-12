@@ -28,6 +28,16 @@ suite("Exhibition Model tests", () => {
     testMuseum = await db.museumStore.addMuseum(museumData);
   });
 
+  suiteTeardown(async () => {
+    if (testMuseum?._id) {
+      await db.museumStore.deleteMuseumById(testMuseum._id);
+    }
+
+    if (loggedInUser?._id) {
+      await db.userStore.deleteUserById(loggedInUser._id);
+    }
+  });
+
   test("add an exhibition", async () => {
     const newExhibition: Exhibition = {
       title: testExhibitions[0].title,
