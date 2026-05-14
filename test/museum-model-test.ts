@@ -142,26 +142,26 @@ suite("Museum Model tests", () => {
     }
   });
 
-  // test("delete all museums", async () => {
-  //   const museum1: Museum = {
-  //     userid: loggedInUser._id,
-  //     title: testMuseums[0].title,
-  //     description: testMuseums[0].description,
-  //     latitude: testMuseums[0].latitude,
-  //     longitude: testMuseums[0].longitude,
-  //   };
-  //   const museum2: Museum = {
-  //     userid: loggedInUser._id,
-  //     title: testMuseums[1].title,
-  //     description: testMuseums[1].description,
-  //     latitude: testMuseums[1].latitude,
-  //     longitude: testMuseums[1].longitude,
-  //   };
-  //   await db.museumStore.addMuseum(museum1);
-  //   await db.museumStore.addMuseum(museum2);
+  test("delete all museums", async () => {
+    const museum1: Museum = {
+      userid: loggedInUser._id,
+      title: testMuseums[0].title,
+      description: testMuseums[0].description,
+      latitude: testMuseums[0].latitude,
+      longitude: testMuseums[0].longitude,
+    };
+    const museum2: Museum = {
+      userid: loggedInUser._id,
+      title: testMuseums[1].title,
+      description: testMuseums[1].description,
+      latitude: testMuseums[1].latitude,
+      longitude: testMuseums[1].longitude,
+    };
+    await db.museumStore.addMuseum(museum1);
+    await db.museumStore.addMuseum(museum2);
     
-  //   await db.museumStore.deleteAllMuseums();
-  //   const allMuseums = await db.museumStore.getAllMuseums();
-  //   assert.equal(allMuseums.length, 0);
-  // });
+    await db.museumStore.deleteAllMuseums();
+    const allMuseums = await db.museumStore.getAllMuseums();
+    assert.equal(allMuseums.length, 0);
+  });
 });

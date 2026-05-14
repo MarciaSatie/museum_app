@@ -55,19 +55,19 @@ export const testUsers: User[] = [
 
 export const testMuseums: Museum[] = [
   {
-    title: "National Art Gallery",
-    description: "A gallery featuring modern and contemporary art",
+    title: "Springfield Museum",
+    description: "A gallery featuring modern and contemporary art from our city",
     latitude: 53.3498,
     longitude: -6.2603,
   },
   {
-    title: "History Museum",
-    description: "Discover the rich history of our nation",
+    title: "Springfield Dunnut Museum",
+    description: "Discover the rich history of our Donnuts",
     latitude: 53.2707,
     longitude: -9.1193,
   },
   {
-    title: "Science Center",
+    title: "Futurama Science Center",
     description: "Interactive exhibits and science demonstrations",
     latitude: 53.4129,
     longitude: -8.2439,

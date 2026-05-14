@@ -47,13 +47,13 @@ suite("User Model tests", () => {
     assert.exists(newUser._id);
   });
 
-  // test("delete all users", async () => {
-  //   let returnedUsers: User[] = await db.userStore.getAllUsers();
-  //   assert.equal(returnedUsers.length, 3);
-  //   await db.userStore.deleteAll();
-  //   returnedUsers = await db.userStore.getAllUsers();
-  //   assert.equal(returnedUsers.length, 0);
-  // });
+  test("delete all users", async () => {
+    let returnedUsers: User[] = await db.userStore.getAllUsers();
+    assert.equal(returnedUsers.length, 3);
+    await db.userStore.deleteAll();
+    returnedUsers = await db.userStore.getAllUsers();
+    assert.equal(returnedUsers.length, 0);
+  });
 
   test("get a user - success", async () => {
     const testUser = createUniqueUser(maggie);
