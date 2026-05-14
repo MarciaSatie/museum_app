@@ -17,11 +17,18 @@ suite("Category API tests", () => {
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
     // Ensure these credentials match your test seed data
-    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
+    await museumService.authenticate({ email: "peter@griffin.com", password: "secret" });
   });
 
   suiteTeardown(async () => {
     await server.stop();
+  });
+
+  suiteTeardown(async () => {
+    const categories = await museumService.getAllCategories();
+    for (const category of categories) {
+      await museumService.deleteCategory(category._id!);
+    }
   });
 
   setup(async () => {

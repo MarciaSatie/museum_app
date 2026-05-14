@@ -23,6 +23,7 @@
         <strong>Location:</strong> {{latitude}}, {{longitude}}
       </p>
       {{/if}}
+      <p class="is-size-5">POI Status: <span class="has-text-info">{{status}}</span></p>
       <div class="buttons">
         <a href="/dashboard/editmuseum/{{_id}}" class="button is-info">Edit</a>
         <a href="/museum/{{_id}}" class="button">
@@ -37,6 +38,67 @@
       </div>
     </div>
 
+        <div class="column is-7">
+      <!-- Review -->
+ 
+      <div class="swiper review-swiper has-nav-space px-6" data-review-swiper style="width: 100%; overflow: hidden;">
+        <div class="swiper-wrapper">
+          {{#if reviewList}}
+            {{#each reviewList}}
+              <div class="swiper-slide">
+                <div class="box p-5 is-flex is-flex-direction-column is-flex-grow-1">
+                  <p class="is-size-5 has-text-centered">❝{{this.text}}❞</p>
+                  <p class="is-size-7 has-text-centered is-italic">@{{this.authorName}}</p>
+                  <div class="buttons">
+                    <a href="/dashboard/deleteReview/{{../_id}}/{{@index}}" class="button is-danger">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          {{else}}
+            <div class="swiper-slide">
+              <div class="box p-3">
+                <p class="is-size-5 has-text-grey">No reviews yet</p>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 {{/each}}
+
+
+<!-- Swiper Script to interact with DOM-->
+<script>
+  document.querySelectorAll('[data-review-swiper]').forEach((container) => {
+    // eslint-disable-next-line no-new
+    new Swiper(container, {
+      slidesPerView: 1,
+      spaceBetween: 16,
+      watchOverflow: true,
+      pagination: {
+        el: container.querySelector('.swiper-pagination'),
+        clickable: true,
+      },
+      navigation: {
+        nextEl: container.querySelector('.swiper-button-next'),
+        prevEl: container.querySelector('.swiper-button-prev'),
+      },
+      breakpoints: {
+        0: { slidesPerView: 1 },    // Only 1 slide on small screens
+        600: { slidesPerView: 1 },  // 1 slides on medium
+        1024: { slidesPerView: 2 }, // 2 slides on desktop
+      },
+
+    });
+  });
+</script>

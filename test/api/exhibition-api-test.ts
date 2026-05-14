@@ -17,11 +17,23 @@ suite("Exhibition API tests", () => {
     this.timeout(10000);
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
-    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
+    await museumService.authenticate({ email: "peter@griffin.com", password: "secret" });
   });
 
   suiteTeardown(async () => {
     await server.stop();
+  });
+
+  suiteTeardown(async () => {
+    const exhibitions = await museumService.getAllExhibitions();
+    for (const exhibition of exhibitions) {
+      await museumService.deleteExhibition(exhibition._id!);
+    }
+
+    const museums = await museumService.getAllMuseums();
+    for (const m of museums) {
+      await museumService.deleteMuseum(m._id!);
+    }
   });
 
   setup(async () => {

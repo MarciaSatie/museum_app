@@ -24,53 +24,59 @@ export const maggieCredentials: Credentials = {
   password: "secret",
 };
 
-export const homerCredentials: Credentials = {
-  email: "homer@simpson.com",
+export const peterCredentials: Credentials = {
+  email: "peter@griffin.com",
   password: "secret",
 };
 
 export const testUsers: User[] = [
   {
     _id: "",
-    firstName: "Homer",
-    lastName: "Simpson",
-    email: "homer@simpson.com",
+    firstName: "Peter",
+    lastName: "Griffin",
+    email: "peter@griffin.com",
     password: "secret",
   },
   {
     _id: "",
-    firstName: "Marge",
-    lastName: "Simpson",
-    email: "marge@simpson.com",
+    firstName: "Lois",
+    lastName: "Griffin",
+    email: "lois@griffin.com",
     password: "secret",
   },
   {
     _id: "",
-    firstName: "Bart",
-    lastName: "Simpson",
-    email: "bart@simpson.com",
+    firstName: "Stewie",
+    lastName: "Griffin",
+    email: "stewie@griffin.com",
     password: "secret",
   },
 ];
 
 export const testMuseums: Museum[] = [
   {
-    title: "National Art Gallery",
-    description: "A gallery featuring modern and contemporary art",
+    title: "Springfield Museum",
+    description: "A gallery featuring modern and contemporary art from our city",
     latitude: 53.3498,
     longitude: -6.2603,
   },
   {
-    title: "History Museum",
-    description: "Discover the rich history of our nation",
+    title: "Springfield Dunnut Museum",
+    description: "Discover the rich history of our Donnuts",
     latitude: 53.2707,
     longitude: -9.1193,
   },
   {
-    title: "Science Center",
+    title: "Futurama Science Center",
     description: "Interactive exhibits and science demonstrations",
     latitude: 53.4129,
     longitude: -8.2439,
+  },
+  {
+    title: "Lab Center",
+    description: "Interactive Experimental exhibits in a Laboratory",
+    latitude: 53.5129,
+    longitude: -8.5439,
   },
 ];
 

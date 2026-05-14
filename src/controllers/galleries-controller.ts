@@ -460,12 +460,27 @@ export const galleriesController = {
       const payload = request.payload as any;
       const museumId = request.params.id || payload.museumId;
       const review = payload.userText;
+      // To "collect" the authenticated user
+      const credentials = request.auth.credentials as any;
+
+      const userId = credentials._id; 
+      const userFirstName = credentials.firstName;
+      const userLastName = credentials.lastName;
+
+      
 
       if (!museumId || !review) {
         return h.redirect("/galleries");
       }
 
-      await db.museumStore.addReviewById(museumId, review);
+      const reviewObject = {
+        text: review,
+        authorName: `${userFirstName} ${userLastName}`,
+        authorId: userId,
+        date: new Date()
+      };
+
+      await db.museumStore!.addReviewById(museumId, reviewObject);
       return h.redirect("/galleries");
     },
   },

@@ -4,6 +4,7 @@ import { UserSpec, UserCredentialsSpec } from "../models/joi-schemas";
 import { db } from "../models/db";
 import bcrypt from "bcrypt";
 const saltRounds = 10;
+import validator from "validator";
 
 // Add this interface to "teach" TypeScript about CookieAuth
 interface CookieRequest extends Request {
@@ -27,13 +28,13 @@ export const accountsController = {
   index: {
     auth: false,
      handler: function (request: Request, h: ResponseToolkit) {
-      return h.view("main", { title: "Welcome to Playlist" });
+      return h.view("main", { title: "Welcome to Museum App" });
     },
   },
   showSignup: {
     auth: false,
      handler: function (request: Request, h: ResponseToolkit) {
-      return h.view("signup-view", { title: "Sign up for Playlist" });
+      return h.view("signup-view", { title: "Sign up for Museum App" });
     },
   },
   signup: {
@@ -72,7 +73,7 @@ export const accountsController = {
   showLogin: {
     auth: false,
      handler: function (request: Request, h: ResponseToolkit) {
-      return h.view("login-view", { title: "Login to Playlist" });
+      return h.view("login-view", { title: "Login to Museum App" });
     },
   },
   login: {
@@ -91,8 +92,12 @@ export const accountsController = {
       // 1. Get the data from the form
       const { email, password } = request.payload as any;
       
+      // 1.1 Sanitize Email
+      // Force to string or empty string to prevent normalizeEmail from returning 'false'
+      const cleanEmail = validator.normalizeEmail(validator.trim(email || '')) || '';
+
       // 2. Find the user in the DB
-      const user = await db.userStore!.getUserByEmail(email);
+      const user = await db.userStore!.getUserByEmail(cleanEmail);
       
       // 3. SECURE CHECK: Use bcrypt.compare instead of !==
       // Compare: (plain_text_from_form, hashed_password_from_db)

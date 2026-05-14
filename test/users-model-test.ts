@@ -5,21 +5,44 @@ import { maggie, testUsers } from "./fixtures";
 import { User } from "../src/api/jwt-utils";
 
 suite("User Model tests", () => {
+  let seededUsers: User[] = [];
+  const createdUserIds: string[] = [];
+
+  function createUniqueUser(user: User): User {
+    const [emailName, emailDomain] = user.email.split("@");
+    return {
+      ...user,
+      email: `${emailName}-${Date.now()}-${Math.random().toString(16).slice(2)}@${emailDomain}`,
+    };
+  }
+
+  async function addTrackedUser(user: User): Promise<User> {
+    const createdUser = await db.userStore.addUser(createUniqueUser(user));
+    createdUserIds.push(createdUser._id!);
+    return createdUser;
+  }
   
   setup(async () => {
     await db.init();
-    await db.userStore.deleteAll();
-    for (let i = 0; i < testUsers.length; i += 1) {
-      // Re-assigning to capture the generated _id from the database
-      testUsers[i] = await db.userStore.addUser(testUsers[i]);
+    seededUsers = [];
+    for (const user of testUsers) {
+      seededUsers.push(await addTrackedUser(user));
+    }
+  });
+
+  suiteTeardown(async () => {
+    for (const userId of createdUserIds) {
+      await db.userStore.deleteUserById(userId);
     }
   });
 
   test("create a user", async () => {
-    const newUser: User = await db.userStore.addUser(maggie);
+    const testUser = createUniqueUser(maggie);
+    const newUser: User = await db.userStore.addUser(testUser);
+    createdUserIds.push(newUser._id!);
     assert.equal(newUser.firstName, maggie.firstName);
     assert.equal(newUser.lastName, maggie.lastName);
-    assert.equal(newUser.email, maggie.email);
+    assert.equal(newUser.email, testUser.email);
     assert.exists(newUser.password); // Password should exist but is hashed, not plain text
     assert.exists(newUser._id);
   });
@@ -33,7 +56,9 @@ suite("User Model tests", () => {
   });
 
   test("get a user - success", async () => {
-    const user: User = await db.userStore.addUser(maggie);
+    const testUser = createUniqueUser(maggie);
+    const user: User = await db.userStore.addUser(testUser);
+    createdUserIds.push(user._id!);
     const returnedUser1 = await db.userStore.getUserById(user._id!);
     assert.deepEqual(user, returnedUser1);
     const returnedUser2 = await db.userStore.getUserByEmail(user.email);
@@ -41,10 +66,10 @@ suite("User Model tests", () => {
   });
 
   test("delete One User - success", async () => {
-    await db.userStore.deleteUserById(testUsers[0]._id!);
+    await db.userStore.deleteUserById(seededUsers[0]._id!);
     const returnedUsers: User[] = await db.userStore.getAllUsers();
-    assert.equal(returnedUsers.length, testUsers.length - 1);
-    const deletedUser = await db.userStore.getUserById(testUsers[0]._id!);
+    assert.equal(returnedUsers.length, seededUsers.length - 1);
+    const deletedUser = await db.userStore.getUserById(seededUsers[0]._id!);
     assert.isNull(deletedUser);
   });
 
@@ -68,6 +93,6 @@ suite("User Model tests", () => {
   test("delete One User - fail", async () => {
     await db.userStore.deleteUserById("bad-id");
     const allUsers = await db.userStore.getAllUsers();
-    assert.equal(testUsers.length, allUsers.length);
+    assert.equal(seededUsers.length, allUsers.length);
   });
 });

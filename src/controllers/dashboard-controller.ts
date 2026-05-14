@@ -180,4 +180,26 @@ export const dashboardController = {
       return h.redirect("/dashboard");
     },
   },
+
+  deleteReview: {
+    handler: async function (request: Request, h: ResponseToolkit) {
+      const { museumId, reviewIndex } = request.params as any;
+      const museum = await db.museumStore!.getMuseumById(museumId);
+
+      if (!museum) {
+        return h.redirect("/dashboard");
+      }
+
+      const reviews = Array.isArray((museum as any).reviewList) ? [...(museum as any).reviewList] : [];
+      const index = Number(reviewIndex);
+
+      if (Number.isInteger(index) && index >= 0 && index < reviews.length) {
+        reviews.splice(index, 1);
+        (museum as any).reviewList = reviews;
+        await db.museumStore!.updateMuseum(museum as any);
+      }
+
+      return h.redirect("/dashboard");
+    },
+  },
 };

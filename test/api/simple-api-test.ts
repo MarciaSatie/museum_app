@@ -17,7 +17,7 @@ suite("Simple connectivity test", () => {
     server = await init({ port: 0 });
     museumService.museumUrl = server.info.uri;
     // Authenticate before running tests
-    await museumService.authenticate({ email: "homer@simpson.com", password: "secret" });
+    await museumService.authenticate({ email: "peter@griffin.com", password: "secret" });
   });
 
   suiteTeardown(async () => {
