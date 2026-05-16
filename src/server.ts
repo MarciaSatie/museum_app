@@ -159,7 +159,7 @@ async function init(options: any = {}) {
     clientId: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     isSecure: false, 
-    location: location: process.env.NODE_ENV === "production" ? "https://museum-app-2-bo7c.onrender.com" : "http://localhost:3000",
+    location: process.env.NODE_ENV === "production" ? "https://museum-app-2-bo7c.onrender.com" : "http://localhost:3000",
     forceHttps: false
   });
 
