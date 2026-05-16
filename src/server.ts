@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import Vision from "@hapi/vision";
 import Hapi from "@hapi/hapi";
+import Bell from "@hapi/bell";
 import Cookie from "@hapi/cookie";
 import Inert from "@hapi/inert";
 import HapiSwagger from "hapi-swagger";
@@ -30,14 +31,14 @@ async function bootstrapDevelopmentUsers() {
       firstName: "Homer",
       lastName: "Simpson",
       email: "homer@simpson.com",
-      password: process.env.DEV_HOMER_PASSWORD || "secret",
+      password:"secret",
       role: "admin",
     },
     {
       firstName: "Marge",
       lastName: "Simpson",
       email: "marge@simpson.com",
-      password: process.env.DEV_MARGE_PASSWORD || "secret",
+      password: "secret",
       role: "admin",
     },
   ];
@@ -57,18 +58,18 @@ async function bootstrapDevelopmentUsers() {
   }
 }
 
-// Add ': any' to options so TypeScript doesn't complain about empty objects
 async function init(options: any = {}) {
   const port = options.port ?? process.env.PORT ?? 3000;
   const server = Hapi.server({
     port,
+    host: "localhost", 
   });
 
-  // Register plugins
   // Register plugins
   await server.register([
     jwt,
     Cookie,
+    Bell,
     Inert,
     Vision,
     {
@@ -106,23 +107,90 @@ async function init(options: any = {}) {
     layout: true,
     isCached: false,
   });
+
+  // ==========================================
+  // ✨ AUTH STRATEGY ✨
+  // ==========================================
   
   server.auth.strategy("session", "cookie", {
     cookie: {
       name: process.env.cookie_name || "session",
       password: process.env.cookie_password || "secret-password-must-be-32-chars-long",
-      isSecure: false,
+      isSecure: false,      
+      isSameSite: "Lax",    
     },
     redirectTo: "/",
     validate: (accountsController as any).validate,
   });
   server.auth.default("session");
 
+  // ==========================================
+  // ✨ AUTH0 AUTH STRATEGY ✨
+  // ==========================================
+  server.auth.strategy("auth0", "bell", {
+    provider: {
+      name: "auth0",
+      protocol: "oauth2",
+      useParamsAuth: true,
+      auth: `https://${process.env.AUTH0_DOMAIN}/authorize`,
+      token: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      profile: async function (credentials: any) {
+        const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
+          headers: { Authorization: `Bearer ${credentials.token}` }
+        });
+        const profile = await response.json();
+        
+        credentials.profile = {
+          id: profile.sub,
+          username: profile.nickname || profile.name,
+          displayName: profile.name,
+          // Auth0 fields mapped to strings to satisfy MongoDB
+          firstName: profile.given_name || profile.name || "Auth0",
+          lastName: profile.family_name || "User",
+          email: profile.email
+        };
+      }
+    },
+
+    providerParams: {
+      scope: "openid profile email" 
+    },
+    password: process.env.cookie_password || "secret-password-must-be-32-chars-long",
+    clientId: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    isSecure: false, 
+    location: "http://localhost:3000",
+    forceHttps: false
+  });
+
+
+  // ==========================================
+  // ✨ GITHUB AUTH STRATEGY ✨
+  // ==========================================
+  server.auth.strategy("github", "bell", {
+    provider: "github",
+    providerParams: {
+      scope: "user:email" 
+    },
+    password: process.env.cookie_password || "secret-password-must-be-32-chars-long",
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    isSecure: false, 
+    location: "http://localhost:3000",
+    forceHttps: false 
+  });
+
+
+  // ==========================================
+  // ✨ JWT STRATEGY ✨
+  // ==========================================
   server.auth.strategy("jwt", "jwt", {
     key: process.env.JWT_SECRET || "secret",
     validate: validate,
     verifyOptions: { algorithms: ["HS256"] }
   });
+
+  
 
   server.ext("onPreResponse", (request, h) => {
     const { response } = request as any;

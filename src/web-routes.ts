@@ -1,4 +1,3 @@
-
 import { imageGalleryController } from "./controllers/imageGallery-controller";
 import { accountsController } from "./controllers/accounts-controller";
 import { dashboardController } from "./controllers/dashboard-controller";
@@ -7,7 +6,7 @@ import { adminController } from "./controllers/admin-controller";
 import { categoryController } from "./controllers/category-controller";
 import { galleriesController } from "./controllers/galleries-controller";
 
-export const webRoutes= [
+export const webRoutes = [
   { method: "GET", path: "/", config: accountsController.index },
   { method: "GET", path: "/signup", config: accountsController.showSignup },
   { method: "GET", path: "/login", config: accountsController.showLogin },
@@ -16,9 +15,12 @@ export const webRoutes= [
   { method: "POST", path: "/authenticate", config: accountsController.login },
   { method: "GET", path: "/profile", config: accountsController.showProfile },
   { method: "POST", path: "/profile", config: accountsController.updateProfile },
+  { method: ["GET", "POST"], path: "/auth/github", options: accountsController.githubLogin },
+  { method: ["GET", "POST"], path: "/callback", config: accountsController.auth0Login as any },
+
+
   { method: "GET", path: "/admin", handler: (request: any, h: any) => h.redirect("/admin/users") },
   { method: "GET", path: "/admin/users", config: adminController.listUsers },
-  { method: "GET", path: "/admin/users/", config: adminController.listUsers },
   { method: "GET", path: "/admin/deleteuser/{id}", config: adminController.deleteUser },
   { method: "GET", path: "/admin/toggleadmin/{id}", config: adminController.toggleAdmin },
 
@@ -52,8 +54,6 @@ export const webRoutes= [
   { method: "POST", path: "/galleries/review/{_id}", config: galleriesController.reviewPOI },
 
   { method: "POST", path: "/leave-comment", config: galleriesController.leaveComment },
-  //<a> tag (a link) for the Like button. When you click a link, the browser always sends a GET request.
   { method: "GET", path: "/social/like/{id}", config: galleriesController.incrementLikeComment },
   { method: "GET", path: "/social/dislike/{id}", config: galleriesController.incrementDislikeComment },
-
 ];
