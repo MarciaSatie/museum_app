@@ -64,6 +64,18 @@ async function init(options: any = {}) {
     port: process.env.PORT || 3000,
     host: process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost",
   });
+  const resolvePublicUrl = (request: any) => {
+    const forwardedProto = request.headers["x-forwarded-proto"];
+    const forwardedHost = request.headers["x-forwarded-host"];
+    const host = forwardedHost || request.info.host;
+    const protocol = forwardedProto || request.server.info.protocol || "http";
+
+    return (
+      process.env.APP_URL ||
+      process.env.RENDER_EXTERNAL_URL ||
+      `${protocol}://${host}`
+    );
+  };
 
   // Register plugins
   await server.register([
@@ -128,39 +140,19 @@ async function init(options: any = {}) {
   // ✨ AUTH0 AUTH STRATEGY ✨
   // ==========================================
   server.auth.strategy("auth0", "bell", {
-    provider: {
-      name: "auth0",
-      protocol: "oauth2",
-      useParamsAuth: true,
-      auth: `https://${process.env.AUTH0_DOMAIN}/authorize`,
-      token: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
-      profile: async function (credentials: any) {
-        const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
-          headers: { Authorization: `Bearer ${credentials.token}` }
-        });
-        const profile = await response.json();
-        
-        credentials.profile = {
-          id: profile.sub,
-          username: profile.nickname || profile.name,
-          displayName: profile.name,
-          // Auth0 fields mapped to strings to satisfy MongoDB
-          firstName: profile.given_name || profile.name || "Auth0",
-          lastName: profile.family_name || "User",
-          email: profile.email
-        };
-      }
+    provider: "auth0",
+    config: {
+      domain: process.env.AUTH0_DOMAIN
     },
-
     providerParams: {
-      scope: "openid profile email" 
+      scope: "openid profile email"
     },
     password: process.env.cookie_password || "secret-password-must-be-32-chars-long",
     clientId: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     isSecure: false, 
-    location: process.env.NODE_ENV === "production" ? "https://museum-app-2-bo7c.onrender.com" : "http://localhost:3000",
-    forceHttps: false
+    location: resolvePublicUrl,
+    forceHttps: process.env.NODE_ENV === "production"
   });
 
 
@@ -176,8 +168,8 @@ async function init(options: any = {}) {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     isSecure: false, 
-    location: "http://localhost:3000",
-    forceHttps: false 
+    location: resolvePublicUrl,
+    forceHttps: process.env.NODE_ENV === "production"
   });
 
 

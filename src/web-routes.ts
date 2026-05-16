@@ -15,7 +15,8 @@ export const webRoutes = [
   { method: "POST", path: "/authenticate", config: accountsController.login },
   { method: "GET", path: "/profile", config: accountsController.showProfile },
   { method: "POST", path: "/profile", config: accountsController.updateProfile },
-  { method: ["GET", "POST"], path: "/auth/github", options: accountsController.githubLogin },
+  { method: "GET", path: "/auth/github", handler: (request: any, h: any) => h.redirect("/callback") },
+  { method: ["GET", "POST"], path: "/callback", options: accountsController.githubLogin },
   { method: ["GET", "POST"], path: "/login-auth0", config: accountsController.auth0Login as any },
 
 
