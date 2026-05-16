@@ -62,7 +62,7 @@ async function init(options: any = {}) {
   const port = options.port ?? process.env.PORT ?? 3000;
   const server = Hapi.server({
     port: process.env.PORT || 3000,
-    host: "localhost", 
+    host: process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost",
   });
 
   // Register plugins
