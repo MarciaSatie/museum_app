@@ -38,6 +38,7 @@
     "validator": "^13.15.35"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/bcrypt": "^6.0.0",
     "@types/chai": "^5.2.3",
     "@types/hapi__boom": "^7.4.1",
