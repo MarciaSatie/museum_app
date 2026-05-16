@@ -105,12 +105,19 @@ function enrichMuseumsWithOwnerAndImage(
     const owner = userMap.get(museum.userid) || null;
     const latestImage = latestImageByMuseum.get(museum._id);
 
+    const starList = museum.reviewList;
+    const countingStart = starList.reduce((total:Number, item:any)=> total +item.starNumber,0 );
+    const rawAVG = starList.length > 0 ? countingStart / starList.length : 0;
+    const starsAVG = Number(rawAVG.toFixed(1)); // Number() converts the string from toFixed back into a number
+    
     return {
       ...museum,
       ownerFirstName: owner?.firstName || "Unknown",
       ownerLastName: owner?.lastName || "Unknown",
       latestImageUrl: latestImage?.url || null,
       latestImageName: latestImage?.image || "",
+      starsAVG : starsAVG,
+      totalRating: starList.length ||0,
     } as MuseumWithOwnerAndLatestImage;
   });
 }
@@ -460,6 +467,7 @@ export const galleriesController = {
       const payload = request.payload as any;
       const museumId = request.params.id || payload.museumId;
       const review = payload.userText;
+      const reviewStar = parseInt(payload.ratingValue) ||0;
       // To "collect" the authenticated user
       const credentials = request.auth.credentials as any;
 
@@ -477,7 +485,8 @@ export const galleriesController = {
         text: review,
         authorName: `${userFirstName} ${userLastName}`,
         authorId: userId,
-        date: new Date()
+        date: new Date(),
+        starNumber: reviewStar
       };
 
       await db.museumStore!.addReviewById(museumId, reviewObject);

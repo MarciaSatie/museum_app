@@ -28,6 +28,7 @@ export const MuseumSpec = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().allow(""),
   categoryId: Joi.string().required(),
+  status: Joi.string().valid("public", "private", "").optional(),
   latitude: Joi.number().allow(null),
   longitude: Joi.number().allow(null),
 }).label("MuseumSpec");
