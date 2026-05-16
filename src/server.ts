@@ -69,12 +69,25 @@ async function init(options: any = {}) {
     const forwardedHost = request.headers["x-forwarded-host"];
     const host = forwardedHost || request.info.host;
     const protocol = forwardedProto || request.server.info.protocol || "http";
-
-    return (
+    const result =
       process.env.APP_URL ||
       process.env.RENDER_EXTERNAL_URL ||
-      `${protocol}://${host}`
-    );
+      `${protocol}://${host}`;
+
+    // Temporary debug logging to help diagnose redirect_uri issues on Render
+    try {
+      console.log("[auth-debug] resolvePublicUrl computed:", {
+        forwardedProto,
+        forwardedHost,
+        host,
+        protocol,
+        result,
+      });
+    } catch (err) {
+      // swallow logging errors
+    }
+
+    return result;
   };
 
   // Register plugins
@@ -151,7 +164,7 @@ async function init(options: any = {}) {
     clientId: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     isSecure: false, 
-    location: resolvePublicUrl,
+    location: (request: any) => `${resolvePublicUrl(request)}/login-auth0`,
     forceHttps: process.env.NODE_ENV === "production"
   });
 
@@ -168,7 +181,7 @@ async function init(options: any = {}) {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     isSecure: false, 
-    location: resolvePublicUrl,
+    location: (request: any) => `${resolvePublicUrl(request)}/callback`,
     forceHttps: process.env.NODE_ENV === "production"
   });
 
@@ -200,6 +213,50 @@ async function init(options: any = {}) {
 
   server.route(webRoutes as any);
   server.route(apiRoutes as any);
+
+  // Temporary debug routes for OAuth troubleshooting (remove in production)
+  server.route([
+    {
+      method: "GET",
+      path: "/auth-debug",
+      handler: (request: any, h: any) => {
+        return h.response({
+          publicUrl: resolvePublicUrl(request),
+          headers: {
+            host: request.info.host,
+            forwardedProto: request.headers["x-forwarded-proto"],
+            forwardedHost: request.headers["x-forwarded-host"],
+          },
+        });
+      },
+    },
+    {
+      method: ["GET", "POST"],
+      path: "/debug/auth0-callback",
+      options: {
+        auth: { strategy: "auth0", mode: "try" },
+        handler: (request: any, h: any) => {
+          if (!request.auth || !request.auth.isAuthenticated) {
+            return h.response({ error: request.auth?.error?.message, credentials: request.auth?.credentials }).code(401);
+          }
+          return h.response({ credentials: request.auth.credentials });
+        },
+      },
+    },
+    {
+      method: ["GET", "POST"],
+      path: "/debug/github-callback",
+      options: {
+        auth: { strategy: "github", mode: "try" },
+        handler: (request: any, h: any) => {
+          if (!request.auth || !request.auth.isAuthenticated) {
+            return h.response({ error: request.auth?.error?.message, credentials: request.auth?.credentials }).code(401);
+          }
+          return h.response({ credentials: request.auth.credentials });
+        },
+      },
+    },
+  ] as any);
   
   await server.start();
   console.log("Server running on %s", server.info.uri);
