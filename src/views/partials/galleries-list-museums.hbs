@@ -24,27 +24,44 @@
     </div>
 
     <!-- Review -->
-    
     <div class="column is-7">
-      <!-- Review Form-->
-      <div>
-        <form action="/galleries/review/{{_id}}" method="POST">
-          <div class="field has-addons">
-            <div class="control is-expanded">
-              <input class="input" name="userText" type="text" placeholder="Leave a Review..." required>
-            </div>
-            <div class="control">
-              <button class="button is-link" type="submit" aria-label="Leave a Review" title="Leave a Review">📝</button>
-            </div>
-            <!-- Rating -->
-            <div>
+      <div class="columns">
+        <!-- Review Form-->
+        <div class="column">
+          <form action="/galleries/review/{{_id}}" method="POST">
+            <div class="field has-addons">
+              <!-- Input Text Field -->
+              <div class="control is-expanded">
+                <input class="input" name="userText" type="text" placeholder="Leave a Review..." required>
+              </div>
+    
+              <!-- Star Rating Button -->
+              <div class="control star-rating-container">
+                <button class="button" type="button" aria-label="Rate Gallery">
+                  <p>Rating: </p>
+                  <!-- Javscript for Rating Star here; document.querySelectorAll('.star-rating-container')-->
+                </button>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="control">
+                <button class="button is-link" type="submit" aria-label="Leave a Review" title="Leave a Review">📝</button>
+              </div>
 
             </div>
-          </div>
-          <input type="hidden" name="museumId" value="{{_id}}">
-          <input type="hidden" name="reviewerId" value="{{../user._id}}">
-        </form>
+
+            <input type="hidden" name="ratingValue" class="rating-value-input" value="0">
+            <input type="hidden" name="museumId" value="{{_id}}">
+            <input type="hidden" name="reviewerId" value="{{../user._id}}">
+          </form>
+          <!-- Will submit to the route
+          { method: "POST", path: "/galleries/review/{_id}", config: galleriesController.reviewPOI }, 
+          -->
+        </div>
+
       </div>
+
+      <!-- Review Display -->
       <div class="swiper review-swiper has-nav-space px-6" data-review-swiper style="width: 100%; overflow: hidden;">
         <div class="swiper-wrapper">
           {{#if reviewList}}
@@ -75,8 +92,9 @@
 </div>
 {{/each}}
 
-<!-- Swiper Script to interact with DOM-->
+
 <script>
+  //Swiper Script to interact with DOM
   document.querySelectorAll('[data-review-swiper]').forEach((container) => {
     // eslint-disable-next-line no-new
     new Swiper(container, {
@@ -96,7 +114,50 @@
         600: { slidesPerView: 1 },  // 1 slides on medium
         1024: { slidesPerView: 2 }, // 2 slides on desktop
       },
-
     });
   });
+
+  
+  // Find all star containers on the page
+  document.querySelectorAll('.star-rating-container').forEach((container) => {
+    // Find the closest form container to track hidden inputs later
+    const form = container.closest('form');
+    const hiddenInput = form.querySelector('.rating-value-input');
+    
+    // Loop 5 times to create 5 distinct star buttons inside THIS container
+    for (let i = 1; i <= 5; i++) {
+      const starButton = document.createElement('button');
+      starButton.className = 'button star-btn';
+      starButton.type = 'button';
+      starButton.setAttribute('aria-label', `Rate ${i} Stars`);
+      starButton.dataset.value = i; // Save star value
+
+      // Simple font-awesome star icon markup
+      starButton.innerHTML = `
+        <span class="icon">
+          <span class="far fa-star"></span>
+        </span>
+      `;
+
+      // Click handler to select rating
+      starButton.addEventListener('click', () => {
+        const selectedValue = i;
+        hiddenInput.value = selectedValue; 
+        // Highlight selected stars and dim unselected ones
+        const allStars = container.querySelectorAll('.star-btn');
+        allStars.forEach((btn, index) => {
+          const icon = btn.querySelector('.fa-star');
+          if (index < selectedValue) {
+            icon.className = 'fas fa-star has-text-warning'; // Solid filled gold star
+          } else {
+            icon.className = 'far fa-star'; // Empty default star
+          }
+        });
+      });
+
+      container.appendChild(starButton);
+    }
+  });
+
+
 </script>

@@ -460,6 +460,7 @@ export const galleriesController = {
       const payload = request.payload as any;
       const museumId = request.params.id || payload.museumId;
       const review = payload.userText;
+      const reviewStar = parseInt(payload.ratingValue) ||0;
       // To "collect" the authenticated user
       const credentials = request.auth.credentials as any;
 
@@ -477,7 +478,8 @@ export const galleriesController = {
         text: review,
         authorName: `${userFirstName} ${userLastName}`,
         authorId: userId,
-        date: new Date()
+        date: new Date(),
+        starNumber: reviewStar
       };
 
       await db.museumStore!.addReviewById(museumId, reviewObject);

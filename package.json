@@ -9,7 +9,10 @@
     "seed": "tsx seed-database.ts",
     "test": "tsx ./node_modules/mocha/bin/mocha.js --ui tdd --timeout 10000 \"test/**/*-test.ts\" \"test/minimal-test.ts\" --exit",
     "coverage": "c8 --reporter=text --reporter=html npm test",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "play-api" : "npx playwright test play-tests/api.spec.ts --config=playwright.config.ts",
+    "play-all" : "npx playwright test --config=playwright.config.ts"
+
   },
   "dependencies": {
     "@google-cloud/storage": "^5.18.3",

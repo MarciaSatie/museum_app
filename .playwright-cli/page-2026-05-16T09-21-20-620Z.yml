@@ -1,0 +1,24 @@
+- generic [ref=e2]:
+  - navigation "main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: 
+      - generic [ref=e7]: My App Museums
+  - generic [ref=e10]:
+    - heading "Log in to Museum App" [level=1] [ref=e11]
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: Email
+        - generic [ref=e15]:
+          - textbox "Enter email" [ref=e16]
+          - generic:
+            - generic: 
+      - generic [ref=e17]:
+        - generic [ref=e18]: Password
+        - generic [ref=e19]:
+          - textbox "Enter Password" [ref=e20]
+          - generic:
+            - generic: 
+      - generic [ref=e21]:
+        - button "Log in" [ref=e23] [cursor=pointer]
+        - link "Create account" [ref=e25] [cursor=pointer]:
+          - /url: /signup
