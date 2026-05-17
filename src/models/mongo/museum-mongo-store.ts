@@ -20,7 +20,12 @@ export const museumMongoStore = {
   },
 
   async addMuseum(museum: MuseumType): Promise<MuseumType | null> {
-    const data = { ...museum, _id: museum._id || v4() };
+    // If museum has an existing _id, update it instead of creating a new one
+    if (museum._id) {
+      return this.updateMuseumById(museum._id, museum);
+    }
+    
+    const data = { ...museum, _id: v4() };
     const newMuseum = new MuseumModel(data);
     const museumObj = await newMuseum.save();
     return normalize(museumObj.toObject()) as MuseumType;

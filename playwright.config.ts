@@ -30,11 +30,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
-    // 2. Slow down every action globally by 500ms
-    launchOptions: {
-      slowMo: 500, 
-    },
+
+    // Keep normal runs fast; use PWDEBUG=1 when you want step-by-step slowdown.
+    launchOptions: process.env.PWDEBUG ? { slowMo: 500 } : undefined,
   },
   
 

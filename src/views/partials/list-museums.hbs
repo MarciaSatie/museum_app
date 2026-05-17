@@ -1,5 +1,5 @@
 {{#each museums}}
-<div class="box box-link-hover-shadow">
+<div class="box box-link-hover-shadow" aria-label="{{title}}">
   <div class="columns is-vcentered">
     <div class="columns is-vcentered">
       {{#if latestImageUrl}}
@@ -32,7 +32,7 @@
           </span>
           <span>View</span>
         </a>
-        <a href="/dashboard/deletemuseum/{{_id}}" class="button is-danger">
+        <a href="/dashboard/deletemuseum/{{_id}}" class="button is-danger" aria-label="Delete Museum">
           <i class="fas fa-trash"></i>
         </a>
       </div>
@@ -41,7 +41,7 @@
         <div class="column is-7">
       <!-- Review -->
  
-      <div class="swiper review-swiper has-nav-space px-6" data-review-swiper style="width: 100%; overflow: hidden;">
+      <div class="swiper review-swiper has-nav-space px-6" data-review-swiper style="width: 100%; overflow: hidden;" aria-label="museumReviewSwiper">
         <div class="swiper-wrapper">
           {{#if reviewList}}
             {{#each reviewList}}
@@ -51,7 +51,7 @@
                   <p class="is-size-7 has-text-centered is-italic">@{{this.authorName}}</p>
                   <div class="buttons">
                     <a href="/dashboard/deleteReview/{{../_id}}/{{@index}}" class="button is-danger">
-                      <i class="fas fa-trash"></i>
+                      <i class="fas fa-trash" aria-label="deleteReview"></i>
                     </a>
                   </div>
                 </div>
